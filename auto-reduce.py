@@ -10,38 +10,75 @@ from scipy.integrate import odeint, solve_ivp
 
 import scipy
 
-def solve_system(ode_model, params, timepoints, init):
-    guesses = np.array(params)
-    t_min = timepoints[0]
-    t_max = timepoints[-1]
-    x_sol, sensitivity_sol = solve_extended_ode(ode_model, guesses,
-                                                t_min = t_min, t_max = t_max,
-                                                init = init,
-                                                method = "RK45")
-    return x_sol, sensitivity_sol
 
+class System(object):
+    '''
+    Class that stores the system model in this form:  x_dot = f(x, theta), y = Cx.
+    '''
+    def __init__(self, x, f, params = None, C = None, g = None, h = None, 
+                params_values = [], x_init = []):
+        '''
+        The general system dynamics : x_dot = f(x, P) + g(x, P)u, y = h(x,P)
+        Use the utility function ode_to_sympy to write these.
 
-class SBMLReduce(object):
-    def __init__(self):
-        self.sbml_doc = None
-        self.sympy_model = None
-        self.ode_model = None
-        self.x = [] # Should be a list of Sympy objects
-        n = len(self.x)
-        self.f = [] # Should be a list of Sympy objects
-        self.f_hat = [] # Should be a list of Sympy objects
-        self.P = [] # Should be a list of Sympy objects
-        self.params_values = np.zeros(len(self.P))
-        self.timepoints = np.linspace(0, 10, 100)
-        self.nstates_tol = n - 1
-        self.error_tol = 1e6
-        self.x_init = np.zeros(n)
-        self.C = np.zeros((1,n), dtype = int).tolist()
-        self.results_dict = {}
+        x : (Symbolic) state variable vector
+
+        f : The system model dynamics. Writted symbolically with symbols x = [x_0, x_1, ...]
+        for states and P = [P_0, P_1, ...] for parameters. 
+
+        params : (Symbolic) parameters used to define f, g, h. None if no symbolic parameters.
+
+        g : The actuator / input dynamics. None by default if the system is autonomous. 
+        
+        C : The output matrix for y = Cx, size of C must be #outputs times #states. If None,
+        the argument h is expected. Cannot set C and h both.
+
+        h : The output description y = h(x, P) where x are states and P are parameters. 
+        params_values : Values for model parameters
+
+        x_init : Model initial condition 
+        '''
+        self.x = x
+        self.n = len(x)
+        self.f = f
+        self.params = params
+        self.C = C
+        self.g = g
+        self.h = h
+        self.params_values = params_values
+        self.x_init = x_init
         return
-    
+
+    def set_dynamics(self, f = None, g = None, h = None, C = None, P = []):
+        '''
+        Set either f, g, h, or C to the System object or parameter values using P.
+        '''
+        if f:
+            self.f = f
+        if g:
+            self.g = g
+        if h:
+            self.h = h
+        if C:
+            self.C = C
+        return self
+    def evaluate(self, f, x, P):
+        raise NotImplementedError
+
+    def set_parameters(self, P = [], x_init = []):
+        '''
+        Set model parameters and initial conditions
+        '''
+        if P:
+            self.params_values = [pi for pi in P]
+            if self.params:
+                for fi in self.f:
+                    fi = fi.subs(list(zip(self.params, self.params_values)))
+        if x_init:
+            self.x_init = [pi for pi in x_init]
+
     def load_SBML_model(self, filename):
-        return
+        raise NotImplementedError
 
     def load_ODE_model(self, n_states, n_params = 0):
         x, f, P = ode_to_sympy(n_states, n_params)
@@ -51,6 +88,137 @@ class SBMLReduce(object):
         return self.x, self.f, self.P
 
     def load_Sympy_model(self, sympy_model):
+        raise NotImplementedError
+
+class SSM(System):
+    '''
+    Class that computes local sensitivity analysis coefficients for the given Model using a numerical 
+    approximation method discussed in doi: https://doi.org/10.1016/0021-9991(76)90007-3
+    Uses numerical method to find sensitivity analysis matrix (SSM).
+    Both the Jacobian matrix and the Z matrix are estimated using 4th
+    order central difference as given in the paper.
+    '''
+    def __init__(self, timepoints):
+        self.timepoints = timepoints
+        return
+    def compute_Zi(self, x, k, j):
+        # initialize Z
+        Z = np.zeros(self.n, len(self.params_values))    
+        P_holder = self.params_values
+        x = x[k,:] #get x at time point k
+
+        for i in range(self.n):
+            P = P_holder
+            F = np.zeros(4,1)
+            h = P[j]*0.01
+            # Gets O(4) central difference on dfi/dpj
+            if h != 0:
+                P[j] = P_holder[j] + 2*h
+                f = self.evaluate(self.f, x, P)
+                F[0] = f[i]
+                P[j] = P_holder[j] + h
+                f = self.evaluate(self.f, x, P)
+                F[1] = f[i]
+                P[j] = P_holder(j) - h
+                f = self.evaluate(self.f, x, P)
+                F[2] = f[i]
+                P[j] = P_holder[j] - 2*h
+                f = self.evaluate(self.f, x, P)
+                F[3] = f[i]
+                #Store approx. dfi/dpj into Z
+                Z[i,j]= (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
+        return Z
+
+    def compute_J(self, x, k):
+        # initialize J
+        J = np.zeros(self.n, self.n)   
+        P = self.params_values 
+        # store x
+        X = x 
+        for i in range(self.n):
+            for j in range(self.n):
+                F = np.zeros(4,1)
+                h = X[k,j]*0.01
+                # Gets O(4) central difference on dfi/dxj
+                if h != 0:
+                    x = X[k,:]
+                    x[j] = X[k,j] + 2*h
+                    f = self.evaluate(self.f, x, P)
+                    F[0] = f[i]
+                    x[j] = X[k,j] + h
+                    f = self.evaluate(self.f, x, P)
+                    F[1] = f[i]
+                    x[j] = X[k,j] - h
+                    f = self.evaluate(self.f, x, P)
+                    F[2] = f[i]
+                    x[j] = X[k,j] - 2*h
+                    f = self.evaluate(self.f, x, P)
+                    F[3] = f[i]
+                    #Store approx. dfi/dpj into Z
+                    J[i,j]= (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
+        return J
+
+    def compute_SSM(self, normalize = False):
+        def sens_func(t, x, J, Z):
+            # forms ODE to solve for sensitivity coefficient S
+            dsdt = J*x + Z
+            return dsdt
+        P = self.params_values
+        S0 = np.zeros(self.n) # Initial value for S_i  
+        SSM = np.zeros(self.n, len(P), len(self.timepoints))
+        t_span = (self.timepoints[0], self.timepoints[-1])
+        # Solve for SSM at each time point 
+        for k in self.timepoints: 
+            #Solve for S = dx/dp for all x and all P (or theta, the parameters) at time point k
+            for j in len(P): 
+                # solve for all x's in timeframe set by timepoints
+                sol = ODE(self.timepoints).solve_system()
+                x = sol.y
+                # get the jacobian matrix
+                J = self.compute_J(x, k)
+                # get the pmatrix
+                Z = self.compute_Zi(x, k, j)
+                # solve for S
+                sens_func_ode = lambda t, x : sens_func(t, x, J, Z)
+                sol = solve_ivp(sens_func_ode, t_span, S0)
+                S = sol.y
+                SSM[k][j] = S[k]
+        if normalize:
+            SSM = self.normalize_SSM() #Identifiablity was estimated using an normalized SSM
+        return SSM
+
+    def normalize_SSM(self):
+        raise NotImplementedError
+class ODE(System):
+    '''
+    To solve the Model using scipy.solve_ivp
+    '''
+    def __init__(self, timepoints):
+        self.timepoints = timepoints
+        return
+    def solve_system(self, method = 'RK45', dense_output = False):
+        fun = lambdify((self.x, self.params),self.f)
+        def fun_ode(t, x, params):
+            y = fun(x, params)
+            return np.array(y)
+
+        t_min = self.timepoints[0]
+        t_max = self.timepoints[-1]
+        sol = solve_ivp(fun_ode, (t_min, t_max), self.x_init,
+                        method = method, dense_output = dense_output)
+        return sol
+
+class Reduce(System):
+    '''
+    The class can be used to compute the various possible reduced models for the System object 
+    and then find out the best reduced model choice using doi : https://doi.org/10.1101/640276 
+    '''
+    def __init__(self):
+        self.f_hat = [] # Should be a list of Sympy objects
+        self.nstates_tol = len(self.f) - 1
+        self.error_tol = 1e6
+        self.results_dict = {}
+        self.timepoints = []
         return
 
     def compute_reduced_model(self):
@@ -208,6 +376,14 @@ class SBMLReduce(object):
             self.results_dict = results_dict
         return
 
+
+class Utils(Reduce):
+    '''
+    For future methods developed on top of Reduce class and other utility functions
+    '''
+    def __init__(self):
+        return 
+
     def get_reduced_model(self, mode):
         results_dict = self.results_dict
         error_tol = self.error_tol
@@ -287,3 +463,5 @@ class SBMLReduce(object):
                     normed_sens[j,k] = normed_sens[j,k] * params_values[i] / x_sols[k,j] 
             S_final.append(normed_sens)
         return x_sol, y, S_final
+
+  
