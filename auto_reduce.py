@@ -114,13 +114,14 @@ class SSM(System):
         else:
             self.timepoints = timepoints
         return
+
     def compute_Zj(self, x, k, j):
         '''
-        Compute Z_j, i.e. df/dp_j at a particular timepoint k. 
-        Returns a vector of size n x len(params). 
+        Compute Z_j, i.e. df/dp_j at a particular timepoint k for the parameter p_j. 
+        Returns a vector of size n x 1. 
         '''
         # initialize Z
-        Z = np.zeros( (self.n, len(self.params_values)) )    
+        Z = np.zeros(self.n)    
         P_holder = self.params_values
         # get x at time point k
         x = x[k,:] 
@@ -144,7 +145,7 @@ class SSM(System):
                 f = self.evaluate(self.f, x, P)
                 F[3] = f[i]
                 #Store approx. dfi/dpj into Z
-                Z[i,j]= (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
+                Z[i] = (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
         return Z
 
     def compute_J(self, x, k):
@@ -188,32 +189,33 @@ class SSM(System):
         '''
         def sens_func(t, x, J, Z):
             # forms ODE to solve for sensitivity coefficient S
-            dsdt = np.sum(J@x, Z)
-            # Fix matrix multiplication for all variables instead of just the output like in MATLAB
-            print(np.shape(J@x))
-            print(np.shape(Z))
+            dsdt = J@x + Z
             return dsdt
         P = self.params_values
-        S0 = np.zeros( (self.n) ) # Initial value for S_i  
+        S0 = np.zeros(self.n) # Initial value for S_i  
         SSM = np.zeros( (len(self.timepoints), len(P), self.n) )
         # solve for all x's in timeframe set by timepoints
         sol = ODE(self.x, self.f, params = self.params, params_values = self.params_values,
                 C = self.C, g = self.g, h = self.h, x_init = self.x_init, timepoints = self.timepoints).solve_system()
         xs = sol.y
+        xs = np.reshape(xs,(len(self.timepoints), self.n))
         # Solve for SSM at each time point 
         for k in range(len(self.timepoints)): 
             timepoints = self.timepoints[0:k+1]
+            if len(timepoints) == 1:
+                continue
             t_span = (timepoints[0], timepoints[-1])
             # get the jacobian matrix
             J = self.compute_J(xs, k)
             #Solve for S = dx/dp for all x and all P (or theta, the parameters) at time point k
             for j in range(len(P)): 
                 # get the pmatrix
-                Z = self.compute_Zj(xs, k, j)
+                Zj = self.compute_Zj(xs, k, j)
                 # solve for S
-                sens_func_ode = lambda t, x : sens_func(t, x, J, Z)
+                sens_func_ode = lambda t, x : sens_func(t, x, J, Zj)
                 sol = solve_ivp(sens_func_ode, t_span, S0, t_eval = timepoints)
                 S = sol.y
+                S = np.reshape(S, (len(timepoints), self.n))
                 SSM[k,j,:] = S[k,:]
         if normalize:
             SSM = self.normalize_SSM() #Identifiablity was estimated using an normalized SSM
