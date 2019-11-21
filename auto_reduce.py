@@ -10,6 +10,9 @@ from scipy.integrate import odeint, solve_ivp
 
 import scipy
 
+def load_ODE_model(n_states, n_params = 0):
+    x, f, P = ode_to_sympy(n_states, n_params)
+    return x, f, P
 
 class System(object):
     '''
@@ -62,8 +65,19 @@ class System(object):
         if C:
             self.C = C
         return self
+
     def evaluate(self, f, x, P):
-        raise NotImplementedError
+        '''
+        Evaluate the given symbolic function (f) that is part of the System
+        at the values given by x for self.x and P for self.params
+        '''
+        fs = []
+        for i in range(len(f)):
+            fi = f[i]
+            fi = fi.subs(list(zip(self.x, x)))
+            fi = fi.subs(list(zip(self.params, P)))
+            fs.append(fi)
+        return fs
 
     def set_parameters(self, P = [], x_init = []):
         '''
@@ -80,12 +94,6 @@ class System(object):
     def load_SBML_model(self, filename):
         raise NotImplementedError
 
-    def load_ODE_model(self, n_states, n_params = 0):
-        x, f, P = ode_to_sympy(n_states, n_params)
-        self.x = x
-        self.f = f
-        self.P = P
-        return self.x, self.f, self.P
 
     def load_Sympy_model(self, sympy_model):
         raise NotImplementedError
@@ -98,19 +106,29 @@ class SSM(System):
     Both the Jacobian matrix and the Z matrix are estimated using 4th
     order central difference as given in the paper.
     '''
-    def __init__(self, timepoints):
-        self.timepoints = timepoints
+    def __init__(self, x, f, params = None, C = None, g = None, h = None, 
+                params_values = [], x_init = [], timepoints = None):
+        super().__init__(x, f, params, C, g, h, params_values, x_init)
+        if timepoints is None:
+            timepoints = []
+        else:
+            self.timepoints = timepoints
         return
-    def compute_Zi(self, x, k, j):
+    def compute_Zj(self, x, k, j):
+        '''
+        Compute Z_j, i.e. df/dp_j at a particular timepoint k. 
+        Returns a vector of size n x len(params). 
+        '''
         # initialize Z
-        Z = np.zeros(self.n, len(self.params_values))    
+        Z = np.zeros( (self.n, len(self.params_values)) )    
         P_holder = self.params_values
-        x = x[k,:] #get x at time point k
-
+        # get x at time point k
+        x = x[k,:] 
+        # For each state
         for i in range(self.n):
             P = P_holder
-            F = np.zeros(4,1)
-            h = P[j]*0.01
+            F = np.zeros( (4,1) ) # For 4th order difference
+            h = P[j]*0.01 # Small parameter for this parameter
             # Gets O(4) central difference on dfi/dpj
             if h != 0:
                 P[j] = P_holder[j] + 2*h
@@ -119,7 +137,7 @@ class SSM(System):
                 P[j] = P_holder[j] + h
                 f = self.evaluate(self.f, x, P)
                 F[1] = f[i]
-                P[j] = P_holder(j) - h
+                P[j] = P_holder[j] - h
                 f = self.evaluate(self.f, x, P)
                 F[2] = f[i]
                 P[j] = P_holder[j] - 2*h
@@ -130,14 +148,18 @@ class SSM(System):
         return Z
 
     def compute_J(self, x, k):
+        '''
+        Compute the Jacobian J = df/dx at a timepoint k.
+        Returns a matrix of size n x n.
+        '''
         # initialize J
-        J = np.zeros(self.n, self.n)   
+        J = np.zeros( (self.n, self.n) )   
         P = self.params_values 
         # store x
         X = x 
         for i in range(self.n):
             for j in range(self.n):
-                F = np.zeros(4,1)
+                F = np.zeros( (4,1) )
                 h = X[k,j]*0.01
                 # Gets O(4) central difference on dfi/dxj
                 if h != 0:
@@ -159,53 +181,70 @@ class SSM(System):
         return J
 
     def compute_SSM(self, normalize = False):
+        '''
+        Returns the sensitivity coefficients S_j for each parameter p_j. 
+        The sensitivity coefficients are written in a sensitivity matrix SSM of size len(timepoints) x len(params) x n
+        If normalize argument is true, the coefficients are normalized by the nominal value of each paramneter.
+        '''
         def sens_func(t, x, J, Z):
             # forms ODE to solve for sensitivity coefficient S
-            dsdt = J*x + Z
+            dsdt = np.sum(J@x, Z)
+            # Fix matrix multiplication for all variables instead of just the output like in MATLAB
+            print(np.shape(J@x))
+            print(np.shape(Z))
             return dsdt
         P = self.params_values
-        S0 = np.zeros(self.n) # Initial value for S_i  
-        SSM = np.zeros(self.n, len(P), len(self.timepoints))
-        t_span = (self.timepoints[0], self.timepoints[-1])
+        S0 = np.zeros( (self.n) ) # Initial value for S_i  
+        SSM = np.zeros( (len(self.timepoints), len(P), self.n) )
+        # solve for all x's in timeframe set by timepoints
+        sol = ODE(self.x, self.f, params = self.params, params_values = self.params_values,
+                C = self.C, g = self.g, h = self.h, x_init = self.x_init, timepoints = self.timepoints).solve_system()
+        xs = sol.y
         # Solve for SSM at each time point 
-        for k in self.timepoints: 
+        for k in range(len(self.timepoints)): 
+            timepoints = self.timepoints[0:k+1]
+            t_span = (timepoints[0], timepoints[-1])
+            # get the jacobian matrix
+            J = self.compute_J(xs, k)
             #Solve for S = dx/dp for all x and all P (or theta, the parameters) at time point k
-            for j in len(P): 
-                # solve for all x's in timeframe set by timepoints
-                sol = ODE(self.timepoints).solve_system()
-                x = sol.y
-                # get the jacobian matrix
-                J = self.compute_J(x, k)
+            for j in range(len(P)): 
                 # get the pmatrix
-                Z = self.compute_Zi(x, k, j)
+                Z = self.compute_Zj(xs, k, j)
                 # solve for S
                 sens_func_ode = lambda t, x : sens_func(t, x, J, Z)
-                sol = solve_ivp(sens_func_ode, t_span, S0)
+                sol = solve_ivp(sens_func_ode, t_span, S0, t_eval = timepoints)
                 S = sol.y
-                SSM[k][j] = S[k]
+                SSM[k,j,:] = S[k,:]
         if normalize:
             SSM = self.normalize_SSM() #Identifiablity was estimated using an normalized SSM
         return SSM
 
     def normalize_SSM(self):
         raise NotImplementedError
+
 class ODE(System):
     '''
     To solve the Model using scipy.solve_ivp
     '''
-    def __init__(self, timepoints):
-        self.timepoints = timepoints
+    def __init__(self, x, f, params = None, C = None, g = None, h = None, 
+                params_values = [], x_init = [], timepoints = None):
+        super().__init__(x, f, params, C, g, h, params_values, x_init)
+        if timepoints is None:
+            timepoints = []
+        else:
+            self.timepoints = timepoints
         return
     def solve_system(self, method = 'RK45', dense_output = False):
-        fun = lambdify((self.x, self.params),self.f)
+        # self.timepoints = timepoints
+        fun = lambdify((self.x, self.params), self.f)
         def fun_ode(t, x, params):
             y = fun(x, params)
             return np.array(y)
 
         t_min = self.timepoints[0]
         t_max = self.timepoints[-1]
-        sol = solve_ivp(fun_ode, (t_min, t_max), self.x_init,
-                        method = method, dense_output = dense_output)
+        sol = solve_ivp(lambda t, x :fun_ode(t, x, self.params_values), (t_min, t_max), self.x_init,
+                        method = method, dense_output = dense_output, t_eval = self.timepoints)
         return sol
 
 class Reduce(System):
@@ -221,12 +260,15 @@ class Reduce(System):
         self.timepoints = []
         return
 
+    def compute_full_model(self):
+        raise NotImplementedError
+
     def compute_reduced_model(self):
         x_sol, y, S_final = self.compute_full_model()
         C = self.C
         x = self.x
         f = self.f
-        params = self.P
+        params = self.params
         x_init = self.x_init
         timepoints = self.timepoints
         params_values = self.params_values
@@ -439,7 +481,7 @@ class Utils(Reduce):
     def compute_full_model(self):
         x = self.x
         f = self.f
-        P = self.P
+        P = self.params
         C = self.C
         x_init = self.x_init
         params_values = self.params_values
