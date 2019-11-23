@@ -350,8 +350,22 @@ class Reduce(System):
         return possible_reductions
     
     def get_T(self, attempt):
+        non_attempt = [i for i in range(self.n) if i not in attempt]  
         T = np.zeros( (self.n, self.n) )
-        return T
+        n_hat = len(attempt)
+        n = self.n
+        n_c = n - n_hat
+        T1 = np.zeros( (self.n, n_hat) )
+        T2 = np.zeros( (self.n, n_c) )
+        for ni, i in zip(range(n_hat), attempt):
+            T[ni,i] = 1
+            T1[ni,i] = 1
+        for ni, i in zip(range(n_c), non_attempt):
+            T[ni,i] = 1
+            T2[ni,i] = 1
+        T1 = T1.T
+        T2 = T2.T
+        return T, T1, T2
 
     def get_error_metric(self, reduced_sys):
         reduced_ode = reduced_sys.get_ODE(self.timepoints_ode)
@@ -367,13 +381,18 @@ class Reduce(System):
             print('The error is zero or NaN, something wrong...continuing.')
         return e
 
-    def get_robustness_metric(self, reduced_sys, collapsed_sys, T):
+    def get_robustness_metric(self, reduced_sys, collapsed_sys, attempt):
+        T, T1, T2 = self.get_T(attempt)
+        T1 = np.reshape(T1, (self.n, reduced_sys.n))
+        T2 = np.reshape(T2, (self.n, self.n - reduced_sys.n))
         timepoints_ssm = self.timepoints_ssm
         reduced_ssm = reduced_sys.get_SSM(timepoints_ssm)
         full_ssm = self.get_SSM(timepoints_ssm)
         x_sols = self.get_ODE(timepoints_ssm).solve_system().y
         x_sols_hat = reduced_sys.get_ODE(timepoints_ssm).solve_system().y
         collapsed_ssm = collapsed_sys.get_SSM(timepoints_ssm)
+
+        Se = np.zeros(len(self.params_values))
         for k in timepoints_ssm:
             J = full_ssm.compute_J(x_sols[k,:])
             J_hat = reduced_ssm.compute_J(x_sols_hat[k,:])
@@ -384,24 +403,24 @@ class Reduce(System):
             eig_P = max(eigvals(P))
             if max_eigP < eig_P:
                 max_eigP = eig_P
-            Z = full_ssm.compute_Zj(self.xs[k,:])
-            Z_hat = full_ssm.compute_Zj(reduced_sys.xs[k,:])
-            Z_bar = np.concatenate((Z,Z_hat), axis = 0)
-            Z_bar = np.reshape(Z_bar, ( (self.n + reduced_sys.n), len(self.params_values) ) )
-            S_c = collapsed_ssm.compute_SSM()
-            S_hat = reduced_ssm.compute_SSM()
-            S_bar_c = np.concatenate((S_hat, S_c), axis = 0)
-            S_bar_c = np.reshape(S_bar_c, (self.n, len(self.params_values)))
-            T1 = np.reshape(T1, (self.n, reduced_sys.n))
-            T2 = np.reshape(T2, (self.n, self.n - reduced_sys.n))
-            P11 = P[0:reduced_sys.n,0:reduced_sys.n]
-            # Todo : how to create T1 and T2, and properly reshape Pii. Also, sizes for Zj etc.
-            Q_s = np.array([[P11@T1 + P12, P11@T2],[P21@T1 + P22, P21@T2]])
-            S_metric = norm(Z_bar@Q_s@S_bar_c)
-            if  S_metric > S_metric_max:
-                S_metric_max = S_metric
-        
-        Se = max_eigP + 2*len(reduced_ssm.timepoints)*S_metric_max
+            for j in range(len(self.params_values)):
+                Z = full_ssm.compute_Zj(x_sols[k,:], j)
+                Z_hat = full_ssm.compute_Zj(reduced_sys.xs[k,:], j)
+                Z_bar = np.concatenate((Z,Z_hat), axis = 0)
+                Z_bar = np.reshape(Z_bar, ( (self.n + reduced_sys.n), len(self.params_values) ) )
+                S_c = collapsed_ssm.compute_SSM()
+                S_hat = reduced_ssm.compute_SSM()
+                S_bar_c = np.concatenate((S_hat, S_c), axis = 0)
+                S_bar_c = np.reshape(S_bar_c, (self.n, len(self.params_values)))
+                P11 = P[0:reduced_sys.n,0:reduced_sys.n]
+                # Todo : properly reshape Pii. Also, sizes for Zj etc.
+                Q_s = np.array([[P11@T1 + P12, P11@T2],[P21@T1 + P22, P21@T2]])
+                S_metric = norm(Z_bar@Q_s@S_bar_c)
+                if  S_metric > S_metric_max:
+                    S_metric_max = S_metric
+                
+            
+                Se[j] = max_eigP + 2*len(reduced_ssm.timepoints)*S_metric_max
         return Se
 
     def get_invariant_manifold(self, reduced_sys):
@@ -411,7 +430,8 @@ class Reduce(System):
         x_hat = reduced_sys.x
         x_sols_hat = reduced_sys.get_ODE().solve_system().y
         x_sol_c = np.zeros((len(timepoints_ode),np.shape(x_c)[0]))
-        # Get the collapsed states by substituting the solutions into the algebraic relationships obtained
+        # Get the collapsed states by substituting the solutions 
+        # into the algebraic relationships obtained
         for i in range(np.shape(x_sols_hat)[0]): 
             # for each reduced variable (because collapsed variables are only 
             # functions of reduced variables, algebraically)
@@ -421,7 +441,8 @@ class Reduce(System):
                     if  subs_result == collapsed_states[j]:
                         continue
                     elif isinstance(subs_result, sympy.Expr):
-                        collapsed_states[j] = subs_result # continue substituting other variables, until you get a float
+                        # continue substituting other variables, until you get a float
+                        collapsed_states[j] = subs_result 
                     else:
                         x_sol_c[k][j] = collapsed_states[j].subs(x_hat[i],x_sols_hat[:,i][k])
         return x_sol_c
@@ -452,7 +473,6 @@ class Reduce(System):
                         li.append(i)
                 for row_ind in range(np.shape(C_hat)[0]):
                     C_hat[row_ind][li.pop(0)] = 1
-
         for i in range(len(x_c)):
             x_c_sub = solve(Eq(f_c[i]), x_c[i])
             collapsed_states.append(x_c_sub[0])
@@ -479,13 +499,12 @@ class Reduce(System):
             print('No possible reduced models found. Try increasing tolerance for number of states.')
             return
         for attempt in possible_reductions: 
-            T = self.get_T(attempt)
             # Create reduced systems
             reduced_sys, collapsed_sys = self.get_reduced_system(attempt)
             # Get metrics for this reduced system
             try:
                 e = self.get_error_metric(reduced_sys)
-                Se = self.get_robustness_metric(reduced_sys, collapsed_sys, T)
+                Se = self.get_robustness_metric(reduced_sys, collapsed_sys, attempt)
             except:
                 continue
             results_dict[reduced_sys] = [e, Se]
