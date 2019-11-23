@@ -96,6 +96,35 @@ class System(object):
     def load_Sympy_model(self, sympy_model):
         raise NotImplementedError
 
+    def get_ODE(self, timepoints):
+        '''
+        For the given timepoints, create an ODE class object for this System object.
+        '''
+        ode_obj = ODE(self.x, self.f,
+                    params_values = self.params_values, x_init = self.x_init, 
+                    timepoints = timepoints)
+        return ode_obj
+
+    def get_SSM(self, timepoints):
+        '''
+        For the given timepoints, create an SSM class object for this System object.
+        '''
+        ssm_obj = SSM(self.x, self.f,
+                    params_values = self.params_values, x_init = self.x_init, 
+                    timepoints = timepoints)
+        return ssm_obj
+
+    def solve_ODE_SSM(self, timepoints_ode, timepoints_ssm):
+        '''
+        For the given timepoints, returns the full solution (states, sensitivity coefficients, outputs)
+        '''
+        ode = self.get_ODE(timepoints_ode)
+        ssm = self.get_SSM(timepoints_ssm)
+        x_sol = ode.solve_system().y
+        y = self.C@x_sol
+        S = ssm.compute_SSM()
+        return x_sol, y, S
+
 class ODE(System):
     '''
     To solve the Model using scipy.solve_ivp
@@ -108,8 +137,12 @@ class ODE(System):
         else:
             self.timepoints = timepoints
         return
-    def solve_system(self, method = 'RK45', dense_output = False):
-        # self.timepoints = timepoints
+
+    def solve_system(self, **kwargs):
+        '''
+        Solve the System ODE for the given timepoints and initial conditions set for System. 
+        Other options passed to scipy.integrate.solve_ivp.
+        '''
         fun = lambdify((self.x, self.params), self.f)
         def fun_ode(t, x, params):
             y = fun(x, params)
@@ -118,11 +151,9 @@ class ODE(System):
         t_min = self.timepoints[0]
         t_max = self.timepoints[-1]
         sol = solve_ivp(lambda t, x :fun_ode(t, x, self.params_values), (t_min, t_max), self.x_init,
-                        method = method, dense_output = dense_output, t_eval = self.timepoints)
+                        t_eval = self.timepoints, **kwargs)
         self.sol = sol
         return sol
-
-
 class SSM(System):
     '''
     Class that computes local sensitivity analysis coefficients for the given Model using a numerical 
@@ -286,13 +317,8 @@ class Reduce(System):
         else:
             self.timepoints_ssm = timepoints_ssm
         self.results_dict = {}
+        self.x_c = []
         return
-
-    def compute_full_model(self):
-        '''
-        What is this?
-        '''
-        raise NotImplementedError
 
     def get_all_combinations(self):
         '''
@@ -322,175 +348,148 @@ class Reduce(System):
                 possible_reductions.remove(attempt)
                 restart = False
         return possible_reductions
+    
+    def get_T(self, attempt):
+        T = np.zeros( (self.n, self.n) )
+        return T
+
+    def get_error_metric(self, reduced_sys):
+        reduced_ode = reduced_sys.get_ODE(self.timepoints_ode)
+        x_sol = self.get_ODE(self.timepoints_ode).solve_system().y
+        y = self.C@x_sol
+        x_sols_hat = reduced_ode.solve_system().y
+        y_hat = np.array(reduced_sys.C)@np.array(x_sols_hat)
+        if np.shape(y) == np.shape(y_hat):
+                e = np.linalg.norm(y - y_hat)
+        else:
+            raise ValueError('The output dimensions must be the same for reduced and full model. Choose C and C_hat accordingly')
+        if e == 0 or np.isnan(e):
+            print('The error is zero or NaN, something wrong...continuing.')
+        return e
+
+    def get_robustness_metric(self, reduced_sys, collapsed_sys, T):
+        timepoints_ssm = self.timepoints_ssm
+        reduced_ssm = reduced_sys.get_SSM(timepoints_ssm)
+        full_ssm = self.get_SSM(timepoints_ssm)
+        x_sols = self.get_ODE(timepoints_ssm).solve_system().y
+        x_sols_hat = reduced_sys.get_ODE(timepoints_ssm).solve_system().y
+        collapsed_ssm = collapsed_sys.get_SSM(timepoints_ssm)
+        for k in timepoints_ssm:
+            J = full_ssm.compute_J(x_sols[k,:])
+            J_hat = reduced_ssm.compute_J(x_sols_hat[k,:])
+            J_bar = block_diag(J, J_hat)
+            C_bar = np.concatenate((self.C, -1*reduced_sys.C), axis = 1)
+            C_bar = np.reshape(C_bar, (np.shape(self.C)[0], (self.n + reduced_sys.n)))
+            P = solve_lyapunov(J_bar, -1 * C_bar.T@C_bar)
+            eig_P = max(eigvals(P))
+            if max_eigP < eig_P:
+                max_eigP = eig_P
+            Z = full_ssm.compute_Zj(self.xs[k,:])
+            Z_hat = full_ssm.compute_Zj(reduced_sys.xs[k,:])
+            Z_bar = np.concatenate((Z,Z_hat), axis = 0)
+            Z_bar = np.reshape(Z_bar, ( (self.n + reduced_sys.n), len(self.params_values) ) )
+            S_c = collapsed_ssm.compute_SSM()
+            S_hat = reduced_ssm.compute_SSM()
+            S_bar_c = np.concatenate((S_hat, S_c), axis = 0)
+            S_bar_c = np.reshape(S_bar_c, (self.n, len(self.params_values)))
+            T1 = np.reshape(T1, (self.n, reduced_sys.n))
+            T2 = np.reshape(T2, (self.n, self.n - reduced_sys.n))
+            P11 = P[0:reduced_sys.n,0:reduced_sys.n]
+            # Todo : how to create T1 and T2, and properly reshape Pii. Also, sizes for Zj etc.
+            Q_s = np.array([[P11@T1 + P12, P11@T2],[P21@T1 + P22, P21@T2]])
+            S_metric = norm(Z_bar@Q_s@S_bar_c)
+            if  S_metric > S_metric_max:
+                S_metric_max = S_metric
+        
+        Se = max_eigP + 2*len(reduced_ssm.timepoints)*S_metric_max
+        return Se
+
+    def get_invariant_manifold(self, reduced_sys):
+        timepoints_ode = self.timepoints_ode
+        x_c = reduced_sys.x_c
+        collapsed_states = reduced_sys.collapsed_states
+        x_hat = reduced_sys.x
+        x_sols_hat = reduced_sys.get_ODE().solve_system().y
+        x_sol_c = np.zeros((len(timepoints_ode),np.shape(x_c)[0]))
+        # Get the collapsed states by substituting the solutions into the algebraic relationships obtained
+        for i in range(np.shape(x_sols_hat)[0]): 
+            # for each reduced variable (because collapsed variables are only 
+            # functions of reduced variables, algebraically)
+            for k in range(len(x_sols_hat[:,i])):
+                for j in range(len(x_c)):
+                    subs_result = collapsed_states[j].subs(x_hat[i], x_sols_hat[:,i][k])
+                    if  subs_result == collapsed_states[j]:
+                        continue
+                    elif isinstance(subs_result, sympy.Expr):
+                        collapsed_states[j] = subs_result # continue substituting other variables, until you get a float
+                    else:
+                        x_sol_c[k][j] = collapsed_states[j].subs(x_hat[i],x_sols_hat[:,i][k])
+        return x_sol_c
+
+    def get_reduced_system(self, attempt):
+        x_c = []
+        collapsed_states = []
+        f_c = []
+        f_hat = []
+        x_hat_init = []
+        x_c_init = []
+        x_hat = []
+        x, f, x_init = self.x, self.f, self.x_init
+        outputs = list(np.dot(np.array(self.C), np.transpose(np.array(x)))) # Get y = C*x
+        for i in range(self.n):
+            if i not in attempt:
+                x_c.append(x[i])
+                f_c.append(f[i])
+                x_c_init.append(x_init[i])
+            else:
+                f_hat.append(f[i])
+                x_hat.append(x[i])
+                x_hat_init.append(x_init[i])
+                C_hat = np.zeros((np.shape(self.C)[0], np.shape(x_hat)[0]))
+                li = []
+                for i in range(len(x_hat)):
+                    if x_hat[i] in outputs:
+                        li.append(i)
+                for row_ind in range(np.shape(C_hat)[0]):
+                    C_hat[row_ind][li.pop(0)] = 1
+
+        for i in range(len(x_c)):
+            x_c_sub = solve(Eq(f_c[i]), x_c[i])
+            collapsed_states.append(x_c_sub[0])
+            for j in range(len(f_hat)):
+                f_hat[j] = f_hat[j].subs(x_c[i], x_c_sub[0])
+                
+        for i in range(len(x_c)):
+            for j in range(len(f_hat)):
+                f_hat[j] = f_hat[j].subs(x_c[i], collapsed_states[i])
+
+        reduced_sys = create_system(x_hat, f_hat, params = self.params, C = C_hat, 
+                            params_values = self.params_values, x_init = x_hat_init)
+        collapsed_sys = create_system(x_c, f_c, params = self.params, 
+                            params_values = self.params_values, x_init = x_c_init)
+        reduced_sys.x_c = x_c
+        reduced_sys.collapsed_states = collapsed_states
+        return reduced_sys, collapsed_sys
+
 
     def reduce_Cx(self):
         results_dict = {}
-        x, f, x_init, params, params_values, n = (self.x, self.f, self.x_init, self.params, self.params_values, self.n)
-        (timepoints_ode, timepoints_ssm) = (self.timepoints_ode, self.timepoints_ssm)
-        outputs = list(np.dot(np.array(self.C), np.transpose(np.array(x)))) # Get y = C*x
         possible_reductions = self.get_all_combinations()
         if not len(possible_reductions):
             print('No possible reduced models found. Try increasing tolerance for number of states.')
             return
-        x_sol, y, S_final = self.compute_full_model()
         for attempt in possible_reductions: 
-            x_c = []
-            collapsed_states = []
-            f_c = []
-            f_hat = []
-            x_hat_init = []
-            x_c_init = []
-            x_hat = []
-            for i in range(n):
-                if i not in attempt:
-                    x_c.append(x[i])
-                    f_c.append(f[i])
-                    x_c_init.append(x_init[i])
-                else:
-                    f_hat.append(f[i])
-                    x_hat.append(x[i])
-                    x_hat_init.append(x_init[i])
-                    C_hat = np.zeros((np.shape(self.C)[0], np.shape(x_hat)[0]))
-                    li = []
-                    for i in range(len(x_hat)):
-                        if x_hat[i] in outputs:
-                            li.append(i)
-                    for row_ind in range(np.shape(C_hat)[0]):
-                        C_hat[row_ind][li.pop(0)] = 1
-            reduced_sys = System(x_hat, f_hat, params = self.params, C = C_hat, 
-                                params_values = self.params_values, x_init = x_hat_init)
-            collapsed_sys = System(x_c, f_c, params = self.params, 
-                                params_values = self.params_values, x_init = x_c_init)
-
-            for i in range(len(x_c)):
-                x_c_sub = solve(Eq(f_c[i]), x_c[i])
-                collapsed_states.append(x_c_sub[0])
-                for j in range(len(f_hat)):
-                    f_hat[j] = f_hat[j].subs(x_c[i], x_c_sub[0])
-                    
-            for i in range(len(x_c)):
-                for j in range(len(f_hat)):
-                    f_hat[j] = f_hat[j].subs(x_c[i], collapsed_states[i])
-
+            T = self.get_T(attempt)
             # Create reduced systems
-            reduced_ode = ODE(reduced_sys.x, reduced_sys.f,
-                            params_values = reduced_sys.params_values, x_init = reduced_sys.x_init, 
-                            timepoints = timepoints_ode)
-            reduced_ssm = SSM(reduced_sys.x, reduced_sys.f,
-                            params_values = reduced_sys.params_values, x_init = reduced_sys.x_init, 
-                            timepoints = timepoints_ssm)
-
-            collapsed_ssm = SSM(collapsed_sys.x, collapsed_sys.f,
-                            params_values = collapsed_sys.params_values, x_init = collapsed_sys.x_init, 
-                            timepoints = timepoints_ssm)
+            reduced_sys, collapsed_sys = self.get_reduced_system(attempt)
+            # Get metrics for this reduced system
             try:
-                x_sols_hat = reduced_ode.solve_system()
-                # S_hat = reduced_ssm.compute_SSM()
-                for k in reduced_ssm.timepoints:
-                    J = full_ssm.compute_J(x_sols[k,:])
-                    J_hat = reduced_ssm.compute_J(x_sols_hat[k,:])
-                    J_bar = block_diag(J, J_hat)
-                    C_bar = np.concatenate((self.C, -1*reduced_sys.C), axis = 1)
-                    C_bar = np.reshape(C_bar, (np.shape(C)[0], (self.n + reduced_sys.n)))
-                    P = solve_lyapunov(J_bar, -1 * C_bar.T@C_bar)
-                    eig_P = max(eigvals(P))
-                    if max_eigP < eig_P:
-                        max_eigP = eig_P
-                    Z = full_ssm.compute_Zj(self.x[k,:])
-                    Z_hat = full_ssm.compute_Zj(reduced_sys.x[k,:])
-                    Z_bar = np.concatenate((Z,Z_hat), axis = 0)
-                    Z_bar = np.reshape(Z_bar, ( (self.n + reduced_sys.n), len(self.params_values) ) )
-                    S_c = collapsed_ssm.compute_SSM()
-                    S_hat = reduced_ssm.compute_SSM()
-                    S_bar_c = np.concatenate((S_bar, S_c), axis = 0)
-                    S_bar_c = np.reshape(S_bar, (self.n, len(self.params_values)))
-                    T1 = np.reshape(T1, (self.n, reduced_sys.n))
-                    T2 = np.reshape(T2, (self.n, self.n - reduced_sys.n))
-                    P11 = P[0:reduced_sys.n,0:reduced_sys.]
-                    # Todo : how to create T1 and T2, and properly reshape Pii. Also, sizes for Zj etc.
-                    Q_s = np.array([[P11@T1 + P12, P11@T2],[P21@T1 + P22, P21@T2]])
-                    S_metric = norm(Z_bar@Q_s@S_bar_c)
-                    if  S_metric > S_metric_max:
-                        S_metric_max = S_metric
-                
-                Se = max_eigP + 2*len(reduced_ssm.timepoints)*S_metric_max
+                e = self.get_error_metric(reduced_sys)
+                Se = self.get_robustness_metric(reduced_sys, collapsed_sys, T)
             except:
                 continue
-
-            x_sol_c = np.zeros((len(timepoints_ode),np.shape(x_c)[0]))
-            # Get the collapsed states by substituting the solutions into the algebraic relationships obtained
-            for i in range(np.shape(x_sols_hat)[0]): 
-                # for each reduced variable (because collapsed variables are only 
-                # functions of reduced variables, algebraically)
-                for k in range(len(x_sols_hat[:,i])):
-                    for j in range(len(x_c)):
-                        subs_result = collapsed_states[j].subs(x_hat[i],x_sols_hat[:,i][k])
-                        if  subs_result == collapsed_states[j]:
-                            continue
-                        elif isinstance(subs_result, sympy.Expr):
-                            collapsed_states[j] = subs_result # continue substituting other variables, until you get a float
-                        else:
-                            x_sol_c[k][j] = collapsed_states[j].subs(x_hat[i],x_sols_hat[:,i][k])
-                    
-                
-            
-            y_hat = np.matmul(np.array(reduced_sys.C), np.array(x_sols_hat))
-                
-            if np.shape(y) == np.shape(y_hat):
-                e = np.linalg.norm(y - y_hat)
-            else:
-                raise ValueError('The output dimensions must be the same for reduced and full model. Choose C and C_hat accordingly')
-            if e == 0 or np.isnan(e):
-                print('The error is zero or NaN, something wrong...continuing.')
-                continue
             results_dict[reduced_sys] = [e, Se]
-        #     error_norm.append(e)
-        #     reduced_models.append(f_hat)
-        #     retained_states.append(attempt)
-        # Sensitivity of error for each reduced model
-        #     S_hat = solve_system(fun_hat_ode)
-            # Normalize all sensitivities
-            # Compute total sensitivity
-        #     S_hat_final = []
-        #     for i in range(len(params_values)): 
-        #         # for sensitivity of all states wrt each parameter
-        #         sen_sol = S_hat[i]
-        #         sens_i = np.abs(np.array(sen_sol(timepoints)))
-        #         sens_i = sens_i.transpose()
-        #         normed_sens = sens_i.copy()
-        #         for j in range(len(timepoints)):
-        #             for k in range(np.shape(x_sols_hat)[0]):
-        #                 normed_sens[j,k] = normed_sens[j,k] * params_values[i] / x_sols_hat[k,j] 
-        #         S_hat_final.append(normed_sens)
-
-        #     all_Ses = []
-        # #     Se = []
-        #     total_sensitivity = np.zeros(len(outputs))
-        #     S_bar = np.concatenate( (S_final,S_hat_final), axis = 2 )
-        #     C_bar = np.concatenate( (C, -1*C_hat), axis = 1)
-        #     for i in range(np.shape(S_bar)[0]):
-        #         S_bar_p = S_bar[i,:,:]
-        #     #     print(np.shape(S_bar_p))
-        #         Se = np.matmul(C_bar, np.transpose(S_bar_p))
-        #         Se = np.ma.array(Se, mask = np.isnan(Se))
-        #     #     print(np.shape(Se))
-        #         for l in range(np.shape(Se)[0]):
-        #             total_sensitivity[l] += np.sqrt(np.sum(Se[l,:]**2))
-        #         all_Ses.append(Se)
-        # #     Jbar = 
-        # #     Cbar = 
-        # #     P = solve_lyapunov(Jbar, Cbar)
-        #     print('Successful reduction by retaining states - {0}'.format(attempt))
-        #     print('The norm of the error for the reduced model is {0:0.3f}'.format(e))
-        #     print('The norm of the sensitivity of the error for the reduced model is {0}'.format(total_sensitivity))
-        #     results_dict[str(attempt)] = []
-        #     results_dict[str(attempt)].append(f_hat)
-        #     results_dict[str(attempt)].append(e)
-        #     results_dict[str(attempt)].append(total_sensitivity)
-        #     results_dict[str(attempt)].append(x_sol)
-        #     results_dict[str(attempt)].append(x_sol_hat)
-        #     results_dict[str(attempt)].append(all_Ses)
-            self.results_dict = results_dict
+        self.results_dict = results_dict
         return self.results_dict
 
     def reduce_general(self):
@@ -594,4 +593,55 @@ class Utils(Reduce):
             S_final.append(normed_sens)
         return x_sol, y, S_final
 
-  
+
+def create_system(x, f, params = None, C = None, g = None, h = None, 
+                params_values = [], x_init = []):
+    return System(x, f, params, C, g, h, 
+                params_values, x_init)
+
+
+### TRASH ####
+      #     error_norm.append(e)
+        #     reduced_models.append(f_hat)
+        #     retained_states.append(attempt)
+        # Sensitivity of error for each reduced model
+        #     S_hat = solve_system(fun_hat_ode)
+            # Normalize all sensitivities
+            # Compute total sensitivity
+        #     S_hat_final = []
+        #     for i in range(len(params_values)): 
+        #         # for sensitivity of all states wrt each parameter
+        #         sen_sol = S_hat[i]
+        #         sens_i = np.abs(np.array(sen_sol(timepoints)))
+        #         sens_i = sens_i.transpose()
+        #         normed_sens = sens_i.copy()
+        #         for j in range(len(timepoints)):
+        #             for k in range(np.shape(x_sols_hat)[0]):
+        #                 normed_sens[j,k] = normed_sens[j,k] * params_values[i] / x_sols_hat[k,j] 
+        #         S_hat_final.append(normed_sens)
+
+        #     all_Ses = []
+        # #     Se = []
+        #     total_sensitivity = np.zeros(len(outputs))
+        #     S_bar = np.concatenate( (S_final,S_hat_final), axis = 2 )
+        #     C_bar = np.concatenate( (C, -1*C_hat), axis = 1)
+        #     for i in range(np.shape(S_bar)[0]):
+        #         S_bar_p = S_bar[i,:,:]
+        #     #     print(np.shape(S_bar_p))
+        #         Se = np.matmul(C_bar, np.transpose(S_bar_p))
+        #         Se = np.ma.array(Se, mask = np.isnan(Se))
+        #     #     print(np.shape(Se))
+        #         for l in range(np.shape(Se)[0]):
+        #             total_sensitivity[l] += np.sqrt(np.sum(Se[l,:]**2))
+        #         all_Ses.append(Se)
+        #     print('Successful reduction by retaining states - {0}'.format(attempt))
+        #     print('The norm of the error for the reduced model is {0:0.3f}'.format(e))
+        #     print('The norm of the sensitivity of the error for the reduced model is {0}'.format(total_sensitivity))
+        #     results_dict[str(attempt)] = []
+        #     results_dict[str(attempt)].append(f_hat)
+        #     results_dict[str(attempt)].append(e)
+        #     results_dict[str(attempt)].append(total_sensitivity)
+        #     results_dict[str(attempt)].append(x_sol)
+        #     results_dict[str(attempt)].append(x_sol_hat)
+        #     results_dict[str(attempt)].append(all_Ses)
+   
