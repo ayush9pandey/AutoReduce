@@ -1,11 +1,12 @@
 
-from system import System
+from .system import System
 from sympy.parsing.sympy_parser import parse_expr
+from sympy import solve, Eq
 import sympy
 import numpy as np
 from scipy.integrate import odeint, solve_ivp
 from scipy.linalg import solve_lyapunov, block_diag, eigvals, norm
-
+from auto_reduce import utils
 class Reduce(System):
     '''
     The class can be used to compute the various possible reduced models for the System object 
@@ -17,7 +18,7 @@ class Reduce(System):
         super().__init__(x, f, params, C, g, h, params_values, x_init)
         self.f_hat = [] # Should be a list of Sympy objects
         if nstates_tol is None:
-            self.nstates_tol = len(self.f) - 1
+            self.nstates_tol = self.n - 1
         else:
             self.nstates_tol = nstates_tol
         if error_tol is None:
@@ -36,6 +37,13 @@ class Reduce(System):
         self.x_c = []
         return
 
+    def get_output_states(self):
+        x = self.x
+        outputs = list(np.dot(np.array(self.C), np.array(x))) # Get y = C*x
+        output_symbols = [list(i.free_symbols) for i in outputs]
+        output_states = [item for sublist in output_symbols for item in sublist]
+        return output_states
+
     def get_all_combinations(self):
         '''
         Combinatorially create sets of all states that can be reduced in self.all_reductions.
@@ -51,14 +59,12 @@ class Reduce(System):
                 possible_reductions.append(list(comb))
         possible_reductions = [list(item) for sublist in possible_reductions for item in sublist]
         self.all_reductions = [i for i in possible_reductions]
-        x = self.x
-        outputs = list(np.dot(np.array(self.C), np.transpose(np.array(x)))) # Get y = C*x
+        output_states = self.get_output_states()
         restart = False
-        for attempt in possible_reductions:
+        x = self.x
+        for attempt in self.all_reductions:
             states_attempt = [x[i] for i in attempt]
-            output_symbols = [list(i.free_symbols) for i in outputs]
-            output_states = [item for sublist in output_symbols for item in sublist]
-            if len(set(states_attempt).intersection(set(output_states))) > 0 or len(attempt) > self.nstates_tol:
+            if not len(set(states_attempt).intersection(set(output_states))) > 0 or len(attempt) > self.nstates_tol:
                 restart = True
             if restart:
                 possible_reductions.remove(attempt)
@@ -73,19 +79,28 @@ class Reduce(System):
         n_c = n - n_hat
         T1 = np.zeros( (self.n, n_hat) )
         T2 = np.zeros( (self.n, n_c) )
-        for ni, i in zip(range(n_hat), attempt):
-            T[ni,i] = 1
-            T1[ni,i] = 1
-        for ni, i in zip(range(n_c), non_attempt):
-            T[ni,i] = 1
-            T2[ni,i] = 1
-        T1 = T1.T
-        T2 = T2.T
+        # For x_hat
+        for ni in range(0, n_hat):
+            set_T = False
+            for i in range(n):
+                if i in attempt and not set_T:
+                    T[ni,i] = 1
+                    set_T = True
+        # For x_c
+        for ni in range(n_hat, n):
+            set_T = False
+            for i in range(n):
+                if i in non_attempt and not set_T:
+                    T[ni,i] = 1
+                    set_T = True
+        T1 = T[0:n,0:n_hat]
+        T2 = T[0:n,n_hat:n_c + 1]
         return T, T1, T2
 
     def get_error_metric(self, reduced_sys):
-        reduced_ode = reduced_sys.get_ODE(self.timepoints_ode)
-        x_sol = self.get_ODE(self.timepoints_ode).solve_system().y
+        reduced_ode = utils.get_ODE(reduced_sys, self.timepoints_ode)
+        system_obj = self.get_system()
+        x_sol = utils.get_ODE(system_obj, self.timepoints_ode).solve_system().y
         y = self.C@x_sol
         x_sols_hat = reduced_ode.solve_system().y
         y_hat = np.array(reduced_sys.C)@np.array(x_sols_hat)
@@ -97,52 +112,68 @@ class Reduce(System):
             print('The error is zero or NaN, something wrong...continuing.')
         return e
 
-    def get_robustness_metric(self, reduced_sys, collapsed_sys, attempt):
-        T, T1, T2 = self.get_T(attempt)
+    def get_robustness_metric(self, reduced_sys, fast_subsystem, attempt):
+        _, T1, T2 = self.get_T(attempt)
         T1 = np.reshape(T1, (self.n, reduced_sys.n))
         T2 = np.reshape(T2, (self.n, self.n - reduced_sys.n))
         timepoints_ssm = self.timepoints_ssm
-        reduced_ssm = reduced_sys.get_SSM(timepoints_ssm)
-        full_ssm = self.get_SSM(timepoints_ssm)
-        x_sols = self.get_ODE(timepoints_ssm).solve_system().y
-        x_sols_hat = reduced_sys.get_ODE(timepoints_ssm).solve_system().y
-        collapsed_ssm = collapsed_sys.get_SSM(timepoints_ssm)
-
+        reduced_ssm = utils.get_SSM(reduced_sys, timepoints_ssm)
+        system_obj = self.get_system()
+        full_ssm = utils.get_SSM(system_obj, timepoints_ssm)
+        x_sols = utils.get_ODE(system_obj, timepoints_ssm).solve_system().y
+        x_sols_hat = utils.get_ODE(reduced_sys, timepoints_ssm).solve_system().y
+        x_sols = np.reshape(x_sols, (len(timepoints_ssm), system_obj.n))
+        x_sols_hat = np.reshape(x_sols_hat, (len(timepoints_ssm), reduced_sys.n))
+        collapsed_ssm = utils.get_SSM(fast_subsystem, timepoints_ssm)
         Se = np.zeros(len(self.params_values))
-        for k in timepoints_ssm:
+        max_eigP = 0
+        S_c = collapsed_ssm.compute_SSM()
+        S_hat = reduced_ssm.compute_SSM()
+        S_bar_c = np.concatenate((S_hat, S_c), axis = 0)
+        S_bar_c = np.reshape(S_bar_c, (len(timepoints_ssm), self.n, len(self.params_values)))
+        for k in range(len(timepoints_ssm)):
             J = full_ssm.compute_J(x_sols[k,:])
             J_hat = reduced_ssm.compute_J(x_sols_hat[k,:])
             J_bar = block_diag(J, J_hat)
             C_bar = np.concatenate((self.C, -1*reduced_sys.C), axis = 1)
             C_bar = np.reshape(C_bar, (np.shape(self.C)[0], (self.n + reduced_sys.n)))
             P = solve_lyapunov(J_bar, -1 * C_bar.T@C_bar)
+            P11 = P[0:self.n, 0:self.n]
+            P12 = P[0:self.n, self.n:self.n + reduced_sys.n + 1]
+            P21 = P[self.n:self.n + reduced_sys.n + 1, 0:self.n]
+            P22 = P[self.n:self.n + reduced_sys.n + 1, self.n:self.n + reduced_sys.n + 1]
+            P11 = np.reshape(P11, (self.n, self.n))
+            P12 = np.reshape(P12, (self.n, reduced_sys.n))
+            P21 = np.reshape(P21, (reduced_sys.n, self.n))
+            P22 = np.reshape(P22, (reduced_sys.n, reduced_sys.n))
             eig_P = max(eigvals(P))
             if max_eigP < eig_P:
                 max_eigP = eig_P
+            S_metric_max = 0
             for j in range(len(self.params_values)):
                 Z = full_ssm.compute_Zj(x_sols[k,:], j)
-                Z_hat = full_ssm.compute_Zj(reduced_sys.xs[k,:], j)
+                Z_hat = reduced_ssm.compute_Zj(x_sols_hat[k,:], j)
                 Z_bar = np.concatenate((Z,Z_hat), axis = 0)
-                Z_bar = np.reshape(Z_bar, ( (self.n + reduced_sys.n), len(self.params_values) ) )
-                S_c = collapsed_ssm.compute_SSM()
-                S_hat = reduced_ssm.compute_SSM()
-                S_bar_c = np.concatenate((S_hat, S_c), axis = 0)
-                S_bar_c = np.reshape(S_bar_c, (self.n, len(self.params_values)))
-                P11 = P[0:reduced_sys.n,0:reduced_sys.n]
-                # Todo : properly reshape Pii. Also, sizes for Zj etc.
-                Q_s = np.array([[P11@T1 + P12, P11@T2],[P21@T1 + P22, P21@T2]])
-                S_metric = norm(Z_bar@Q_s@S_bar_c)
+                Z_bar = np.reshape(Z_bar, ( (self.n + reduced_sys.n), 1 ) )
+                q11 = np.array(P11@T1 + P12)
+                q12 = np.array(P11@T2)
+                q21 = np.array(P21@T1 + P22)
+                q22 = np.array(P21@T2)
+                Q_s = np.zeros( (self.n + reduced_sys.n, self.n))
+                Q_s[0:self.n,0:reduced_sys.n] = q11
+                Q_s[0:self.n,reduced_sys.n:self.n + 1] = q12
+                Q_s[self.n:self.n + reduced_sys.n + 1,0:reduced_sys.n] = q21
+                Q_s[self.n:self.n + reduced_sys.n + 1,reduced_sys.n:self.n + 1] = q22
+                S_metric = norm(Z_bar.T@Q_s@S_bar_c[k,:,j])
                 if  S_metric > S_metric_max:
                     S_metric_max = S_metric
-                
-            
                 Se[j] = max_eigP + 2*len(reduced_ssm.timepoints)*S_metric_max
         return Se
 
     def get_invariant_manifold(self, reduced_sys):
         timepoints_ode = self.timepoints_ode
         x_c = reduced_sys.x_c
-        collapsed_states = reduced_sys.collapsed_states
+        fast_states = reduced_sys.fast_states
         x_hat = reduced_sys.x
         x_sols_hat = reduced_sys.get_ODE().solve_system().y
         x_sol_c = np.zeros((len(timepoints_ode),np.shape(x_c)[0]))
@@ -153,26 +184,26 @@ class Reduce(System):
             # functions of reduced variables, algebraically)
             for k in range(len(x_sols_hat[:,i])):
                 for j in range(len(x_c)):
-                    subs_result = collapsed_states[j].subs(x_hat[i], x_sols_hat[:,i][k])
-                    if  subs_result == collapsed_states[j]:
+                    subs_result = fast_states[j].subs(x_hat[i], x_sols_hat[:,i][k])
+                    if  subs_result == fast_states[j]:
                         continue
                     elif isinstance(subs_result, sympy.Expr):
                         # continue substituting other variables, until you get a float
-                        collapsed_states[j] = subs_result 
+                        fast_states[j] = subs_result 
                     else:
-                        x_sol_c[k][j] = collapsed_states[j].subs(x_hat[i],x_sols_hat[:,i][k])
+                        x_sol_c[k][j] = fast_states[j].subs(x_hat[i],x_sols_hat[:,i][k])
         return x_sol_c
 
-    def get_reduced_system(self, attempt):
+    def solve_timescale_separation(self, attempt):
+        # print('attempting :', attempt)
         x_c = []
-        collapsed_states = []
+        fast_states = []
         f_c = []
         f_hat = []
         x_hat_init = []
         x_c_init = []
         x_hat = []
         x, f, x_init = self.x, self.f, self.x_init
-        outputs = list(np.dot(np.array(self.C), np.transpose(np.array(x)))) # Get y = C*x
         for i in range(self.n):
             if i not in attempt:
                 x_c.append(x[i])
@@ -182,30 +213,51 @@ class Reduce(System):
                 f_hat.append(f[i])
                 x_hat.append(x[i])
                 x_hat_init.append(x_init[i])
-                C_hat = np.zeros((np.shape(self.C)[0], np.shape(x_hat)[0]))
-                li = []
-                for i in range(len(x_hat)):
-                    if x_hat[i] in outputs:
-                        li.append(i)
-                for row_ind in range(np.shape(C_hat)[0]):
-                    C_hat[row_ind][li.pop(0)] = 1
+
         for i in range(len(x_c)):
             x_c_sub = solve(Eq(f_c[i]), x_c[i])
-            collapsed_states.append(x_c_sub[0])
+            if len(x_c_sub) == 0:
+                print('Could not find solution for this collapsed variable : {0} from {1}'.format(x_c[i], f_c[i]))
+                fast_states.append([])
+                continue
+            else:
+                fast_states.append(x_c_sub[0])
+            
+        for i in range(len(fast_states)):
+            if fast_states[i] == []:
+                continue
             for j in range(len(f_hat)):
-                f_hat[j] = f_hat[j].subs(x_c[i], x_c_sub[0])
+                f_hat[j] = f_hat[j].subs(x_c[i], fast_states[i])
                 
-        for i in range(len(x_c)):
+        for i in range(len(fast_states)):
+            if fast_states[i] == []:
+                continue
             for j in range(len(f_hat)):
-                f_hat[j] = f_hat[j].subs(x_c[i], collapsed_states[i])
+                f_hat[j] = f_hat[j].subs(x_c[i], fast_states[i])
+
+        for i in range(len(x_hat)):
+            for j in range(len(f_c)):
+                # The slow variables stay at steady state in the fast subsystem
+                f_c[j] = f_c[j].subs(x_hat[i], x_hat_init[i])
+                
+        # Create C_hat TODO : Check 
+        output_states = self.get_output_states()
+        C_hat = np.zeros((np.shape(self.C)[0], np.shape(x_hat)[0]))
+        is_output = 0
+        for i in range(len(x_hat)):
+            if x_hat[i] in output_states:
+                is_output = 1 
+            for row_ind in range(np.shape(C_hat)[0]):
+                C_hat[row_ind][i] = 1 * is_output
+
 
         reduced_sys = create_system(x_hat, f_hat, params = self.params, C = C_hat, 
                             params_values = self.params_values, x_init = x_hat_init)
-        collapsed_sys = create_system(x_c, f_c, params = self.params, 
+        fast_subsystem = create_system(x_c, f_c, params = self.params, 
                             params_values = self.params_values, x_init = x_c_init)
         reduced_sys.x_c = x_c
-        reduced_sys.collapsed_states = collapsed_states
-        return reduced_sys, collapsed_sys
+        reduced_sys.fast_states = fast_states
+        return reduced_sys, fast_subsystem
 
 
     def reduce_Cx(self):
@@ -216,11 +268,11 @@ class Reduce(System):
             return
         for attempt in possible_reductions: 
             # Create reduced systems
-            reduced_sys, collapsed_sys = self.get_reduced_system(attempt)
+            reduced_sys, fast_subsystem = self.solve_timescale_separation(attempt)
             # Get metrics for this reduced system
             try:
                 e = self.get_error_metric(reduced_sys)
-                Se = self.get_robustness_metric(reduced_sys, collapsed_sys, attempt)
+                Se = self.get_robustness_metric(reduced_sys, fast_subsystem, attempt)
             except:
                 continue
             results_dict[reduced_sys] = [e, Se]
@@ -241,6 +293,9 @@ class Reduce(System):
             self.results_dict = self.reduce_general()
             return self.results_dict
 
+    def get_system(self):
+        return System(self.x, self.f, self.params, self.C, self.g,
+                    self.h, self.params_values, self.x_init)
 class Utils(Reduce):
     '''
     For future methods developed on top of Reduce class and other utility functions

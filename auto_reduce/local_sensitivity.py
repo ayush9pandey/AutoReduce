@@ -1,6 +1,7 @@
-from system import System
+from .system import System
+from auto_reduce import utils
 import numpy as np
-from ode import ODE
+# from .ode import ODE
 from scipy.integrate import solve_ivp
 
 class SSM(System):
@@ -98,8 +99,8 @@ class SSM(System):
         S0 = np.zeros(self.n) # Initial value for S_i  
         SSM = np.zeros( (len(self.timepoints), len(P), self.n) )
         # solve for all x's in timeframe set by timepoints
-        sol = ODE(self.x, self.f, params = self.params, params_values = self.params_values,
-                C = self.C, g = self.g, h = self.h, x_init = self.x_init, timepoints = self.timepoints).solve_system()
+        system_obj = self.get_system()
+        sol = utils.get_ODE(system_obj, self.timepoints).solve_system()
         xs = sol.y
         xs = np.reshape(xs,(len(self.timepoints), self.n))
         self.xs = xs
@@ -139,3 +140,6 @@ class SSM(System):
         self.SSM_normalized = SSM_normalized
         return SSM_normalized
 
+    def get_system(self):
+        return System(self.x, self.f, self.params, self.C, self.g,
+                    self.h, self.params_values, self.x_init)

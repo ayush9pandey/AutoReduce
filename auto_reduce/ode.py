@@ -1,4 +1,4 @@
-from system import System
+from .system import System
 import numpy as np
 from sympy import lambdify
 from scipy.integrate import solve_ivp
@@ -33,3 +33,6 @@ class ODE(System):
         self.sol = sol
         return sol
 
+    def get_system(self):
+        return System(self.x, self.f, self.params, self.C, self.g,
+                    self.h, self.params_values, self.x_init)

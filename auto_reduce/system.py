@@ -1,8 +1,6 @@
 
 # Import required libraries and dependencies
-from converters import *  
-from ode import ODE
-from ssm import SSM
+from .converters import ode_to_sympy
 from sympy import *
 import numpy as np
 
@@ -94,36 +92,7 @@ class System(object):
     def load_Sympy_model(self, sympy_model):
         raise NotImplementedError
 
-    def get_ODE(self, timepoints):
-        '''
-        For the given timepoints, create an ODE class object for this System object.
-        '''
-        ode_obj = ODE(self.x, self.f,
-                    params_values = self.params_values, x_init = self.x_init, 
-                    timepoints = timepoints)
-        return ode_obj
-
-    def get_SSM(self, timepoints):
-        '''
-        For the given timepoints, create an SSM class object for this System object.
-        '''
-        ssm_obj = SSM(self.x, self.f,
-                    params_values = self.params_values, x_init = self.x_init, 
-                    timepoints = timepoints)
-        return ssm_obj
-
-    def solve_ODE_SSM(self, timepoints_ode, timepoints_ssm):
-        '''
-        For the given timepoints, returns the full solution (states, sensitivity coefficients, outputs)
-        '''
-        ode = self.get_ODE(timepoints_ode)
-        ssm = self.get_SSM(timepoints_ssm)
-        x_sol = ode.solve_system().y
-        y = self.C@x_sol
-        S = ssm.compute_SSM()
-        return x_sol, y, S
-
-
+    
 ### TRASH ####
       #     error_norm.append(e)
         #     reduced_models.append(f_hat)
