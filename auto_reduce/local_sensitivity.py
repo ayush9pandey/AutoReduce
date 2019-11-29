@@ -106,6 +106,7 @@ class SSM(System):
         self.xs = xs
         # Solve for SSM at each time point 
         for k in range(len(self.timepoints)): 
+            # print('for timepoint',self.timepoints[k])
             timepoints = self.timepoints[0:k+1]
             if len(timepoints) == 1:
                 continue
@@ -114,6 +115,8 @@ class SSM(System):
             J = self.compute_J(xs[k,:])
             #Solve for S = dx/dp for all x and all P (or theta, the parameters) at time point k
             for j in range(len(P)): 
+                utils.printProgressBar(int(j + k*len(P)), len(self.timepoints)*len(P) - 1, prefix = 'SSM Progress:', suffix = 'Complete', length = 50)
+                # print('for parameter',P[j])
                 # get the pmatrix
                 Zj = self.compute_Zj(xs[k,:], j)
                 # solve for S
