@@ -1,0 +1,1432 @@
+Model reduction results for population control circuit. 
+
+
+
+Reduced model 1
+
+x_{hat}: 
+
+[x0, x4, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - \frac{5 \beta_{S2} kb x_{0} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{0} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{0} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}} - d_{T} x_{0}$
+
+
+$f_{hat}(1)=- \frac{5 \beta_{S1} kb x_{4} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{4} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{4} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}} + \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{4}$
+
+
+$f_{hat}(2)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(3)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31236.836994145873
+
+S_e = [16005.946661288834, 16006.59893374701, 16006.59893374701, 16006.59893374701, 16006.59893374701, 16006.59893374701, 16006.59893374701, 16006.889432003212, 16006.889432003212, 16006.889432003212, 415067.318047154, 415067.318047154, 415067.318047154, 6604010.363159021, 6604010.363159021, 6604010.363159021, 6604010.363159021, 6604010.363159021, 6604010.363159021, 6604010.363159021, 6604010.363159021, 6604010.363159021]
+
+Other properties :
+
+
+[array([0., 0., 1., 1.]), array([0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 2
+
+x_{hat}: 
+
+[x0, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - \frac{5 \beta_{S2} kb x_{0} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{0} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{0} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}} - d_{T} x_{0}$
+
+
+$f_{hat}(1)=5 \beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - \frac{\beta_{S2} kb x_{5} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}} - d_{T} x_{5}$
+
+
+$f_{hat}(2)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(3)=- \frac{\beta_{S2} dc x_{7} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{\left(K_{tox} + \frac{\beta_{S2} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}}\right) \left(K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)} - d x_{7} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31206.583673749457
+
+S_e = [15838.79446167696, 15838.91397780217, 15838.91397780217, 15839.058537554292, 15839.061830548668, 15840.558802545958, 15840.558802545958, 15986.847220271546, 15986.847220271546, 15986.847220271546, 15986.847220271546, 15986.847220271546, 15986.847220271546, 15986.847220271546, 15986.847220271546, 23924.52857364875, 23924.52857364875, 23924.52857364875, 23924.52857364875, 13888860.14238887, 13888860.14238887, 13888860.14238887]
+
+Other properties :
+
+
+[array([0., 0., 1., 1.]), array([0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 3
+
+x_{hat}: 
+
+[x1, x4, x6, x7]
+
+
+$f_{hat}(0)=- \frac{\beta_{S1} kb x_{1} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}} + 5 \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{1}$
+
+
+$f_{hat}(1)=- \frac{5 \beta_{S1} kb x_{4} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{4} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{4} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}} + \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{4}$
+
+
+$f_{hat}(2)=- \frac{\beta_{S1} dc x_{6} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{\left(K_{tox} + \frac{\beta_{S1} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}}\right) \left(K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} - d x_{6} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(3)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31234.344488435403
+
+S_e = [9935.31607763505, 9949.604159734039, 9949.604159734039, 9949.604159734039, 9949.604159734039, 9949.604159734039, 9949.604159734039, 9949.604159734039, 9949.604159734039, 9949.604159734039, 608770.5099064716, 608770.5099064716, 608770.5099064716, 11388761.609684033, 11388761.609684033, 11388761.609684033, 11388761.609684033, 11388761.609684033, 11388761.609684033, 11388761.609684033, 11388761.609684033, 11388761.609684033]
+
+Other properties :
+
+
+[array([0., 0., 1., 1.]), array([0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 4
+
+x_{hat}: 
+
+[x1, x5, x6, x7]
+
+
+$f_{hat}(0)=- \frac{\beta_{S1} kb x_{1} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}} + 5 \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{1}$
+
+
+$f_{hat}(1)=5 \beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - \frac{\beta_{S2} kb x_{5} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}} - d_{T} x_{5}$
+
+
+$f_{hat}(2)=- \frac{\beta_{S1} dc x_{6} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{\left(K_{tox} + \frac{\beta_{S1} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}}\right) \left(K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} - d x_{6} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(3)=- \frac{\beta_{S2} dc x_{7} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{\left(K_{tox} + \frac{\beta_{S2} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}}\right) \left(K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)} - d x_{7} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31204.37993670036
+
+S_e = [9943.815277021145, 10002.14470355783, 10002.14470355783, 10002.14470355783, 10002.14470355783, 10002.14470355783, 10002.14470355783, 10077.510527691904, 10077.510527691904, 10077.510527691904, 10077.510527691904, 10077.510527691904, 10077.510527691904, 21800.746646838976, 21800.746646838976, 21800.746646838976, 21800.746646838976, 21800.746646838976, 21800.746646838976, 12896146.016834348, 12896146.016834348, 12896146.016834348]
+
+Other properties :
+
+
+[array([0., 0., 1., 1.]), array([0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 5
+
+x_{hat}: 
+
+[x0, x1, x4, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - d_{T} x_{0} - kb x_{0} x_{1}$
+
+
+$f_{hat}(1)=5 \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{1} - kb x_{0} x_{1}$
+
+
+$f_{hat}(2)=- \frac{5 \beta_{S1} kb x_{4} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{4} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{4} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}} + \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{4}$
+
+
+$f_{hat}(3)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(4)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31235.105410459935
+
+S_e = [21991.757886248906, 21991.757887797845, 21991.757887797845, 21992.650274857162, 21992.650274857162, 21992.650274857162, 21992.650274857162, 21992.650274857162, 21992.650274857162, 21992.650274857162, 421145.81086267007, 421145.81086267007, 421145.81086267007, 6624336.772994295, 6624336.772994295, 6624336.772994295, 6624336.772994295, 6624336.772994295, 6624336.772994295, 6624336.772994295, 6624336.772994295, 6624336.772994295]
+
+Other properties :
+
+
+[array([0., 0., 0., 1., 1.]), array([0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 6
+
+x_{hat}: 
+
+[x0, x1, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - d_{T} x_{0} - kb x_{0} x_{1}$
+
+
+$f_{hat}(1)=5 \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{1} - kb x_{0} x_{1}$
+
+
+$f_{hat}(2)=5 \beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - \frac{\beta_{S2} kb x_{5} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}} - d_{T} x_{5}$
+
+
+$f_{hat}(3)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(4)=- \frac{\beta_{S2} dc x_{7} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{\left(K_{tox} + \frac{\beta_{S2} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}}\right) \left(K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)} - d x_{7} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31204.7914980342
+
+S_e = [15755.650236781104, 15755.650669511351, 15755.650669511351, 15760.944498372697, 15760.944498372697, 15760.944498372697, 15760.944498372697, 16494.654129498707, 16494.654129498707, 16494.654129498707, 21992.74787895506, 21992.74787895506, 21992.74787895506, 94544.30933261503, 94544.30933261503, 94544.30933261503, 94544.30933261503, 94544.30933261503, 94544.30933261503, 17833080.38824274, 17833080.38824274, 17833080.38824274]
+
+Other properties :
+
+
+[array([0., 0., 0., 1., 1.]), array([0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 7
+
+x_{hat}: 
+
+[x0, x2, x4, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - \frac{5 \beta_{S2} kb x_{0} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{0} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{0} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}} - d_{T} x_{0}$
+
+
+$f_{hat}(1)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(2)=- \frac{5 \beta_{S1} kb x_{4} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{4} + d_{T} x_{2}^{2} + kb x_{2}^{2} x_{4}} + \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{4}$
+
+
+$f_{hat}(3)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(4)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 30937.459798774136
+
+S_e = [28796.90154706372, 28796.90155820393, 28796.90155820393, 28796.90155820393, 28796.903261645377, 28796.91223177388, 28796.91223177388, 28796.91223177388, 28796.91223177388, 28796.91223177388, 408735.827747088, 408735.827747088, 408735.827747088, 8000378.7345324615, 8000378.7345324615, 8000378.7345324615, 8000378.7345324615, 8000378.7345324615, 8000378.7345324615, 8862030.074870892, 8862030.074870892, 8862030.074870892]
+
+Other properties :
+
+
+[array([0., 0., 0., 1., 1.]), array([0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 8
+
+x_{hat}: 
+
+[x0, x2, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - \frac{5 \beta_{S2} kb x_{0} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{0} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{0} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}} - d_{T} x_{0}$
+
+
+$f_{hat}(1)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(2)=5 \beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - \frac{\beta_{S2} kb x_{5} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}} - d_{T} x_{5}$
+
+
+$f_{hat}(3)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(4)=- \frac{\beta_{S2} dc x_{7} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{\left(K_{tox} + \frac{\beta_{S2} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}}\right) \left(K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)} - d x_{7} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 30939.38670892799
+
+S_e = [25926.84302936504, 25926.860431735513, 25926.860431735513, 25926.860431735513, 25926.911218095876, 25935.448318816576, 25935.448318816576, 26064.33119377331, 26064.33119377331, 26064.33119377331, 34302.66485956231, 34302.66485956231, 34302.66485956231, 297873.19961441605, 297873.19961441605, 297873.19961441605, 297873.19961441605, 297873.19961441605, 297873.19961441605, 131744842.52190523, 131744842.52190523, 131744842.52190523]
+
+Other properties :
+
+
+[array([0., 0., 0., 1., 1.]), array([0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 9
+
+x_{hat}: 
+
+[x0, x3, x4, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - \frac{5 \beta_{S2} kb x_{0} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{0} + d_{T} x_{3}^{2} + kb x_{0} x_{3}^{2}} - d_{T} x_{0}$
+
+
+$f_{hat}(1)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(2)=- \frac{5 \beta_{S1} kb x_{4} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{4} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{4} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}} + \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{4}$
+
+
+$f_{hat}(3)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(4)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31437.258022559006
+
+S_e = [26282.337438399118, 26282.337438399118, 26282.337438399118, 26282.337568934094, 26282.337857242, 26282.33999022203, 26282.33999022203, 26282.33999022203, 26282.33999022203, 26282.33999022203, 156918.98162855057, 156918.98162855057, 156918.98162855057, 15176723.291627824, 15176723.291627824, 15176723.291627824, 15176723.291627824, 15176723.291627824, 15176723.291627824, 15176723.291627824, 15176723.291627824, 15176723.291627824]
+
+Other properties :
+
+
+[array([0., 0., 0., 1., 1.]), array([0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 10
+
+x_{hat}: 
+
+[x0, x3, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - \frac{5 \beta_{S2} kb x_{0} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{0} + d_{T} x_{3}^{2} + kb x_{0} x_{3}^{2}} - d_{T} x_{0}$
+
+
+$f_{hat}(1)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(2)=5 \beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - \frac{\beta_{S2} kb x_{5} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}} - d_{T} x_{5}$
+
+
+$f_{hat}(3)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(4)=- \frac{\beta_{S2} dc x_{7} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{\left(K_{tox} + \frac{\beta_{S2} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}}\right) \left(K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}\right)} - d x_{7} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31404.438920654364
+
+S_e = [25916.99239502424, 25917.09524048947, 25917.09524048947, 25917.161330258965, 25917.161330258965, 25917.161330258965, 25917.161330258965, 25917.161330258965, 25917.161330258965, 25917.161330258965, 50440.32732171731, 50440.32732171731, 50440.32732171731, 212430.71970999998, 212430.71970999998, 212430.71970999998, 212430.71970999998, 212430.71970999998, 212430.71970999998, 45626273.4522932, 45626273.4522932, 45626273.4522932]
+
+Other properties :
+
+
+[array([0., 0., 0., 1., 1.]), array([0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 11
+
+x_{hat}: 
+
+[x0, x4, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - \frac{5 \beta_{S2} kb x_{0} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{0} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{0} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}} - d_{T} x_{0}$
+
+
+$f_{hat}(1)=\beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{4} - kb x_{4} x_{5}$
+
+
+$f_{hat}(2)=5 \beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - d_{T} x_{5} - kb x_{4} x_{5}$
+
+
+$f_{hat}(3)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(4)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31193.181238531157
+
+S_e = [45060.292235761844, 45060.292235761844, 45060.292235761844, 45060.457556737405, 45060.457556737405, 45060.889140468564, 45060.889140468564, 47452.42707872779, 47452.42707872779, 47452.42707872779, 51345.87296923983, 51345.87296923983, 51345.87296923983, 91943.51543782756, 91943.51543782756, 91943.51543782756, 91943.51543782756, 91943.51543782756, 91943.51543782756, 14878622.85087943, 14878622.85087943, 14878622.85087943]
+
+Other properties :
+
+
+[array([0., 0., 0., 1., 1.]), array([0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 12
+
+x_{hat}: 
+
+[x1, x2, x4, x6, x7]
+
+
+$f_{hat}(0)=- \frac{\beta_{S1} kb x_{1} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}} + 5 \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{1}$
+
+
+$f_{hat}(1)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(2)=- \frac{5 \beta_{S1} kb x_{4} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{4} + d_{T} x_{2}^{2} + kb x_{2}^{2} x_{4}} + \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{4}$
+
+
+$f_{hat}(3)=- \frac{\beta_{S1} dc x_{6} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{\left(K_{tox} + \frac{\beta_{S1} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}}\right) \left(K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}\right)} - d x_{6} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(4)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 30936.569773959654
+
+S_e = [12621.546447792243, 12621.546907844884, 12621.546907844884, 12621.547354407307, 12621.547354407307, 12621.547556136788, 12621.547556136788, 12621.547556136788, 12621.547556136788, 12621.547556136788, 612239.1687354395, 612239.1687354395, 612239.1687354395, 15617366.196550816, 15617366.196550816, 15617366.196550816, 15617366.196550816, 15617366.196550816, 15617366.196550816, 15617366.196550816, 15617366.196550816, 15617366.196550816]
+
+Other properties :
+
+
+[array([0., 0., 0., 1., 1.]), array([0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 13
+
+x_{hat}: 
+
+[x1, x2, x5, x6, x7]
+
+
+$f_{hat}(0)=- \frac{\beta_{S1} kb x_{1} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}} + 5 \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{1}$
+
+
+$f_{hat}(1)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(2)=5 \beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - \frac{\beta_{S2} kb x_{5} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}} - d_{T} x_{5}$
+
+
+$f_{hat}(3)=- \frac{\beta_{S1} dc x_{6} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{\left(K_{tox} + \frac{\beta_{S1} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}}\right) \left(K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}\right)} - d x_{6} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(4)=- \frac{\beta_{S2} dc x_{7} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{\left(K_{tox} + \frac{\beta_{S2} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}}\right) \left(K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)} - d x_{7} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 30938.8096124428
+
+S_e = [9932.676408918678, 9933.36278895986, 9933.36278895986, 9933.36278895986, 9933.36278895986, 9937.612446213969, 9937.612446213969, 10995.007629262753, 10995.007629262753, 10995.007629262753, 10995.007629262753, 10995.007629262753, 10995.007629262753, 10995.007629262753, 10995.007629262753, 393026.02406179113, 393026.02406179113, 393026.02406179113, 393026.02406179113, 76451508.66516234, 76451508.66516234, 76451508.66516234]
+
+Other properties :
+
+
+[array([0., 0., 0., 1., 1.]), array([0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 14
+
+x_{hat}: 
+
+[x1, x3, x4, x6, x7]
+
+
+$f_{hat}(0)=- \frac{\beta_{S1} kb x_{1} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}} + 5 \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{1}$
+
+
+$f_{hat}(1)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(2)=- \frac{5 \beta_{S1} kb x_{4} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{4} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{4} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}} + \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{4}$
+
+
+$f_{hat}(3)=- \frac{\beta_{S1} dc x_{6} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{\left(K_{tox} + \frac{\beta_{S1} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}}\right) \left(K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} - d x_{6} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(4)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31409.982136498315
+
+S_e = [11067.461902613884, 11067.474382576887, 11067.474382576887, 11067.487440833655, 11067.487440833655, 11067.487440833655, 11067.487440833655, 11067.487440833655, 11067.487440833655, 11067.487440833655, 225210.318160473, 225210.318160473, 225210.318160473, 26479684.949606977, 26479684.949606977, 26479684.949606977, 26479684.949606977, 26479684.949606977, 26479684.949606977, 26479684.949606977, 26479684.949606977, 26479684.949606977]
+
+Other properties :
+
+
+[array([0., 0., 0., 1., 1.]), array([0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 15
+
+x_{hat}: 
+
+[x1, x3, x5, x6, x7]
+
+
+$f_{hat}(0)=- \frac{\beta_{S1} kb x_{1} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}} + 5 \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{1}$
+
+
+$f_{hat}(1)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(2)=5 \beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - \frac{\beta_{S2} kb x_{5} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}} - d_{T} x_{5}$
+
+
+$f_{hat}(3)=- \frac{\beta_{S1} dc x_{6} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{\left(K_{tox} + \frac{\beta_{S1} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}}\right) \left(K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} - d x_{6} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(4)=- \frac{\beta_{S2} dc x_{7} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{\left(K_{tox} + \frac{\beta_{S2} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}}\right) \left(K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}\right)} - d x_{7} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31376.37879448976
+
+S_e = [9940.884290821981, 9945.737178698568, 9945.737178698568, 9945.737178698568, 9945.737178698568, 9945.737178698568, 9945.737178698568, 9945.737178698568, 9945.737178698568, 9945.737178698568, 9945.737178698568, 9945.737178698568, 9945.737178698568, 15943.744826852355, 15943.744826852355, 20657.742901913494, 20657.742901913494, 20657.742901913494, 20657.742901913494, 35815762.41329362, 35815762.41329362, 35815762.41329362]
+
+Other properties :
+
+
+[array([0., 0., 0., 1., 1.]), array([0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 16
+
+x_{hat}: 
+
+[x1, x4, x5, x6, x7]
+
+
+$f_{hat}(0)=- \frac{\beta_{S1} kb x_{1} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}} + 5 \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{1}$
+
+
+$f_{hat}(1)=\beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{4} - kb x_{4} x_{5}$
+
+
+$f_{hat}(2)=5 \beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - d_{T} x_{5} - kb x_{4} x_{5}$
+
+
+$f_{hat}(3)=- \frac{\beta_{S1} dc x_{6} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{\left(K_{tox} + \frac{\beta_{S1} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}}\right) \left(K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} - d x_{6} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(4)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31190.752749542313
+
+S_e = [9932.559746052353, 9932.577990880396, 9932.577990880396, 9932.760351681454, 9932.760351681454, 9933.07321076466, 9933.07321076466, 11495.252246058024, 11495.252246058024, 11495.252246058024, 19382.400465550316, 19382.400465550316, 19382.400465550316, 117793.36734193952, 117793.36734193952, 117793.36734193952, 117793.36734193952, 117793.36734193952, 117793.36734193952, 59633793.5731094, 59633793.5731094, 59633793.5731094]
+
+Other properties :
+
+
+[array([0., 0., 0., 1., 1.]), array([0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 17
+
+x_{hat}: 
+
+[x0, x1, x2, x4, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - d_{T} x_{0} - kb x_{0} x_{1}$
+
+
+$f_{hat}(1)=5 \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{1} - kb x_{0} x_{1}$
+
+
+$f_{hat}(2)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(3)=- \frac{5 \beta_{S1} kb x_{4} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{4} + d_{T} x_{2}^{2} + kb x_{2}^{2} x_{4}} + \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{4}$
+
+
+$f_{hat}(4)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 30936.707506077015
+
+S_e = [25970.793853311377, 25970.79386009508, 25970.79386009508, 25973.04486712884, 25973.04486712884, 25973.04486712884, 25973.04486712884, 25987.89174145856, 25987.89174145856, 25987.89174145856, 146798.8348799821, 146798.8348799821, 146798.8348799821, 8838498.590593016, 8838498.590593016, 29387179.28917796, 29387179.28917796, 29387179.28917796, 29387179.28917796, 29387179.28917796, 29387179.28917796, 29387179.28917796]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 18
+
+x_{hat}: 
+
+[x0, x1, x2, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - d_{T} x_{0} - kb x_{0} x_{1}$
+
+
+$f_{hat}(1)=5 \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{1} - kb x_{0} x_{1}$
+
+
+$f_{hat}(2)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(3)=5 \beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - \frac{\beta_{S2} kb x_{5} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}} - d_{T} x_{5}$
+
+
+$f_{hat}(4)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- \frac{\beta_{S2} dc x_{7} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{\left(K_{tox} + \frac{\beta_{S2} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}}\right) \left(K_{S2} d_{T} + K_{S2} kb x_{5} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{5} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)} - d x_{7} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 30938.577750273103
+
+S_e = [25933.763871441643, 25933.763879511615, 25933.763879511615, 26050.798004149477, 26050.798004149477, 26050.798004149477, 26050.798004149477, 26050.798004149477, 26050.798004149477, 26050.798004149477, 1370376.0874084283, 1370376.0874084283, 1370376.0874084283, 66530299.88611781, 66530299.88611781, 66530299.88611781, 66530299.88611781, 66530299.88611781, 66530299.88611781, 66530299.88611781, 66530299.88611781, 66530299.88611781]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 19
+
+x_{hat}: 
+
+[x0, x1, x3, x4, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - d_{T} x_{0} - kb x_{0} x_{1}$
+
+
+$f_{hat}(1)=5 \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{1} - kb x_{0} x_{1}$
+
+
+$f_{hat}(2)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(3)=- \frac{5 \beta_{S1} kb x_{4} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{4} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{4} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}} + \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{4}$
+
+
+$f_{hat}(4)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31423.543056335297
+
+S_e = [25902.400627679785, 25902.40065113488, 25902.40065113488, 25904.316424866054, 25904.316424866054, 25904.316424866054, 25904.316424866054, 25962.87796808474, 25962.87796808474, 25962.87796808474, 406110.6714748088, 406110.6714748088, 406110.6714748088, 12913152.692716038, 12913152.692716038, 35830002.03774908, 35830002.03774908, 35830002.03774908, 35830002.03774908, 35830002.03774908, 35830002.03774908, 35830002.03774908]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 20
+
+x_{hat}: 
+
+[x0, x1, x3, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - d_{T} x_{0} - kb x_{0} x_{1}$
+
+
+$f_{hat}(1)=5 \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{1} - kb x_{0} x_{1}$
+
+
+$f_{hat}(2)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(3)=5 \beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - \frac{\beta_{S2} kb x_{5} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}} - d_{T} x_{5}$
+
+
+$f_{hat}(4)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- \frac{\beta_{S2} dc x_{7} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{\left(K_{tox} + \frac{\beta_{S2} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}}\right) \left(K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}\right)} - d x_{7} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31390.2536632442
+
+S_e = [25562.628210091956, 25562.634890630656, 25562.634890630656, 25585.99047360067, 25585.99047360067, 25585.99047360067, 25585.99047360067, 25800.650968386723, 25800.650968386723, 25800.650968386723, 1382994.100385772, 1382994.100385772, 1382994.100385772, 41143659.652127646, 41143659.652127646, 41143659.652127646, 41143659.652127646, 41143659.652127646, 41143659.652127646, 41143659.652127646, 41143659.652127646, 41143659.652127646]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 21
+
+x_{hat}: 
+
+[x0, x1, x4, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - d_{T} x_{0} - kb x_{0} x_{1}$
+
+
+$f_{hat}(1)=5 \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{1} - kb x_{0} x_{1}$
+
+
+$f_{hat}(2)=\beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{4} - kb x_{4} x_{5}$
+
+
+$f_{hat}(3)=5 \beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - d_{T} x_{5} - kb x_{4} x_{5}$
+
+
+$f_{hat}(4)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31191.429449665487
+
+S_e = [48134.705016864405, 48134.705024860836, 48134.705024860836, 48157.766561205055, 48157.766561205055, 48157.766561205055, 48157.766561205055, 50371.733647578316, 50371.733647578316, 50371.733647578316, 255374.23308905965, 255374.23308905965, 255374.23308905965, 9407405.428585114, 9407405.428585114, 70097456.0853202, 70097456.0853202, 70097456.0853202, 70097456.0853202, 70097456.0853202, 70097456.0853202, 70097456.0853202]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 22
+
+x_{hat}: 
+
+[x0, x2, x3, x4, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - \frac{5 \beta_{S2} kb x_{0} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{0} + d_{T} x_{3}^{2} + kb x_{0} x_{3}^{2}} - d_{T} x_{0}$
+
+
+$f_{hat}(1)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(2)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(3)=- \frac{5 \beta_{S1} kb x_{4} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{4} + d_{T} x_{2}^{2} + kb x_{2}^{2} x_{4}} + \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{4}$
+
+
+$f_{hat}(4)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31078.83944775808
+
+S_e = [31873.191672193538, 31873.191672193625, 31873.191672193625, 31873.191788844004, 31873.191788844004, 31873.191788844004, 31873.191788844004, 31895.647248014637, 31895.647248014637, 31895.647248014637, 422122.7040574431, 422122.7040574431, 422122.7040574431, 617166.5019265013, 617166.5019265013, 32697919.277630523, 32697919.277630523, 32697919.277630523, 32697919.277630523, 32697919.277630523, 32697919.277630523, 32697919.277630523]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 23
+
+x_{hat}: 
+
+[x0, x2, x3, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - \frac{5 \beta_{S2} kb x_{0} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{0} + d_{T} x_{3}^{2} + kb x_{0} x_{3}^{2}} - d_{T} x_{0}$
+
+
+$f_{hat}(1)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(2)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(3)=5 \beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - \frac{\beta_{S2} kb x_{5} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}} - d_{T} x_{5}$
+
+
+$f_{hat}(4)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- \frac{\beta_{S2} dc x_{7} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{\left(K_{tox} + \frac{\beta_{S2} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}}\right) \left(K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}\right)} - d x_{7} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31056.17706472195
+
+S_e = [31602.0210311268, 31602.02103113253, 31602.02103113253, 31602.155919893274, 31602.67940443272, 31605.963992826826, 31605.963992826826, 31790.493210012508, 31790.493210012508, 31790.493210012508, 2703761.539676302, 2703761.539676302, 2703761.539676302, 5723190.526469075, 5723190.526469075, 20284586.81442321, 20284586.81442321, 20284586.81442321, 20284586.81442321, 20284586.81442321, 20284586.81442321, 20284586.81442321]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 24
+
+x_{hat}: 
+
+[x0, x2, x4, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - \frac{5 \beta_{S2} kb x_{0} \left(K_{S2} l_{S2} + \frac{\beta_{tet}^{2} l_{S2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right)}{K_{S2} d_{T} + K_{S2} kb x_{0} + \frac{\beta_{tet}^{2} d_{T} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}} + \frac{\beta_{tet}^{2} kb x_{0} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}} - d_{T} x_{0}$
+
+
+$f_{hat}(1)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(2)=\beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{4} - kb x_{4} x_{5}$
+
+
+$f_{hat}(3)=5 \beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - d_{T} x_{5} - kb x_{4} x_{5}$
+
+
+$f_{hat}(4)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 30902.942406209928
+
+S_e = [107210.32581728276, 107210.32582509817, 107210.32582509817, 107210.7564486542, 107210.7564486542, 107210.7564486542, 107210.7564486542, 109783.54734929097, 109783.54734929097, 109783.54734929097, 361370.33466296183, 361370.33466296183, 361370.33466296183, 19998097.958398085, 19998097.958398085, 53528249.87266403, 53528249.87266403, 53528249.87266403, 53528249.87266403, 53528249.87266403, 53528249.87266403, 53528249.87266403]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 25
+
+x_{hat}: 
+
+[x0, x3, x4, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - \frac{5 \beta_{S2} kb x_{0} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{0} + d_{T} x_{3}^{2} + kb x_{0} x_{3}^{2}} - d_{T} x_{0}$
+
+
+$f_{hat}(1)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(2)=\beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{4} - kb x_{4} x_{5}$
+
+
+$f_{hat}(3)=5 \beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - d_{T} x_{5} - kb x_{4} x_{5}$
+
+
+$f_{hat}(4)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31406.02316614497
+
+S_e = [39615.57522303487, 39615.575237225225, 39615.575237225225, 39635.028522473, 39635.028522473, 39635.028522473, 39635.028522473, 39646.74359014528, 39646.74359014528, 39646.74359014528, 293149.8083341728, 293149.8083341728, 293149.8083341728, 26505643.391617823, 26505643.391617823, 77152200.82601899, 77152200.82601899, 77152200.82601899, 77152200.82601899, 77152200.82601899, 77152200.82601899, 77152200.82601899]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 26
+
+x_{hat}: 
+
+[x1, x2, x3, x4, x6, x7]
+
+
+$f_{hat}(0)=- \frac{\beta_{S1} kb x_{1} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}} + 5 \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{1}$
+
+
+$f_{hat}(1)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(2)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(3)=- \frac{5 \beta_{S1} kb x_{4} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{4} + d_{T} x_{2}^{2} + kb x_{2}^{2} x_{4}} + \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{4}$
+
+
+$f_{hat}(4)=- \frac{\beta_{S1} dc x_{6} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{\left(K_{tox} + \frac{\beta_{S1} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}}\right) \left(K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}\right)} - d x_{6} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31075.788725376548
+
+S_e = [14268.699765280124, 14268.724717052139, 14268.724717052139, 14268.724717052139, 14268.724717052139, 14268.724717052139, 14268.724717052139, 14297.749229958961, 14297.749229958961, 14297.749229958961, 563347.3085821985, 563347.3085821985, 563347.3085821985, 806963.5722249568, 806963.5722249568, 3559884.56919845, 3559884.56919845, 3559884.56919845, 3559884.56919845, 3559884.56919845, 3559884.56919845, 3559884.56919845]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 27
+
+x_{hat}: 
+
+[x1, x2, x3, x5, x6, x7]
+
+
+$f_{hat}(0)=- \frac{\beta_{S1} kb x_{1} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}} + 5 \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{1}$
+
+
+$f_{hat}(1)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(2)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(3)=5 \beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - \frac{\beta_{S2} kb x_{5} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}} - d_{T} x_{5}$
+
+
+$f_{hat}(4)=- \frac{\beta_{S1} dc x_{6} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{\left(K_{tox} + \frac{\beta_{S1} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}}\right) \left(K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}\right)} - d x_{6} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- \frac{\beta_{S2} dc x_{7} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{\left(K_{tox} + \frac{\beta_{S2} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}}\right) \left(K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}\right)} - d x_{7} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31053.314430443497
+
+S_e = [9939.871732499332, 9940.044567161809, 9940.044567161809, 9940.044567161809, 9940.114371002515, 9941.487058508916, 9941.487058508916, 10290.336403853264, 10290.336403853264, 10290.336403853264, 10320.379312592926, 10320.379312592926, 10320.379312592926, 11494.711931509082, 11494.711931509082, 25041.30787946625, 25041.30787946625, 25041.30787946625, 25041.30787946625, 9442815.499565352, 9442815.499565352, 9442815.499565352]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 28
+
+x_{hat}: 
+
+[x1, x2, x4, x5, x6, x7]
+
+
+$f_{hat}(0)=- \frac{\beta_{S1} kb x_{1} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}} + 5 \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{1}$
+
+
+$f_{hat}(1)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(2)=\beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{4} - kb x_{4} x_{5}$
+
+
+$f_{hat}(3)=5 \beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - d_{T} x_{5} - kb x_{4} x_{5}$
+
+
+$f_{hat}(4)=- \frac{\beta_{S1} dc x_{6} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{\left(K_{tox} + \frac{\beta_{S1} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}}\right) \left(K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}\right)} - d x_{6} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 30902.058508923663
+
+S_e = [60250.31994755039, 60250.369378567455, 60250.369378567455, 60250.369378567455, 60250.369378567455, 60250.369378567455, 60250.369378567455, 107056.91169657026, 107056.91169657026, 107056.91169657026, 285690.1351067526, 285690.1351067526, 285690.1351067526, 32029127.014492612, 32029127.014492612, 32029127.014492612, 32029127.014492612, 32029127.014492612, 32029127.014492612, 32029127.014492612, 32029127.014492612, 32029127.014492612]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 29
+
+x_{hat}: 
+
+[x1, x3, x4, x5, x6, x7]
+
+
+$f_{hat}(0)=- \frac{\beta_{S1} kb x_{1} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}} + 5 \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{1}$
+
+
+$f_{hat}(1)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(2)=\beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{4} - kb x_{4} x_{5}$
+
+
+$f_{hat}(3)=5 \beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - d_{T} x_{5} - kb x_{4} x_{5}$
+
+
+$f_{hat}(4)=- \frac{\beta_{S1} dc x_{6} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{\left(K_{tox} + \frac{\beta_{S1} \left(K_{S1} l_{S1} + \frac{\beta_{lac}^{2} l_{S1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}}\right) \left(K_{S1} d_{T} + K_{S1} kb x_{1} + \frac{\beta_{lac}^{2} d_{T} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}} + \frac{\beta_{lac}^{2} kb x_{1} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} - d x_{6} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(5)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31377.763668438703
+
+S_e = [36007.43383925987, 36007.447480727344, 36007.447480727344, 36017.163967754124, 36017.163967754124, 36017.163967754124, 36017.163967754124, 36020.6819101556, 36020.6819101556, 36020.6819101556, 334370.470287674, 334370.470287674, 334370.470287674, 42217846.2246032, 42217846.2246032, 42217846.2246032, 42217846.2246032, 42217846.2246032, 42217846.2246032, 42217846.2246032, 42217846.2246032, 42217846.2246032]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 30
+
+x_{hat}: 
+
+[x0, x1, x2, x3, x4, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - d_{T} x_{0} - kb x_{0} x_{1}$
+
+
+$f_{hat}(1)=5 \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{1} - kb x_{0} x_{1}$
+
+
+$f_{hat}(2)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(3)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(4)=- \frac{5 \beta_{S1} kb x_{4} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{4} + d_{T} x_{2}^{2} + kb x_{2}^{2} x_{4}} + \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{4}$
+
+
+$f_{hat}(5)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(6)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31076.822611052034
+
+S_e = [32165.82493465074, 32165.825262513063, 32165.825262513063, 32167.13059195082, 32167.13059195082, 32167.13059195082, 32167.13059195082, 32194.501119756387, 32194.501119756387, 32194.501119756387, 421608.23553846247, 421608.23553846247, 421608.23553846247, 633778.1576521808, 633778.1576521808, 32593823.33279777, 32593823.33279777, 32593823.33279777, 32593823.33279777, 32593823.33279777, 32593823.33279777, 32593823.33279777]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 31
+
+x_{hat}: 
+
+[x0, x1, x2, x3, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - d_{T} x_{0} - kb x_{0} x_{1}$
+
+
+$f_{hat}(1)=5 \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{1} - kb x_{0} x_{1}$
+
+
+$f_{hat}(2)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(3)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(4)=5 \beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - \frac{\beta_{S2} kb x_{5} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}} - d_{T} x_{5}$
+
+
+$f_{hat}(5)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(6)=- \frac{\beta_{S2} dc x_{7} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{\left(K_{tox} + \frac{\beta_{S2} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}}\right) \left(K_{S2} d_{T} + K_{S2} kb x_{5} + d_{T} x_{3}^{2} + kb x_{3}^{2} x_{5}\right)} - d x_{7} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31054.07066435987
+
+S_e = [31507.42143999526, 31507.42281689882, 31507.42281689882, 31811.830010408725, 33137.05540976688, 33137.05540976688, 33137.05540976688, 33137.05540976688, 33137.05540976688, 33137.05540976688, 65558.73088020727, 65558.73088020727, 65558.73088020727, 2305620.3249054444, 2305620.3249054444, 2305620.3249054444, 2305620.3249054444, 2305620.3249054444, 2305620.3249054444, 5121794.463321201, 5121794.463321201, 10382514.9352028]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 32
+
+x_{hat}: 
+
+[x0, x1, x2, x4, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - d_{T} x_{0} - kb x_{0} x_{1}$
+
+
+$f_{hat}(1)=5 \beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{1} - kb x_{0} x_{1}$
+
+
+$f_{hat}(2)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(3)=\beta_{S2} \left(\frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{S2} + \frac{\beta_{tet}^{2} x_{7}^{2} \left(K_{tet} l_{tet} + atc^{2} l_{tet} + atc^{2}\right)^{2}}{d_{S}^{2} \left(K_{tet} + atc^{2}\right)^{2}}\right) \left(K_{tet} + atc^{2}\right)^{2}} + l_{S2}\right) - d_{T} x_{4} - kb x_{4} x_{5}$
+
+
+$f_{hat}(4)=5 \beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - d_{T} x_{5} - kb x_{4} x_{5}$
+
+
+$f_{hat}(5)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(6)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 30902.10686158363
+
+S_e = [25795.322684602495, 25815.29179599976, 25815.29179599976, 35390.39141249545, 35390.39141249545, 35390.39141249545, 35390.39141249545, 35390.39141249545, 35390.39141249545, 35390.39141249545, 291317.49643885664, 291317.49643885664, 291317.49643885664, 19924063.202880334, 19924063.202880334, 53680144.56389046, 53680144.56389046, 53680144.56389046, 53680144.56389046, 53680144.56389046, 53680144.56389046, 53680144.56389046]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 33
+
+x_{hat}: 
+
+[x0, x1, x3, x4, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - d_{T} x_{0} - kb x_{0} x_{1}$
+
+
+$f_{hat}(1)=5 \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{1} - kb x_{0} x_{1}$
+
+
+$f_{hat}(2)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(3)=\beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{4} - kb x_{4} x_{5}$
+
+
+$f_{hat}(4)=5 \beta_{S1} \left(\frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2} \left(K_{S1} + \frac{\beta_{lac}^{2} x_{6}^{2} \left(I^{2} l_{lac} + I^{2} + K_{lac} l_{lac}\right)^{2}}{d_{S}^{2} \left(I^{2} + K_{lac}\right)^{2}}\right)} + l_{S1}\right) - d_{T} x_{5} - kb x_{4} x_{5}$
+
+
+$f_{hat}(5)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(6)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31391.91797941202
+
+S_e = [25354.466664472166, 25376.780260783333, 25376.780260783333, 99540.24209945496, 99540.24209945496, 99540.24209945496, 99540.24209945496, 99540.24209945496, 99540.24209945496, 99540.24209945496, 272549.7310407273, 272549.7310407273, 272549.7310407273, 26672066.544275332, 26672066.544275332, 77229735.51053005, 77229735.51053005, 77229735.51053005, 77229735.51053005, 77229735.51053005, 77229735.51053005, 77229735.51053005]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 34
+
+x_{hat}: 
+
+[x0, x2, x3, x4, x5, x6, x7]
+
+
+$f_{hat}(0)=\beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - \frac{5 \beta_{S2} kb x_{0} \left(K_{S2} l_{S2} + l_{S2} x_{3}^{2} + x_{3}^{2}\right)}{K_{S2} d_{T} + K_{S2} kb x_{0} + d_{T} x_{3}^{2} + kb x_{0} x_{3}^{2}} - d_{T} x_{0}$
+
+
+$f_{hat}(1)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(2)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(3)=\beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{4} - kb x_{4} x_{5}$
+
+
+$f_{hat}(4)=5 \beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - d_{T} x_{5} - kb x_{4} x_{5}$
+
+
+$f_{hat}(5)=- d x_{6} - \frac{dc x_{0} x_{6}}{K_{tox} + x_{0}} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(6)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31033.080631210494
+
+S_e = [31480.57198416419, 31480.572911552885, 31480.572911552885, 31480.96445447287, 31480.96445447287, 31480.96445447287, 31480.96445447287, 31496.60738353982, 31496.60738353982, 31496.60738353982, 266056.5880621083, 266056.5880621083, 266056.5880621083, 2559601.008855159, 2559601.008855159, 64378393.49200978, 64378393.49200978, 64378393.49200978, 64378393.49200978, 64378393.49200978, 64378393.49200978, 64378393.49200978]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+
+Reduced model 35
+
+x_{hat}: 
+
+[x1, x2, x3, x4, x5, x6, x7]
+
+
+$f_{hat}(0)=- \frac{\beta_{S1} kb x_{1} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}} + 5 \beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{1}$
+
+
+$f_{hat}(1)=\beta_{lac} x_{6} \left(\frac{I^{2}}{I^{2} + K_{lac}} + l_{lac}\right) - d_{S} x_{2}$
+
+
+$f_{hat}(2)=\beta_{tet} x_{7} \left(\frac{atc^{2}}{K_{tet} + atc^{2}} + l_{tet}\right) - d_{S} x_{3}$
+
+
+$f_{hat}(3)=\beta_{S2} \left(l_{S2} + \frac{x_{3}^{2}}{K_{S2} + x_{3}^{2}}\right) - d_{T} x_{4} - kb x_{4} x_{5}$
+
+
+$f_{hat}(4)=5 \beta_{S1} \left(l_{S1} + \frac{x_{2}^{2}}{K_{S1} + x_{2}^{2}}\right) - d_{T} x_{5} - kb x_{4} x_{5}$
+
+
+$f_{hat}(5)=- \frac{\beta_{S1} dc x_{6} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{\left(K_{tox} + \frac{\beta_{S1} \left(K_{S1} l_{S1} + l_{S1} x_{2}^{2} + x_{2}^{2}\right)}{K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}}\right) \left(K_{S1} d_{T} + K_{S1} kb x_{1} + d_{T} x_{2}^{2} + kb x_{1} x_{2}^{2}\right)} - d x_{6} + kc x_{6} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+$f_{hat}(6)=- d x_{7} - \frac{dc x_{4} x_{7}}{K_{tox} + x_{4}} + kc x_{7} \left(1 - \frac{x_{6} + x_{7}}{C_{max}}\right)$
+
+
+
+Error and robustness 
+
+
+e = 31030.0522786937
+
+S_e = [10147.27703788979, 10971.367950320317, 10971.367950320317, 10971.367950320317, 10971.367950320317, 10971.367950320317, 10971.367950320317, 10971.367950320317, 10971.367950320317, 10971.367950320317, 606765.5425619693, 606765.5425619693, 606765.5425619693, 10250984.229007682, 10250984.229007682, 27894944.085786678, 27894944.085786678, 27894944.085786678, 27894944.085786678, 27894944.085786678, 27894944.085786678, 27894944.085786678]
+
+Other properties :
+
+
+[array([0., 0., 0., 0., 0., 1., 1.]), array([0., 0., 0., 0., 0., 1., 1.])]
+
+None
+
+None
+

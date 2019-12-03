@@ -58,13 +58,13 @@ class Reduce(System):
                 comb = combinations(list(range(n)), i+1) 
                 possible_reductions.append(list(comb))
         possible_reductions = [list(item) for sublist in possible_reductions for item in sublist]
-        self.all_reductions = [i for i in possible_reductions]
+        self.all_combinations = [i for i in possible_reductions]
         output_states = self.get_output_states()
         restart = False
         x = self.x
-        for attempt in self.all_reductions:
+        for attempt in self.all_combinations:
             states_attempt = [x[i] for i in attempt]
-            if not len(set(states_attempt).intersection(set(output_states))) > 0 or len(attempt) > self.nstates_tol:
+            if not len(set(states_attempt).intersection(set(output_states))) == len(output_states) or len(attempt) > self.nstates_tol:
                 restart = True
             if restart:
                 possible_reductions.remove(attempt)
@@ -85,6 +85,7 @@ class Reduce(System):
             for i in range(n):
                 if i in attempt and not set_T:
                     T[ni,i] = 1
+                    attempt.remove(i)
                     set_T = True
         # For x_c
         for ni in range(n_hat, n):
@@ -92,12 +93,18 @@ class Reduce(System):
             for i in range(n):
                 if i in non_attempt and not set_T:
                     T[ni,i] = 1
+                    non_attempt.remove(i)
                     set_T = True
         T1 = T[0:n,0:n_hat]
-        T2 = T[0:n,n_hat:n_c + 1]
+        T2 = T[0:n,n_hat:n + 1]
         return T, T1, T2
 
-    def get_error_metric(self, reduced_sys):
+    def get_error_metric(self, reduced_sys, mode = 'Cx'):
+        '''
+        Returns the error defined as the 2-norm of y - y_hat.
+        y = Cx and y_hat = C_hat x_hat when mode = 'Cx'.
+        y = h(x, P), y_hat = h_hat(x_hat, P) when mode = 'general'
+        '''
         reduced_ode = utils.get_ODE(reduced_sys, self.timepoints_ode)
         system_obj = self.get_system()
         x_sol = utils.get_ODE(system_obj, self.timepoints_ode).solve_system().y
@@ -129,7 +136,7 @@ class Reduce(System):
         max_eigP = 0
         S_c = collapsed_ssm.compute_SSM()
         S_hat = reduced_ssm.compute_SSM()
-        S_bar_c = np.concatenate((S_hat, S_c), axis = 0)
+        S_bar_c = np.concatenate((S_hat, S_c), axis = 2)
         S_bar_c = np.reshape(S_bar_c, (len(timepoints_ssm), self.n, len(self.params_values)))
         for k in range(len(timepoints_ssm)):
             J = full_ssm.compute_J(x_sols[k,:])
@@ -195,7 +202,7 @@ class Reduce(System):
         return x_sol_c
 
     def solve_timescale_separation(self, attempt):
-        # print('attempting :', attempt)
+        print('attempting :', attempt)
         x_c = []
         fast_states = []
         f_c = []
@@ -213,7 +220,6 @@ class Reduce(System):
                 f_hat.append(f[i])
                 x_hat.append(x[i])
                 x_hat_init.append(x_init[i])
-
         for i in range(len(x_c)):
             x_c_sub = solve(Eq(f_c[i]), x_c[i])
             if len(x_c_sub) == 0:
@@ -222,7 +228,6 @@ class Reduce(System):
                 continue
             else:
                 fast_states.append(x_c_sub[0])
-            
         for i in range(len(fast_states)):
             if fast_states[i] == []:
                 continue
@@ -259,6 +264,8 @@ class Reduce(System):
         reduced_sys.fast_states = fast_states
         return reduced_sys, fast_subsystem
 
+    def solve_conservation_laws(self, laws):
+        pass
 
     def reduce_Cx(self):
         results_dict = {}
@@ -280,8 +287,14 @@ class Reduce(System):
         return self.results_dict
 
     def reduce_general(self):
-        raise NotImplementedError
-
+        results_dict = {}
+        possible_reductions = self.get_all_combinations()
+        if not len(possible_reductions):
+            print('No possible reduced models found. Try increasing tolerance for number of states.')
+            return
+        
+        self.results_dict = results_dict
+        return self.results_dict
     def compute_reduced_model(self):
         if self.C is not None and self.g is None:
             # Call y = Cx based model reduction

@@ -13,19 +13,27 @@ class SSM(System):
     order central difference as given in the paper.
     '''
     def __init__(self, x, f, params = None, C = None, g = None, h = None, 
-                params_values = [], x_init = [], timepoints = None):
+                params_values = [], x_init = [], timepoints = None, mode = None):
         super().__init__(x, f, params, C, g, h, params_values, x_init)
         if timepoints is None:
             timepoints = []
         else:
             self.timepoints = timepoints
+        if mode is None:
+            self.mode = 'approximate'
+        else:
+            self.mode = mode 
+
         return
 
-    def compute_Zj(self, x, j):
+    def compute_Zj(self, x, j, **kwargs):
         '''
         Compute Z_j, i.e. df/dp_j at a particular timepoint k for the parameter p_j. 
         Returns a vector of size n x 1. 
+        Use mode = 'accurate' for this object attribute to use accurate computations using numdifftools.
         '''
+        if self.mode == 'accurate':
+            return self.sensitivity_to_parameter(**kwargs)
         # initialize Z
         Z = np.zeros(self.n)    
         P_holder = self.params_values
@@ -52,11 +60,18 @@ class SSM(System):
                 Z[i] = (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
         return Z
 
-    def compute_J(self, x):
+    def compute_J(self, x, **kwargs):
         '''
         Compute the Jacobian J = df/dx at a timepoint k.
         Returns a matrix of size n x n.
+        Use mode = 'accurate' for this object attribute to use accurate computations using numdifftools.
         '''
+        if self.mode == 'accurate':
+            import numdifftools as nd
+            ode = kwargs.get('ode')
+            params = kwargs.get('params')
+            ode_func = lambda t, xs: ode(t, xs, params)
+            return nd.jacobian(lambda x: ode_func(0, x))
         # initialize J
         J = np.zeros( (self.n, self.n) )   
         P = self.params_values 
@@ -85,12 +100,16 @@ class SSM(System):
                     J[i,j]= (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
         return J
 
-    def compute_SSM(self, normalize = False):
+    def compute_SSM(self, normalize = False, **kwargs):
         '''
         Returns the sensitivity coefficients S_j for each parameter p_j. 
         The sensitivity coefficients are written in a sensitivity matrix SSM of size len(timepoints) x len(params) x n
         If normalize argument is true, the coefficients are normalized by the nominal value of each paramneter.
+        Use mode = 'accurate' for this object attribute to use accurate computations using numdifftools.
         '''
+        if self.mode == 'accurate':
+            return self.solve_extended_ode(**kwargs)
+
         def sens_func(t, x, J, Z):
             # forms ODE to solve for sensitivity coefficient S
             dsdt = J@x + Z
@@ -106,6 +125,7 @@ class SSM(System):
         self.xs = xs
         # Solve for SSM at each time point 
         for k in range(len(self.timepoints)): 
+            # print('for timepoint',self.timepoints[k])
             timepoints = self.timepoints[0:k+1]
             if len(timepoints) == 1:
                 continue
@@ -114,6 +134,8 @@ class SSM(System):
             J = self.compute_J(xs[k,:])
             #Solve for S = dx/dp for all x and all P (or theta, the parameters) at time point k
             for j in range(len(P)): 
+                utils.printProgressBar(int(j + k*len(P)), len(self.timepoints)*len(P) - 1, prefix = 'SSM Progress:', suffix = 'Complete', length = 50)
+                # print('for parameter',P[j])
                 # get the pmatrix
                 Zj = self.compute_Zj(xs[k,:], j)
                 # solve for S
@@ -143,3 +165,98 @@ class SSM(System):
     def get_system(self):
         return System(self.x, self.f, self.params, self.C, self.g,
                     self.h, self.params_values, self.x_init)
+                    
+
+
+    ############## Sam Clamons ###########
+
+    def sensitivity_to_parameter(self, ode_sol = None, ode_jac = None, ode = None, params = None, n_vars = None, p = None, t_min = None,
+                                t_max = None):
+        '''
+        Calculates the response of each derivative (defined by ode) to changes
+        in a single parameter (the jth one) over time.
+
+        params:
+            ode_sol - An OdeSolution object holding a continuously-interpolated
+                        solution for ode.
+            ode_jac - Jacobian of the ode, as calculated by numdifftools.Jacobian.
+            ode - The ODE for the system, of the form ode(t, x, params)
+            params - A list of parameters to feed to ode.
+            p - The index of the parameter to calculate sensitivities to.
+            t_min - Starting time.
+            t_max - Ending time.
+        returns: An OdeSolution object representing the (continously-interpolated)
+                    sensitivity of each variable to the specified parameter over
+                    time.
+        '''
+        # Build a scipy-integratable derivative-of-sensitivity function.
+        import numdifftools as nd
+        import copy
+        def dS_dt(t, s):
+            xs = ode_sol(t)
+            # Wrapper to let numdifftools calculate df/dp.
+            def ode_as_parameter_call(param):
+                call_params = copy.deepcopy(params)
+                call_params[p] = param
+                return ode(t, xs, call_params)
+            df_dp = lambda xs: nd.Jacobian(ode_as_parameter_call)(xs).transpose()[:,0]
+            return df_dp(params[p]) + np.matmul(ode_jac(xs), s)
+        sol = solve_ivp(dS_dt, (t_min, t_max), np.zeros(n_vars),
+                                        dense_output = True)
+        return sol.sol
+
+
+    ############## Sam Clamons ###########
+    def solve_extended_ode(self, ode = None, params = None, t_min = None, t_max = None, init = None, method = "RK45"):
+        '''
+        Augments an ODE system (as a scipy-integratable function) into an ODE
+        representing the original ODE plus sensitivities, then solves them all.
+
+        The key equation here is, for a system dx/dt = f(x, p, t),
+
+        dS_j/dt = f_j + J*S_j
+
+        where S_j is the vector of sensitivities of xs to parameter j, f_j is the
+        vector of derivatives df/dp_j, and J is the Jacobian of f w.r.t. xs.
+
+        params:
+            ode - An ode to solve, with a signature ode(t, xs, parameters).
+            params - a vector of parameters around which to calculate sensitivity.
+            t_min - Starting time.
+            t_max - Ending time.
+            init - Initial conditions for the ode.
+            method - ODE solving method, passed directly to
+                        scipy.integrate.solve_ivp.
+
+        Returns: (x_sols, sensitivities)
+            x_sols - An OdeSolution object with the solution to the original ODE.
+                        Shape of a solution is (n_variables, n_times)
+            sensitivities - An array of OdeSolution objects of  size (n_params)
+                            holding sensitivities of each variable to each
+                            parameter over time, as a continuous interpolation.
+                            Shape of a solution is (n_variables, n_times)
+        '''
+        import numdifftools as nd
+        n_variables = len(init)
+        n_params    = len(params)
+
+        # Solve ODE.
+        ode_func = lambda t, xs: ode(t, xs, params)
+        ode_jac  = nd.Jacobian(lambda x: ode_func(0, x))
+        sol = solve_ivp(ode_func, (t_min, t_max), init,
+                                        method = method, dense_output = True,
+                                        jac = lambda t, x: ode_jac(x))
+
+        if sol.status != 0:
+            raise ValueError("In solve_extended_ode, solve_ivp failed with "
+                                " error message: " + sol.message)
+
+        sensitivities = [None] * n_params
+        for p in range(n_params):
+            print("\rSolving sensitivity for parameter %d/%d       " \
+                % (p+1, n_params))
+            sensitivities[p] = self.sensitivity_to_parameter(sol.sol, ode_jac, ode,
+                                                            params, n_variables, p,
+                                                            t_min, t_max)
+
+        return (sol.sol, sensitivities)
