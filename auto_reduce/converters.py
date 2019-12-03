@@ -41,14 +41,16 @@ def sympy_to_sbml(model):
 # - it is also written out into a file called generated.py 
 #
  
-from libsbml import *
-import sys
  
 
 def sbml_to_ode(filename):
   # 
   # read the SBML from file 
   # 
+  from libsbml import *
+  import sys
+  raise NotImplementedError
+
   doc = readSBMLFromFile(filename)
   if doc.getNumErrors(LIBSBML_SEV_FATAL):
     print('Encountered serious errors while reading file')
