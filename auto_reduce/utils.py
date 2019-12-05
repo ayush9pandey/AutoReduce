@@ -11,6 +11,7 @@ def get_ODE(system_obj, timepoints, **kwargs):
                 x_init = system_obj.x_init, timepoints = timepoints, **kwargs)
     return ode_obj
 
+
 def solve_ODE_SSM(system_obj, timepoints_ode, timepoints_ssm, **kwargs):
     '''
     For the given timepoints, returns the full solution (states, sensitivity coefficients, outputs)
@@ -38,6 +39,18 @@ def reduce(system_obj, timepoints_ode, timepoints_ssm, **kwargs):
                 params_values = system_obj.params_values, x_init = system_obj.x_init, 
                 timepoints_ode = timepoints_ode, timepoints_ssm = timepoints_ssm, **kwargs)
     return red_obj
+
+def reduce_utils(reduce_obj, **kwargs):
+    reduce_utils_obj = model_reduction.ReduceUtils(reduce_obj.x, reduce_obj.f, C = reduce_obj.C, 
+                params = reduce_obj.params, g = reduce_obj.g, h = reduce_obj.h,
+                params_values = reduce_obj.params_values, x_init = reduce_obj.x_init, 
+                timepoints_ode = reduce_obj.timepoints_ode, timepoints_ssm = reduce_obj.timepoints_ssm,
+                error_tol=reduce_obj.error_tol, nstates_tol=reduce_obj.nstates_tol)
+    return reduce_utils_obj
+
+def get_ode_solutions(system_obj, timepoints, **kwargs):
+    x_sol = get_ODE(system_obj, timepoints, **kwargs).solve_system().T
+    return x_sol
 
 
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):

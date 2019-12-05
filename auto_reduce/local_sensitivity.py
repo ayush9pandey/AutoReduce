@@ -2,7 +2,7 @@ from .system import System
 from auto_reduce import utils
 import numpy as np
 # from .ode import ODE
-from scipy.integrate import solve_ivp
+from scipy.integrate import solve_ivp, odeint
 
 class SSM(System):
     '''
@@ -119,8 +119,8 @@ class SSM(System):
         SSM = np.zeros( (len(self.timepoints), len(P), self.n) )
         # solve for all x's in timeframe set by timepoints
         system_obj = self.get_system()
-        sol = utils.get_ODE(system_obj, self.timepoints).solve_system()
-        xs = sol.y
+        sol = utils.get_ODE(system_obj, self.timepoints).solve_system().T
+        xs = sol
         xs = np.reshape(xs,(len(self.timepoints), self.n))
         self.xs = xs
         # Solve for SSM at each time point 
@@ -129,7 +129,6 @@ class SSM(System):
             timepoints = self.timepoints[0:k+1]
             if len(timepoints) == 1:
                 continue
-            t_span = (timepoints[0], timepoints[-1])
             # get the jacobian matrix
             J = self.compute_J(xs[k,:])
             #Solve for S = dx/dp for all x and all P (or theta, the parameters) at time point k
@@ -140,8 +139,8 @@ class SSM(System):
                 Zj = self.compute_Zj(xs[k,:], j)
                 # solve for S
                 sens_func_ode = lambda t, x : sens_func(t, x, J, Zj)
-                sol = solve_ivp(sens_func_ode, t_span, S0, t_eval = timepoints)
-                S = sol.y
+                sol = odeint(sens_func_ode, S0, timepoints, tfirst = True)
+                S = sol
                 S = np.reshape(S, (len(timepoints), self.n))
                 SSM[k,j,:] = S[k,:]
         self.SSM = SSM
@@ -226,7 +225,7 @@ class SSM(System):
             t_max - Ending time.
             init - Initial conditions for the ode.
             method - ODE solving method, passed directly to
-                        scipy.integrate.solve_ivp.
+                        scipy.integrate.odeint.
 
         Returns: (x_sols, sensitivities)
             x_sols - An OdeSolution object with the solution to the original ODE.

@@ -47,12 +47,12 @@ def sbml_to_ode(filename):
   # 
   # read the SBML from file 
   # 
-  from libsbml import *
+  import libsbml as lb 
   import sys
   raise NotImplementedError
 
-  doc = readSBMLFromFile(filename)
-  if doc.getNumErrors(LIBSBML_SEV_FATAL):
+  doc = lb.readSBMLFromFile(filename)
+  if doc.getNumErrors(lb.LIBSBML_SEV_FATAL):
     print('Encountered serious errors while reading file')
     print(doc.getErrorLog().toString())
     sys.exit(1)
@@ -63,24 +63,24 @@ def sbml_to_ode(filename):
   #
   # perform conversions
   #
-  props = ConversionProperties()
+  props = lb.ConversionProperties()
   props.addOption("promoteLocalParameters", True)
    
-  if doc.convert(props) != LIBSBML_OPERATION_SUCCESS: 
+  if doc.convert(props) != lb.LIBSBML_OPERATION_SUCCESS: 
     print('The document could not be converted')
     print(doc.getErrorLog().toString())
      
-  props = ConversionProperties()
+  props = lb.ConversionProperties()
   props.addOption("expandInitialAssignments", True)
    
-  if doc.convert(props) != LIBSBML_OPERATION_SUCCESS: 
+  if doc.convert(props) != lb.LIBSBML_OPERATION_SUCCESS: 
     print('The document could not be converted')
     print(doc.getErrorLog().toString())
      
-  props = ConversionProperties()
+  props = lb.ConversionProperties()
   props.addOption("expandFunctionDefinitions", True)
    
-  if doc.convert(props) != LIBSBML_OPERATION_SUCCESS: 
+  if doc.convert(props) != lb.LIBSBML_OPERATION_SUCCESS: 
     print('The document could not be converted')
     print(doc.getErrorLog().toString())
      
@@ -187,9 +187,9 @@ def sbml_to_ode(filename):
   for key in variables.keys():
     # get initialValue 
     element = mod.getElementBySId(key)
-    if element.getTypeCode() == SBML_PARAMETER: 
+    if element.getTypeCode() == lb.SBML_PARAMETER: 
       generated_code.extend('{0}'.format(element.getValue()))
-    elif element.getTypeCode() == SBML_SPECIES: 
+    elif element.getTypeCode() == lb.SBML_SPECIES: 
       if element.isSetInitialConcentration(): 
         generated_code.extend('{0}'.format(element.getInitialConcentration()))
       else: 

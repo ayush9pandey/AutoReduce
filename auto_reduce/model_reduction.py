@@ -4,7 +4,6 @@ from sympy.parsing.sympy_parser import parse_expr
 from sympy import solve, Eq
 import sympy
 import numpy as np
-from scipy.integrate import odeint, solve_ivp
 from scipy.linalg import solve_lyapunov, block_diag, eigvals, norm
 from auto_reduce import utils
 class Reduce(System):
@@ -106,10 +105,10 @@ class Reduce(System):
         y = h(x, P), y_hat = h_hat(x_hat, P) when mode = 'general'
         '''
         reduced_ode = utils.get_ODE(reduced_sys, self.timepoints_ode)
-        system_obj = self.get_system()
-        x_sol = utils.get_ODE(system_obj, self.timepoints_ode).solve_system().y
+        x_sol = self.x_sol
         y = self.C@x_sol
-        x_sols_hat = reduced_ode.solve_system().y
+        x_sols_hat = reduced_ode.solve_system().T
+        reduced_sys.x_sol = x_sols_hat
         y_hat = np.array(reduced_sys.C)@np.array(x_sols_hat)
         if np.shape(y) == np.shape(y_hat):
                 e = np.linalg.norm(y - y_hat)
@@ -124,18 +123,18 @@ class Reduce(System):
         T1 = np.reshape(T1, (self.n, reduced_sys.n))
         T2 = np.reshape(T2, (self.n, self.n - reduced_sys.n))
         timepoints_ssm = self.timepoints_ssm
+        x_sols = self.x_sol
+        full_ssm = self.full_ssm
         reduced_ssm = utils.get_SSM(reduced_sys, timepoints_ssm)
-        system_obj = self.get_system()
-        full_ssm = utils.get_SSM(system_obj, timepoints_ssm)
-        x_sols = utils.get_ODE(system_obj, timepoints_ssm).solve_system().y
-        x_sols_hat = utils.get_ODE(reduced_sys, timepoints_ssm).solve_system().y
-        x_sols = np.reshape(x_sols, (len(timepoints_ssm), system_obj.n))
+        x_sols_hat = utils.get_ODE(reduced_sys, timepoints_ssm).solve_system().T
+        x_sols = np.reshape(x_sols, (len(timepoints_ssm), self.get_system().n))
         x_sols_hat = np.reshape(x_sols_hat, (len(timepoints_ssm), reduced_sys.n))
         collapsed_ssm = utils.get_SSM(fast_subsystem, timepoints_ssm)
         Se = np.zeros(len(self.params_values))
         max_eigP = 0
         S_c = collapsed_ssm.compute_SSM()
         S_hat = reduced_ssm.compute_SSM()
+        reduced_sys.S = S_hat
         S_bar_c = np.concatenate((S_hat, S_c), axis = 2)
         S_bar_c = np.reshape(S_bar_c, (len(timepoints_ssm), self.n, len(self.params_values)))
         for k in range(len(timepoints_ssm)):
@@ -174,7 +173,10 @@ class Reduce(System):
                 S_metric = norm(Z_bar.T@Q_s@S_bar_c[k,:,j])
                 if  S_metric > S_metric_max:
                     S_metric_max = S_metric
+                # TODO : Check if this is correct
                 Se[j] = max_eigP + 2*len(reduced_ssm.timepoints)*S_metric_max
+                utils.printProgressBar(int(j + k*len(self.params_values)), len(timepoints_ssm)*len(self.params_values) - 1, prefix = 'Robustness Metric Progress:', suffix = 'Complete', length = 50)
+        reduced_sys.Se = Se
         return Se
 
     def get_invariant_manifold(self, reduced_sys):
@@ -182,7 +184,7 @@ class Reduce(System):
         x_c = reduced_sys.x_c
         fast_states = reduced_sys.fast_states
         x_hat = reduced_sys.x
-        x_sols_hat = reduced_sys.get_ODE().solve_system().y
+        x_sols_hat = reduced_sys.get_ODE().solve_system().T
         x_sol_c = np.zeros((len(timepoints_ode),np.shape(x_c)[0]))
         # Get the collapsed states by substituting the solutions 
         # into the algebraic relationships obtained
@@ -266,10 +268,17 @@ class Reduce(System):
 
     def solve_conservation_laws(self, laws):
         pass
+    
+    def solve_approximations(self):
+        pass
 
     def reduce_Cx(self):
         results_dict = {}
         possible_reductions = self.get_all_combinations()
+        x_sol = utils.get_ode_solutions(self.get_system(), self.timepoints_ode)
+        self.x_sol = x_sol
+        full_ssm = utils.get_SSM(self.get_system(), self.timepoints_ssm)
+        self.full_ssm = full_ssm
         if not len(possible_reductions):
             print('No possible reduced models found. Try increasing tolerance for number of states.')
             return
@@ -279,8 +288,13 @@ class Reduce(System):
             # Get metrics for this reduced system
             try:
                 e = self.get_error_metric(reduced_sys)
+            except:
+                e = np.NaN
+                continue
+            try:
                 Se = self.get_robustness_metric(reduced_sys, fast_subsystem, attempt)
             except:
+                Se = np.NaN
                 continue
             results_dict[reduced_sys] = [e, Se]
         self.results_dict = results_dict
@@ -295,6 +309,7 @@ class Reduce(System):
         
         self.results_dict = results_dict
         return self.results_dict
+
     def compute_reduced_model(self):
         if self.C is not None and self.g is None:
             # Call y = Cx based model reduction
@@ -309,92 +324,81 @@ class Reduce(System):
     def get_system(self):
         return System(self.x, self.f, self.params, self.C, self.g,
                     self.h, self.params_values, self.x_init)
-class Utils(Reduce):
-    '''
-    For future methods developed on top of Reduce class and other utility functions
-    '''
-    def __init__(self):
-        return 
 
-    def get_reduced_model(self, mode):
+
+class ReduceUtils(Reduce):
+    '''
+    For various utility methods developed on top of Reduce class and other utility functions
+    '''
+    def __init__(self, x, f, params = None, C = None, g = None, h = None, 
+                params_values = [], x_init = [], timepoints_ode = None, timepoints_ssm = None,
+                error_tol = None, nstates_tol = None):
+        super().__init__(x, f, params, C, g, h, params_values, x_init, timepoints_ode, timepoints_ssm,
+                        error_tol, nstates_tol)
+
+
+    def write_results(self, filename):
+        '''
+        Write the model reduction results in a file given by filename. 
+        The symbolic data is written in LaTeX.
+        '''
+        from sympy.printing import latex
+        f1 = open(filename, 'w')
+        f1.write('Model reduction results.\n')
+        for key,value in self.results_dict.items():
+            f1.write('A possible reduced model: \n \n')
+            f1.write('\n$x_{hat} = ')
+            f1.write(str(key.x))
+            f1.write('$\n\n\n\n')
+            for k in range(len(key.f)):
+                f1.write('\n$f_{hat}('+ str(k+1) + ') = ')
+                f1.write(latex(key.f[k]))
+                f1.write('$\n\n')
+            f1.write('\n\n\n')
+            f1.write('\nError metric:')
+            f1.write(str(value[0]))
+            f1.write('\n\n\n')
+            f1.write('\nRobustness metric:')
+            f1.write(str(value[1]))
+            f1.write('\n\n\n')
+            f1.write('Other properties') 
+            f1.write('\n\n\n')
+            f1.write('\n C = ')
+            f1.write(str(key.C))
+            f1.write('\n$ g = ')
+            f1.write(str(key.g))
+            f1.write('$\n h = ')
+            f1.write(str(key.h))
+            f1.write('\n$h = ')
+            f1.write(str(key.h))
+            f1.write('$\n Solutions : \n')
+            f1.write(str(key.x_sol))
+            f1.write('\n\n\n\n')
+            f1.write('\n Sensitivity Solutions : \n')
+            f1.write(str(key.S))
+            f1.write('\n\n\n\n')
+        f1.close()
+        return f1
+
+    def get_valid_reduced_models(self, nstates_tol = None, error_tol = None):
+        '''
+        Returns the reduced models obtained and stored in results_dict that satisfy the given 
+        tolerances for number of states and the error tolerance. Among the return reduced model objects
+        you may access robustness metric for each by looking at reduced_sys.Se. Choose the reduced model 
+        with lowest robustness metric.
+        '''
+        if nstates_tol is None:
+            nstates_tol = self.nstates_tol
+        if error_tol is None:
+            error_tol = self.error_tol
+        valid_reduced_models = []
         results_dict = self.results_dict
-        error_tol = self.error_tol
-
-        if mode == 'Sympy':
-            # Post reduction
-            count = 0
-            reduced_models_good = []
-            error_norm = []
-            retained_states = []
-            reduced_models = []
-            for i in range(len(results_dict.keys())):
-                key = list(results_dict.keys())[i]
-                errors = results_dict[key][1]
-                error_norm.append(errors)
-                reduced_models.append(results_dict[key][0])
-                flag = len(np.where(errors <= error_tol)[0].tolist())
-                count += flag
-                if flag:
-                    reduced_models_good.append(results_dict[key][0])
-                    retained_states.append(key)
-            if count == 0:
-                print('None of the reduced models could achieve the desired error tolerance. You could try with higher tolerance or an improved model or parameters. The model with minimum error is -')
-                index_reduced = np.where(error_norm == np.min(error_norm))[0].tolist()[0]
-                final_reduced = reduced_models[index_reduced]
-            elif count > 1: # multiple reduced models satisfy the tolerance desired, choose one with least states
-                final_reduced = reduced_models_good[0]
-                index_reduced = 0
-                for i in reduced_models_good:
-                    if len(i) < len(final_reduced):
-                        final_reduced = reduced_models[i]
-                        index_reduced = i
-            else:
-                final_reduced = reduced_models_good[0]
-            #     min_norm_ind = np.where(error_norm == np.min(error_norm))
-            #     min_index_list = min_norm_ind[0].tolist()
-            #     final_reduced = reduced_models[min_index_list[0]]
-            #     if len(min_index_list) > 1:
-            #         for i in min_index_list:
-            #             if len(reduced_models[i]) < len(final_reduced):
-            #                 final_reduced = reduced_models[i]
-            final_retained = retained_states[index_reduced]
-            print('The states retained for the final reduced model are {0}'.format(final_retained))
-            print('The final reduced model is {0}'.format(final_reduced))
-            return  final_reduced
-        if mode == 'SBML':
-            sbml_doc = sympy_to_sbml(self.f_hat)
-            return sbml_doc
-        if mode == 'ODE':
-            fun_hat = lambdify((self.x,self.P), self.f_hat)
-            return fun_hat
-
-    def compute_full_model(self):
-        x = self.x
-        f = self.f
-        P = self.params
-        C = self.C
-        x_init = self.x_init
-        params_values = self.params_values
-        timepoints = self.timepoints
-        fun = lambdify((x, P),f)
-        def fun_ode(t, x, P):
-            y = fun(x, P)
-            return np.array(y)
-        x_sol, S = solve_system(fun_ode, params_values, timepoints, x_init)
-        y = np.matmul(np.array(C), np.array(x_sol(timepoints)))
-        S_final = []
-        for i in range(len(params_values)): 
-            # for sensitivity of all states wrt each parameter
-            sen_sol = S[i]
-            sens_i = np.abs(np.array(sen_sol(timepoints)))
-            sens_i = sens_i.transpose()
-            normed_sens = sens_i.copy()
-            x_sols = x_sol(timepoints)
-            for j in range(len(timepoints)):
-                for k in range(np.shape(x_sols)[0]):
-                    normed_sens[j,k] = normed_sens[j,k] * params_values[i] / x_sols[k,j] 
-            S_final.append(normed_sens)
-        return x_sol, y, S_final
+        for key, value in results_dict.items():
+            error = value[0]
+            if error <= error_tol and len(key.x) <= nstates_tol:
+                valid_reduced_models.append(key)
+        self.valid_reduced_models = valid_reduced_models
+        return valid_reduced_models
 
 
 def create_system(x, f, params = None, C = None, g = None, h = None, 
