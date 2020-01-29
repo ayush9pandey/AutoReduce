@@ -58,6 +58,11 @@ class SSM(System):
                 F[3] = f[i]
                 #Store approx. dfi/dpj into Z
                 Z[i] = (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
+                if Z[i] == np.Inf:
+                    Z[i] = 1
+                elif Z[i] == np.NaN:
+                    Z[i] = 0
+
         return Z
 
     def compute_J(self, x, **kwargs):
@@ -98,6 +103,12 @@ class SSM(System):
                     F[3] = f[i]
                     #Store approx. dfi/dxj into J
                     J[i,j]= (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
+                    # print(J[i,j])
+                    # if J[i,j] == np.Inf:
+                    #     J[i,j] = 1
+                    # elif J[i,j] == np.NaN:
+                    #     print("hereeeeeeeeeeeeeeeeeeeee")
+                    #     J[i,j] = 0
         return J
 
     def compute_SSM(self, normalize = False, **kwargs):
