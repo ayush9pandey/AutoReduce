@@ -12,9 +12,9 @@ class SSM(System):
     Both the Jacobian matrix and the Z matrix are estimated using 4th
     order central difference as given in the paper.
     '''
-    def __init__(self, x, f, params = None, C = None, g = None, h = None, 
+    def __init__(self, x, f, params = None, C = None, g = None, h = None, u = None,
                 params_values = [], x_init = [], timepoints = None, mode = None):
-        super().__init__(x, f, params, C, g, h, params_values, x_init)
+        super().__init__(x, f, params, C, g, h, u, params_values, x_init)
         if timepoints is None:
             timepoints = []
         else:
@@ -107,7 +107,6 @@ class SSM(System):
                     # if J[i,j] == np.Inf:
                     #     J[i,j] = 1
                     # elif J[i,j] == np.NaN:
-                    #     print("hereeeeeeeeeeeeeeeeeeeee")
                     #     J[i,j] = 0
         return J
 
@@ -174,7 +173,7 @@ class SSM(System):
 
     def get_system(self):
         return System(self.x, self.f, self.params, self.C, self.g,
-                    self.h, self.params_values, self.x_init)
+                    self.h, self.u, self.params_values, self.x_init)
                     
 
 

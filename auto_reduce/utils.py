@@ -6,7 +6,7 @@ def get_ODE(system_obj, timepoints, **kwargs):
     '''
     For the given timepoints, create an ODE class object for this System object.
     '''
-    ode_obj = ode.ODE(system_obj.x, system_obj.f, C = system_obj.C, g = system_obj.g, h = system_obj.h, 
+    ode_obj = ode.ODE(system_obj.x, system_obj.f, C = system_obj.C, g = system_obj.g, h = system_obj.h, u = system_obj.u,
                 params = system_obj.params, params_values = system_obj.params_values, 
                 x_init = system_obj.x_init, timepoints = timepoints, **kwargs)
     return ode_obj
@@ -28,21 +28,21 @@ def get_SSM(system_obj, timepoints, **kwargs):
     For the given timepoints, create an SSM class object for this System object.
     '''
     ssm_obj = local_sensitivity.SSM(system_obj.x, system_obj.f, g = system_obj.g,
-                C = system_obj.C, h = system_obj.h, params = system_obj.params,
+                C = system_obj.C, h = system_obj.h, u = system_obj.u, params = system_obj.params,
                 params_values = system_obj.params_values, x_init = system_obj.x_init, 
                 timepoints = timepoints, **kwargs)
     return ssm_obj
 
 def reduce(system_obj, timepoints_ode, timepoints_ssm, **kwargs):
     red_obj = model_reduction.Reduce(system_obj.x, system_obj.f, C = system_obj.C, 
-                params = system_obj.params, g = system_obj.g, h = system_obj.h,
+                params = system_obj.params, g = system_obj.g, h = system_obj.h, u = system_obj.u,
                 params_values = system_obj.params_values, x_init = system_obj.x_init, 
                 timepoints_ode = timepoints_ode, timepoints_ssm = timepoints_ssm, **kwargs)
     return red_obj
 
 def reduce_utils(reduce_obj, **kwargs):
     reduce_utils_obj = model_reduction.ReduceUtils(reduce_obj.x, reduce_obj.f, C = reduce_obj.C, 
-                params = reduce_obj.params, g = reduce_obj.g, h = reduce_obj.h,
+                params = reduce_obj.params, g = reduce_obj.g, h = reduce_obj.h, u = reduce_obj.u,
                 params_values = reduce_obj.params_values, x_init = reduce_obj.x_init, 
                 timepoints_ode = reduce_obj.timepoints_ode, timepoints_ssm = reduce_obj.timepoints_ssm,
                 error_tol=reduce_obj.error_tol, nstates_tol=reduce_obj.nstates_tol)
