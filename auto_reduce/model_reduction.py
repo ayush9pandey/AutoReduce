@@ -242,6 +242,9 @@ class Reduce(System):
                 f_hat.append(f[i])
                 x_hat.append(x[i])
                 x_hat_init.append(x_init[i])
+        print('Reduced set of variables is', x_hat)
+        print('f_hat = ',f_hat)
+        print('Collapsed set of variables is', x_c)
         for i in range(len(x_c)):
             x_c_sub = solve(Eq(f_c[i]), x_c[i])
             if len(x_c_sub) == 0:
@@ -249,18 +252,25 @@ class Reduce(System):
                 fast_states.append([])
                 continue
             else:
+                print('Solved for {0} to get {1}'.format(x_c[i], x_c_sub))
+                # This x_c_sub should not contain previously eliminated variables otherwise circles continue
+                
                 fast_states.append(x_c_sub[0])
         for i in range(len(fast_states)):
             if fast_states[i] == []:
                 continue
             for j in range(len(f_hat)):
+                print('Substituting {0} for variable {1} into f_hat{2}'.format(fast_states[i], x_c[i], j))
                 f_hat[j] = f_hat[j].subs(x_c[i], fast_states[i])
+                print('f_hat = ',f_hat[j])
 
         for i in range(len(fast_states)):
             if fast_states[i] == []:
                 continue
             for j in range(len(f_hat)):
+                print('Substituting {0} for variable {1} into f_hat{2}'.format(fast_states[i], x_c[i], j))
                 f_hat[j] = f_hat[j].subs(x_c[i], fast_states[i])
+                print('f_hat = ',f_hat[j])
 
         for i in range(len(x_hat)):
             for j in range(len(f_c)):
@@ -283,11 +293,15 @@ class Reduce(System):
             for sym in fi.free_symbols:
                 if sym not in free_symbols_all:
                     free_symbols_all.append(sym)
-
+        bugged_states = []
         for syms in free_symbols_all:
             if syms not in x_hat + self.params:
-                print('The time-scale separation that retains states {0} does not work'.format(attempt))
-                return None, None
+                bugged_states.append(syms)
+                flag = True
+        if flag:
+            warnings.warn('Check model consistency')
+            print('The time-scale separation that retains states {0} does not work because the state-variables {1} appear in the reduced model'.format(attempt, bugged_states))
+            # return None, None
 
         reduced_sys = create_system(x_hat, f_hat, params = self.params, C = C_hat,
                             params_values = self.params_values, x_init = x_hat_init)
