@@ -245,24 +245,31 @@ class Reduce(System):
         print('Reduced set of variables is', x_hat)
         print('f_hat = ',f_hat)
         print('Collapsed set of variables is', x_c)
+
+        # Try 1
+        solved_states = []
+        lookup_collapsed = {}
         for i in range(len(x_c)):
             x_c_sub = solve(Eq(f_c[i]), x_c[i])
+            lookup_collapsed[x_c[i]] = x_c_sub
             if len(x_c_sub) == 0:
                 print('Could not find solution for this collapsed variable : {0} from {1}'.format(x_c[i], f_c[i]))
                 fast_states.append([])
                 continue
             else:
-                print('Solved for {0} to get {1}'.format(x_c[i], x_c_sub))
+                for sym in x_c_sub[0].free_symbols:
+                    if sym in solved_states and sym in x:
+                        print('The state {0} has been solved for but appears in the solution for the next variable, making the sub with {1} into the corresponding f_c and solving again should fix this.'.format(sym, lookup_collapsed[sym][0]))
+                        f_c[i] = f_c[i].subs(sym, lookup_collapsed[sym][0])
+                        print('Updating old x_c_sub then')
+                        x_c_sub = solve(Eq(f_c[i]), x_c[i])
+                        print('with ',x_c_sub)
+                        lookup_collapsed[x_c[i]] = x_c_sub
+                    else:
+                        solved_states.append(x_c[i])
+                print('Solved for {0} to get {1}'.format(x_c[i], x_c_sub[0]))
                 # This x_c_sub should not contain previously eliminated variables otherwise circles continue
-                
                 fast_states.append(x_c_sub[0])
-        for i in range(len(fast_states)):
-            if fast_states[i] == []:
-                continue
-            for j in range(len(f_hat)):
-                print('Substituting {0} for variable {1} into f_hat{2}'.format(fast_states[i], x_c[i], j))
-                f_hat[j] = f_hat[j].subs(x_c[i], fast_states[i])
-                print('f_hat = ',f_hat[j])
 
         for i in range(len(fast_states)):
             if fast_states[i] == []:
@@ -271,7 +278,12 @@ class Reduce(System):
                 print('Substituting {0} for variable {1} into f_hat{2}'.format(fast_states[i], x_c[i], j))
                 f_hat[j] = f_hat[j].subs(x_c[i], fast_states[i])
                 print('f_hat = ',f_hat[j])
-
+            for j in range(len(f_c)):
+                print('Substituting {0} for variable {1} into f_c{2}'.format(fast_states[i], x_c[i], j))
+                f_c[j] = f_c[j].subs(x_c[i], fast_states[i])
+                print('f_c = ',f_c[j])
+        
+        # Continue
         for i in range(len(x_hat)):
             for j in range(len(f_c)):
                 # The slow variables stay at steady state in the fast subsystem
