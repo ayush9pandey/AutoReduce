@@ -300,6 +300,7 @@ class Reduce(System):
                 C_hat[row_ind][i] = 1 * is_output
 
         # Create list of all free symbols
+        flag = False
         free_symbols_all = []
         for fi in f_hat:
             for sym in fi.free_symbols:
