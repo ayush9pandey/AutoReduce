@@ -14,13 +14,17 @@ class Reduce(System):
     '''
     def __init__(self, x, f, params = None, C = None, g = None, h = None, u = None,
                 params_values = [], x_init = [], timepoints_ode = None, timepoints_ssm = None,
-                error_tol = None, nstates_tol = None):
+                error_tol = None, nstates_tol = None, nstates_tol_min = None):
         super().__init__(x, f, params, C, g, h, u, params_values, x_init)
         self.f_hat = [] # Should be a list of Sympy objects
         if nstates_tol is None:
             self.nstates_tol = self.n - 1
         else:
             self.nstates_tol = nstates_tol
+        if nstates_tol_min is None:
+            self.nstates_tol_min = 1
+        else:
+            self.nstates_tol_min = nstates_tol_min
         if error_tol is None:
             self.error_tol = 1e6
         else:
@@ -223,8 +227,11 @@ class Reduce(System):
         return x_sol_c
 
 
-    def solve_timescale_separation(self, attempt):
-        print('attempting :', attempt)
+    def solve_timescale_separation(self, attempt_states):
+        attempt = []
+        for state in attempt_states:
+            attempt.append(self.x.index(state))
+        print('attempting to retain :', attempt)
         x_c = []
         fast_states = []
         f_c = []
@@ -242,9 +249,9 @@ class Reduce(System):
                 f_hat.append(f[i])
                 x_hat.append(x[i])
                 x_hat_init.append(x_init[i])
-        print('Reduced set of variables is', x_hat)
-        print('f_hat = ',f_hat)
-        print('Collapsed set of variables is', x_c)
+        # print('Reduced set of variables is', x_hat)
+        # print('f_hat = ',f_hat)
+        # print('Collapsed set of variables is', x_c)
 
         # Try 1
         solved_states = []
@@ -256,18 +263,28 @@ class Reduce(System):
                 print('Could not find solution for this collapsed variable : {0} from {1}'.format(x_c[i], f_c[i]))
                 fast_states.append([])
                 continue
+            elif len(x_c_sub) > 1:
+                # print('Multiple solutions obtained. Chooosing non-zero solution, check consistency. The solutions are ', x_c_sub)
+                for sub in x_c_sub:
+                    if sub == 0:
+                        x_c_sub.remove(0)
             else:
                 for sym in x_c_sub[0].free_symbols:
                     if sym in solved_states and sym in x:
-                        print('The state {0} has been solved for but appears in the solution for the next variable, making the sub with {1} into the corresponding f_c and solving again should fix this.'.format(sym, lookup_collapsed[sym][0]))
+                        # print('The state {0} has been solved for but appears in the solution for the next variable, making the sub with {1} into the corresponding f_c and solving again should fix this.'.format(sym, lookup_collapsed[sym][0]))
                         f_c[i] = f_c[i].subs(sym, lookup_collapsed[sym][0])
-                        print('Updating old x_c_sub then')
+                        # print('Updating old x_c_sub then')
                         x_c_sub = solve(Eq(f_c[i]), x_c[i])
-                        print('with ',x_c_sub)
+                        if len(x_c_sub) > 1:
+                            # print('Multiple solutions obtained. Chooosing non-zero solution, check consistency. The solutions are ', x_c_sub)
+                            for sub in x_c_sub:
+                                if sub == 0:
+                                    x_c_sub.remove(0)
+                        # print('with ',x_c_sub)
                         lookup_collapsed[x_c[i]] = x_c_sub
                     else:
                         solved_states.append(x_c[i])
-                print('Solved for {0} to get {1}'.format(x_c[i], x_c_sub[0]))
+                # print('Solved for {0} to get {1}'.format(x_c[i], x_c_sub[0]))
                 # This x_c_sub should not contain previously eliminated variables otherwise circles continue
                 fast_states.append(x_c_sub[0])
 
@@ -275,13 +292,13 @@ class Reduce(System):
             if fast_states[i] == []:
                 continue
             for j in range(len(f_hat)):
-                print('Substituting {0} for variable {1} into f_hat{2}'.format(fast_states[i], x_c[i], j))
+                # print('Substituting {0} for variable {1} into f_hat{2}'.format(fast_states[i], x_c[i], j))
                 f_hat[j] = f_hat[j].subs(x_c[i], fast_states[i])
-                print('f_hat = ',f_hat[j])
+                # print('f_hat = ',f_hat[j])
             for j in range(len(f_c)):
-                print('Substituting {0} for variable {1} into f_c{2}'.format(fast_states[i], x_c[i], j))
+                # print('Substituting {0} for variable {1} into f_c{2}'.format(fast_states[i], x_c[i], j))
                 f_c[j] = f_c[j].subs(x_c[i], fast_states[i])
-                print('f_c = ',f_c[j])
+                # print('f_c = ',f_c[j])
         
         # Continue
         for i in range(len(x_hat)):
@@ -314,6 +331,8 @@ class Reduce(System):
         if flag:
             warnings.warn('Check model consistency')
             print('The time-scale separation that retains states {0} does not work because the state-variables {1} appear in the reduced model'.format(attempt, bugged_states))
+        else:
+            print('Successful time-scale separation solution obtained.')
             # return None, None
 
         reduced_sys = create_system(x_hat, f_hat, params = self.params, C = C_hat,
@@ -324,8 +343,11 @@ class Reduce(System):
         reduced_sys.fast_states = fast_states
         return reduced_sys, fast_subsystem
 
-    def solve_timescale_separation_with_input(self, attempt):
-        print('attempting :', attempt)
+    def solve_timescale_separation_with_input(self, attempt_states):
+        attempt = []
+        for state in attempt_states:
+            attempt.append(self.x.index(state))
+        print('attempting to retain:', attempt)
         x_c = []
         fast_states = []
         f_c = []
@@ -333,42 +355,74 @@ class Reduce(System):
         x_hat_init = []
         x_c_init = []
         x_hat = []
-        x, f, x_init = self.x, self.f, self.x_init
+        x, f, g, u, x_init = self.x, self.f, self.g, self.u, self.x_init
+        f_g = [fi + gi for fi, gi in zip(f,g)]
         for i in range(self.n):
             if i not in attempt:
                 x_c.append(x[i])
-                f_c.append(f[i])
+                f_c.append(f_g[i])
                 x_c_init.append(x_init[i])
             else:
-                f_hat.append(f[i])
+                f_hat.append(f_g[i])
                 x_hat.append(x[i])
                 x_hat_init.append(x_init[i])
+        # print('Reduced set of variables is', x_hat)
+        # print('f_hat = ',f_hat)
+        # print('Collapsed set of variables is', x_c)
+
+        solved_states = []
+        lookup_collapsed = {}
         for i in range(len(x_c)):
             x_c_sub = solve(Eq(f_c[i]), x_c[i])
+            lookup_collapsed[x_c[i]] = x_c_sub
             if len(x_c_sub) == 0:
-                print('Could not find solution for this collapsed variable : {0} from {1}'.format(x_c[i], f_c[i]))
+                # print('Could not find solution for this collapsed variable : {0} from {1}'.format(x_c[i], f_c[i]))
                 fast_states.append([])
                 continue
+            elif len(x_c_sub) > 1:
+                # print('Multiple solutions obtained. Chooosing non-zero solution, check consistency. The solutions are ', x_c_sub)
+                for sub in x_c_sub:
+                    if sub == 0:
+                        x_c_sub.remove(0)
             else:
+                for sym in x_c_sub[0].free_symbols:
+                    if sym in solved_states and sym in x:
+                        # print('The state {0} has been solved for but appears in the solution for the next variable, making the sub with {1} into the corresponding f_c and solving again should fix this.'.format(sym, lookup_collapsed[sym][0]))
+                        f_c[i] = f_c[i].subs(sym, lookup_collapsed[sym][0])
+                        # print('Updating old x_c_sub then')
+                        x_c_sub = solve(Eq(f_c[i]), x_c[i])
+                        if len(x_c_sub) > 1:
+                            print('Multiple solutions obtained. Chooosing non-zero solution, check consistency. The solutions are ', x_c_sub)
+                            for sub in x_c_sub:
+                                if sub == 0:
+                                    x_c_sub.remove(0)
+                        # print('with ',x_c_sub)
+                        lookup_collapsed[x_c[i]] = x_c_sub
+                    else:
+                        solved_states.append(x_c[i])
+                # print('Solved for {0} to get {1}'.format(x_c[i], x_c_sub[0]))
+                # This x_c_sub should not contain previously eliminated variables otherwise circles continue
                 fast_states.append(x_c_sub[0])
-        for i in range(len(fast_states)):
-            if fast_states[i] == []:
-                continue
-            for j in range(len(f_hat)):
-                f_hat[j] = f_hat[j].subs(x_c[i], fast_states[i])
 
         for i in range(len(fast_states)):
             if fast_states[i] == []:
                 continue
             for j in range(len(f_hat)):
+                # print('Substituting {0} for variable {1} into f_hat{2}'.format(fast_states[i], x_c[i], j))
                 f_hat[j] = f_hat[j].subs(x_c[i], fast_states[i])
-
+                # print('f_hat = ',f_hat[j])
+            for j in range(len(f_c)):
+                # print('Substituting {0} for variable {1} into f_c{2}'.format(fast_states[i], x_c[i], j))
+                f_c[j] = f_c[j].subs(x_c[i], fast_states[i])
+                # print('f_c = ',f_c[j])
+        
+        # Continue
         for i in range(len(x_hat)):
             for j in range(len(f_c)):
                 # The slow variables stay at steady state in the fast subsystem
                 f_c[j] = f_c[j].subs(x_hat[i], x_hat_init[i])
 
-        # Create C_hat
+        # Create C_hat 
         output_states = self.get_output_states()
         C_hat = np.zeros((np.shape(self.C)[0], np.shape(x_hat)[0]))
         is_output = 0
@@ -379,32 +433,40 @@ class Reduce(System):
                 C_hat[row_ind][i] = 1 * is_output
 
         # Create list of all free symbols
+        flag = False
         free_symbols_all = []
         for fi in f_hat:
             for sym in fi.free_symbols:
                 if sym not in free_symbols_all:
                     free_symbols_all.append(sym)
-
+        bugged_states = []
         for syms in free_symbols_all:
-            if syms not in x_hat + self.params:
-                print('The time-scale separation that retains states {0} does not work'.format(attempt))
-                return None, None
+            if syms not in x_hat + u + self.params:
+                bugged_states.append(syms)
+                flag = True
+        if flag:
+            warnings.warn('Check model consistency')
+            print('The time-scale separation that retains states {0} does not work because the state-variables {1} appear in the reduced model'.format(attempt, bugged_states))
+            # return None, None
 
-        reduced_sys = create_system(x_hat, f_hat, params=self.params, C=C_hat,
-                                    params_values=self.params_values, x_init=x_hat_init)
-        fast_subsystem = create_system(x_c, f_c, params=self.params,
-                                       params_values=self.params_values, x_init=x_c_init)
+        reduced_sys = create_system(x_hat, f_hat, params = self.params, C = C_hat,
+                            params_values = self.params_values, x_init = x_hat_init)
+        fast_subsystem = create_system(x_c, f_c, params = self.params,
+                            params_values = self.params_values, x_init = x_c_init)
         reduced_sys.x_c = x_c
+        reduced_sys.bugged_states = bugged_states
         reduced_sys.fast_states = fast_states
         return reduced_sys, fast_subsystem
 
-    def set_conservation_laws(self, conserved_quantities, states_to_eliminate):
+
+    def set_conservation_laws(self, conserved_quantities, sym_states_to_eliminate):
         '''
         From the conserved_quantities list, this method computes the expressions for each of the 
         state indices in states_to_eliminate, and substitutes into the full model dynamics. 
         Both lists should contain symbolic variables referencing states in self.f.
         Returns the dynamics self.f. 
         '''
+        states_to_eliminate = [self.x.index(state) for state in sym_states_to_eliminate]
         for i in range(len(states_to_eliminate)):
             state = self.x[states_to_eliminate[i]]
             state_sub = solve(Eq(conserved_quantities[i]), state)
@@ -445,8 +507,13 @@ class Reduce(System):
             print('No possible reduced models found. Try increasing tolerance for number of states.')
             return
         for attempt in possible_reductions:
+            if len(attempt) < self.nstates_tol_min:
+                continue
+            elif len(attempt) > self.nstates_tol:
+                continue
+            attempt_states = [self.x[i] for i in attempt]
             # Create reduced systems
-            reduced_sys, fast_subsystem = self.solve_timescale_separation(attempt)
+            reduced_sys, fast_subsystem = self.solve_timescale_separation(attempt_states)
             if reduced_sys is None or fast_subsystem is None:
                 continue
             # Get metrics for this reduced system
@@ -465,8 +532,9 @@ class Reduce(System):
             print('No possible reduced models found. Try increasing tolerance for number of states.')
             return
         for attempt in possible_reductions:
+            attempt_states = [self.x[i] for i in attempt]
             # Create reduced systems
-            reduced_sys, fast_subsystem = self.solve_timescale_separation_with_input(attempt)
+            reduced_sys, fast_subsystem = self.solve_timescale_separation_with_input(attempt_states)
             if reduced_sys is None or fast_subsystem is None:
                 continue
             # Get metrics for this reduced system
@@ -498,8 +566,8 @@ class Reduce(System):
             return self.results_dict
 
     def get_system(self):
-        return System(self.x, self.f, self.params, self.C, self.g,
-                    self.h, self.params_values, self.x_init)
+        return System(self.x, self.f, params = self.params, C = self.C, g = self.g,
+                    h = self.h, u = self.u, params_values = self.params_values, x_init = self.x_init)
 
 
 class ReduceUtils(Reduce):
@@ -576,8 +644,8 @@ class ReduceUtils(Reduce):
         return valid_reduced_models
 
 
-def create_system(x, f, params = None, C = None, g = None, h = None, 
+def create_system(x, f, params = None, C = None, g = None, h = None, u = None,
                 params_values = [], x_init = []):
-    return System(x, f, params, C, g, h, 
-                params_values, x_init)
+    return System(x, f = f, params = params, C = C, g = g, h = h, u = u,
+                params_values = params_values, x_init = x_init)
 

@@ -71,6 +71,14 @@ class SSM(System):
         Returns a matrix of size n x n.
         Use mode = 'accurate' for this object attribute to use accurate computations using numdifftools.
         '''
+        if 'fun' in kwargs:
+            fun = kwargs.get('fun')
+        else:
+            fun = self.f
+        if 'var' in kwargs:
+            var = kwargs.get('var')
+        else:
+            var = x
         if self.mode == 'accurate':
             import numdifftools as nd
             ode = kwargs.get('ode')
@@ -78,30 +86,31 @@ class SSM(System):
             ode_func = lambda t, xs: ode(t, xs, params)
             return nd.jacobian(lambda x: ode_func(0, x))
         # initialize J
-        J = np.zeros( (self.n, self.n) )   
+        J = np.zeros( (self.n, len(var)) )   
         P = self.params_values 
-        # store x
-        X = x 
+        u = self.u
+        # store the variable with respect to which we approximate the differentiation (df/dvar)
+        X = var 
         for i in range(self.n):
-            for j in range(self.n):
+            for j in range(len(var)):
                 F = np.zeros( (4,1) )
                 h = X[j]*0.01
-                # Gets O(4) central difference on dfi/dxj
+                # Gets O(4) central difference on dfi/dvarj
                 if h != 0:
-                    x = X
-                    x[j] = X[j] + 2*h
-                    f = self.evaluate(self.f, x, P)
+                    var = X
+                    var[j] = X[j] + 2*h
+                    f = self.evaluate(fun, var, P, u)
                     F[0] = f[i]
-                    x[j] = X[j] + h
-                    f = self.evaluate(self.f, x, P)
+                    var[j] = X[j] + h
+                    f = self.evaluate(fun, var, P, u)
                     F[1] = f[i]
-                    x[j] = X[j] - h
-                    f = self.evaluate(self.f, x, P)
+                    var[j] = X[j] - h
+                    f = self.evaluate(fun, var, P, u)
                     F[2] = f[i]
-                    x[j] = X[j] - 2*h
-                    f = self.evaluate(self.f, x, P)
+                    var[j] = X[j] - 2*h
+                    f = self.evaluate(fun, var, P, u)
                     F[3] = f[i]
-                    #Store approx. dfi/dxj into J
+                    #Store approvar. dfi/dvarj into J
                     J[i,j]= (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
                     # print(J[i,j])
                     # if J[i,j] == np.Inf:

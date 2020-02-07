@@ -69,7 +69,7 @@ class System(object):
             self.params = params
         return self
 
-    def evaluate(self, f, x, P):
+    def evaluate(self, f, x, P, u = None):
         """
         Evaluate the given symbolic function (f) that is part of the System
         at the values given by x for self.x and P for self.params
@@ -78,6 +78,7 @@ class System(object):
         for i in range(len(f)):
             fi = f[i]
             fi = fi.subs(list(zip(self.x, x)))
+            fi = fi.subs(list(zip(self.u, u)))
             fi = fi.subs(list(zip(self.params, P)))
             fs.append(fi)
         return fs

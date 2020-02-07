@@ -24,6 +24,7 @@ class ODE(System):
         Other options passed to scipy.integrate.odeint.
         '''
         if self.u is not None:
+            print(self.u)
             return self.solve_system_with_inputs()
 
         fun = lambdify((self.x, self.params), self.f)
@@ -45,7 +46,7 @@ class ODE(System):
         self.sol = sol
         return sol
 
-    def solve_system_with_inputs():
+    def solve_system_with_inputs(self, **kwargs):
         if self.u is None:
             raise ValueError('Use solve_system() if there are no inputs in the System model.')
         f_g = [fi + gi*u for fi, gi in zip(self.f,self.g)]
@@ -72,4 +73,4 @@ class ODE(System):
 
     def get_system(self):
         return System(self.x, self.f, self.params, self.C, self.g,
-                    self.h, self.params_values, self.x_init)
+                    self.h, self.u, self.params_values, self.x_init)
