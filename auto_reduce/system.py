@@ -78,7 +78,8 @@ class System(object):
         for i in range(len(f)):
             fi = f[i]
             fi = fi.subs(list(zip(self.x, x)))
-            fi = fi.subs(list(zip(self.u, u)))
+            if self.u is not None:
+                fi = fi.subs(list(zip(self.u, u)))
             fi = fi.subs(list(zip(self.params, P)))
             fs.append(fi)
         return fs

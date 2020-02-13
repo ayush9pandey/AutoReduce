@@ -3,6 +3,7 @@ from auto_reduce import utils
 import numpy as np
 # from .ode import ODE
 from scipy.integrate import solve_ivp, odeint
+from sympy import lambdify
 
 class SSM(System):
     '''
@@ -13,16 +14,12 @@ class SSM(System):
     order central difference as given in the paper.
     '''
     def __init__(self, x, f, params = None, C = None, g = None, h = None, u = None,
-                params_values = [], x_init = [], timepoints = None, mode = None):
+                params_values = [], x_init = [], timepoints = None):
         super().__init__(x, f, params, C, g, h, u, params_values, x_init)
         if timepoints is None:
             timepoints = []
         else:
             self.timepoints = timepoints
-        if mode is None:
-            self.mode = 'approximate'
-        else:
-            self.mode = mode 
 
         return
 
@@ -32,8 +29,10 @@ class SSM(System):
         Returns a vector of size n x 1. 
         Use mode = 'accurate' for this object attribute to use accurate computations using numdifftools.
         '''
-        if self.mode == 'accurate':
-            return self.sensitivity_to_parameter(**kwargs)
+        # if 'mode' in kwargs:
+        #     if kwargs.get('mode') == 'accurate':
+        #         del kwargs['mode']
+        #         return self.sensitivity_to_parameter(x, j, **kwargs)
         # initialize Z
         Z = np.zeros(self.n)    
         P_holder = self.params_values
@@ -79,16 +78,23 @@ class SSM(System):
             var = kwargs.get('var')
         else:
             var = x
-        if self.mode == 'accurate':
-            import numdifftools as nd
-            ode = kwargs.get('ode')
-            params = kwargs.get('params')
-            ode_func = lambda t, xs: ode(t, xs, params)
-            return nd.jacobian(lambda x: ode_func(0, x))
         # initialize J
         J = np.zeros( (self.n, len(var)) )   
         P = self.params_values 
         u = self.u
+        if 'mode' in kwargs:
+            if kwargs.get('mode') == 'accurate':
+                del kwargs['mode']
+                try:
+                    import numdifftools as nd
+                except:
+                    raise ValueError('The package numdifftools is not installed for this method to work.')
+                fun_l = lambdify((self.x, self.params), fun)
+                def fun_ode(t, x, params):
+                    y = fun_l(x, params)
+                    return np.array(y)
+                jfun = nd.Jacobian(lambda x: fun_ode(0, x, P), **kwargs)
+                return jfun(x)
         # store the variable with respect to which we approximate the differentiation (df/dvar)
         X = var 
         for i in range(self.n):
@@ -126,8 +132,9 @@ class SSM(System):
         If normalize argument is true, the coefficients are normalized by the nominal value of each paramneter.
         Use mode = 'accurate' for this object attribute to use accurate computations using numdifftools.
         '''
-        if self.mode == 'accurate':
-            return self.solve_extended_ode(**kwargs)
+        if 'mode' in kwargs:
+            if kwargs.get('mode') == 'accurate_SSM':
+                return self.solve_extended_ode(**kwargs)
 
         def sens_func(t, x, J, Z):
             # forms ODE to solve for sensitivity coefficient S
@@ -149,13 +156,13 @@ class SSM(System):
             if len(timepoints) == 1:
                 continue
             # get the jacobian matrix
-            J = self.compute_J(xs[k,:])
+            J = self.compute_J(xs[k,:], **kwargs)
             #Solve for S = dx/dp for all x and all P (or theta, the parameters) at time point k
             for j in range(len(P)): 
                 utils.printProgressBar(int(j + k*len(P)), len(self.timepoints)*len(P) - 1, prefix = 'SSM Progress:', suffix = 'Complete', length = 50)
                 # print('for parameter',P[j])
                 # get the pmatrix
-                Zj = self.compute_Zj(xs[k,:], j)
+                Zj = self.compute_Zj(xs[k,:], j, **kwargs)
                 # solve for S
                 sens_func_ode = lambda t, x : sens_func(t, x, J, Zj)
                 sol = odeint(sens_func_ode, S0, timepoints, tfirst = True)
@@ -188,13 +195,12 @@ class SSM(System):
 
     ############## Sam Clamons ###########
 
-    def sensitivity_to_parameter(self, ode_sol = None, ode_jac = None, ode = None, params = None, n_vars = None, p = None, t_min = None,
-                                t_max = None):
+    def sensitivity_to_parameter(self, x, j, **kwargs):
         '''
         Calculates the response of each derivative (defined by ode) to changes
-        in a single parameter (the jth one) over time.
+        in a single parameter (the jth one) at point x.
 
-        params:
+        keyword argument options?:
             ode_sol - An OdeSolution object holding a continuously-interpolated
                         solution for ode.
             ode_jac - Jacobian of the ode, as calculated by numdifftools.Jacobian.
@@ -214,14 +220,13 @@ class SSM(System):
             xs = ode_sol(t)
             # Wrapper to let numdifftools calculate df/dp.
             def ode_as_parameter_call(param):
-                call_params = copy.deepcopy(params)
-                call_params[p] = param
+                call_params = copy.deepcopy(self.params_values)
+                call_params[j] = self.params_values
                 return ode(t, xs, call_params)
             df_dp = lambda xs: nd.Jacobian(ode_as_parameter_call)(xs).transpose()[:,0]
-            return df_dp(params[p]) + np.matmul(ode_jac(xs), s)
-        sol = solve_ivp(dS_dt, (t_min, t_max), np.zeros(n_vars),
-                                        dense_output = True)
-        return sol.sol
+            return df_dp(params[j]) + np.matmul(ode_jac(xs), s)
+        sol = odeint(dS_dt, np.zeros(n_vars), self.timepoints, **kwargs)
+        return sol
 
 
     ############## Sam Clamons ###########
