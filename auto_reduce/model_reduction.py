@@ -257,16 +257,24 @@ class Reduce(System):
                 fast_states.append([])
                 continue
             else:
-                for sym in x_c_sub[0].free_symbols:
-                    if sym in solved_states and sym in x:
+                # for sym in x_c_sub[0].free_symbols:
+                count = 0
+                while count >= 0:
+                    sym = x_c_sub[0].free_symbols[count]
+                    if sym in lookup_collapsed.keys():
                         print('The state {0} has been solved for but appears in the solution for the next variable, making the sub with {1} into the corresponding f_c and solving again should fix this.'.format(sym, lookup_collapsed[sym][0]))
+                        if lookup_collapsed[sym][0] is None:
+                            raise ValueError('Something went wrong...Check reduced/full/collapsed state descriptions.')
                         f_c[i] = f_c[i].subs(sym, lookup_collapsed[sym][0])
                         print('Updating old x_c_sub then')
                         x_c_sub = solve(Eq(f_c[i]), x_c[i])
                         print('with ',x_c_sub)
                         lookup_collapsed[x_c[i]] = x_c_sub
+                        count = 0
+                    elif count != len(x_c_sub[0].free_symbols) - 1:
+                        count = count + 1
                     else:
-                        solved_states.append(x_c[i])
+                        count = -1
                 print('Solved for {0} to get {1}'.format(x_c[i], x_c_sub[0]))
                 # This x_c_sub should not contain previously eliminated variables otherwise circles continue
                 fast_states.append(x_c_sub[0])
