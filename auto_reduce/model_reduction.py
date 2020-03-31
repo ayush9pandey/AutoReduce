@@ -137,6 +137,7 @@ class Reduce(System):
 
 
     def get_error_metric(self, reduced_sys):
+        # Give option for get_error_metric(sys1, sys2)
         """
         Returns the error defined as the 2-norm of y - y_hat.
         y = Cx and y_hat = C_hat x_hat OR
@@ -160,6 +161,7 @@ class Reduce(System):
         return
 
     def get_robustness_metric(self, reduced_sys):
+        # Create an option so the default way this is done is given two systems compute robustness metric. 
         # Implementing Theorem 2
         timepoints_ssm = self.timepoints_ssm
         _, x_sols, full_ssm = self.get_solutions()
@@ -231,7 +233,7 @@ class Reduce(System):
         attempt = []
         for state in attempt_states:
             attempt.append(self.x.index(state))
-        print('attempting to retain :', attempt)
+        print('attempting reduced states index:', attempt)
         x_c = []
         fast_states = []
         f_c = []
@@ -250,12 +252,11 @@ class Reduce(System):
                 x_hat.append(x[i])
                 x_hat_init.append(x_init[i])
         # print('Reduced set of variables is', x_hat)
-        # print('f_hat = ',f_hat)
+        # print('f_hat = ',hat)
         # print('Collapsed set of variables is', x_c)
-
-        # Try 1
         lookup_collapsed = {}
         for i in range(len(x_c)):
+            # print('Solving for ', x_c[i])
             x_c_sub = solve(Eq(f_c[i]), x_c[i])
             lookup_collapsed[x_c[i]] = x_c_sub
             if len(x_c_sub) == 0:
@@ -267,33 +268,37 @@ class Reduce(System):
                 for sub in x_c_sub:
                     if sub == 0:
                         x_c_sub.remove(0)
-            else:
-                # for sym in x_c_sub[0].free_symbols:
-                count = 0
-                while count >= 0:
-                    sym = x_c_sub[0].free_symbols[count]
-                    if sym in lookup_collapsed.keys():
-                        print('The state {0} has been solved for but appears in the solution for the next variable, making the sub with {1} into the corresponding f_c and solving again should fix this.'.format(sym, lookup_collapsed[sym][0]))
-                        if lookup_collapsed[sym][0] is None:
-                            raise ValueError('Something went wrong...Check reduced/full/collapsed state descriptions.')
-                        f_c[i] = f_c[i].subs(sym, lookup_collapsed[sym][0])
-                        # print('Updating old x_c_sub then')
-                        x_c_sub = solve(Eq(f_c[i]), x_c[i])
-                        if len(x_c_sub) > 1:
-                            # print('Multiple solutions obtained. Chooosing non-zero solution, check consistency. The solutions are ', x_c_sub)
-                            for sub in x_c_sub:
-                                if sub == 0:
-                                    x_c_sub.remove(0)
-                        # print('with ',x_c_sub)
-                        lookup_collapsed[x_c[i]] = x_c_sub
-                        count = 0
-                    elif count != len(x_c_sub[0].free_symbols) - 1:
-                        count = count + 1
-                    else:
-                        count = -1
-                print('Solved for {0} to get {1}'.format(x_c[i], x_c_sub[0]))
-                # This x_c_sub should not contain previously eliminated variables otherwise circles continue
-                fast_states.append(x_c_sub[0])
+            count = 0
+            print(x_c_sub[0])
+            while count >= 0:
+                # print(count)
+                if count == len(list(x_c_sub[0].free_symbols)):
+                    count = -1
+                    continue
+                sym = list(x_c_sub[0].free_symbols)[count]
+                if sym not in x:
+                    count = count + 1
+                    continue
+                if sym in lookup_collapsed.keys():
+                    # print('The state {0} has been solved for but appears in the solution for the next variable, making the sub with {1} into the corresponding f_c and solving again should fix this.'.format(sym, lookup_collapsed[sym][0]))
+                    if lookup_collapsed[sym][0] is None:
+                        raise ValueError('Something went wrong...Check reduced/full/collapsed state descriptions.')
+                    f_c[i] = f_c[i].subs(sym, lookup_collapsed[sym][0])
+                    # print('Updating old x_c_sub then')
+                    x_c_sub = solve(Eq(f_c[i]), x_c[i])
+                    if len(x_c_sub) > 1:
+                        # print('Multiple solutions obtained. Chooosing non-zero solution, check consistency. The solutions are ', x_c_sub)
+                        for sub in x_c_sub:
+                            if sub == 0:
+                                x_c_sub.remove(0)
+                    # print('with ',x_c_sub)
+                    lookup_collapsed[x_c[i]] = x_c_sub
+                    count = 0
+                elif count != len(list(x_c_sub[0].free_symbols)) - 1:
+                    count = count + 1
+            # print('Solved for {0} to get {1}'.format(x_c[i], x_c_sub[0]))
+            # This x_c_sub should not contain previously eliminated variables otherwise circles continue
+            fast_states.append(x_c_sub[0])
 
         for i in range(len(fast_states)):
             if fast_states[i] == []:
@@ -302,11 +307,6 @@ class Reduce(System):
                 # print('Substituting {0} for variable {1} into f_hat{2}'.format(fast_states[i], x_c[i], j))
                 f_hat[j] = f_hat[j].subs(x_c[i], fast_states[i])
                 # print('f_hat = ',f_hat[j])
-            for j in range(len(f_c)):
-                # print('Substituting {0} for variable {1} into f_c{2}'.format(fast_states[i], x_c[i], j))
-                f_c[j] = f_c[j].subs(x_c[i], fast_states[i])
-                # print('f_c = ',f_c[j])
-        
         # Continue
         for i in range(len(x_hat)):
             for j in range(len(f_c)):
@@ -338,9 +338,9 @@ class Reduce(System):
         if flag:
             warnings.warn('Check model consistency')
             print('The time-scale separation that retains states {0} does not work because the state-variables {1} appear in the reduced model'.format(attempt, bugged_states))
+            return None, None
         else:
             print('Successful time-scale separation solution obtained.')
-            # return None, None
 
         reduced_sys = create_system(x_hat, f_hat, params = self.params, C = C_hat,
                             params_values = self.params_values, x_init = x_hat_init)

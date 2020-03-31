@@ -1,0 +1,1241 @@
+Model reduction results.
+A possible reduced model: 
+ 
+
+$x_{hat} = [G, X]$
+
+
+
+
+$f_{hat}(1) = \frac{G P_{tot} k_{bp} \left(k_{bp} + k_{tx}\right)}{G k_{bp} + k_{tx} + k_{up}} - G k_{up} \left(- \frac{G P_{tot} k_{bp}}{G k_{bp} + k_{tx} + k_{up}} + P_{tot}\right)$
+
+
+$f_{hat}(2) = \frac{G P_{tot} k_{bp} k_{tx}}{G k_{bp} + k_{tx} + k_{up}} - X d$
+
+
+
+
+
+Error metric:13413.160423711804
+
+
+
+Robustness metric:[1.23650281e+12 2.30196057e+13 3.14406386e+14 4.97034317e+14
+ 3.01933857e+05 1.15044367e+10 2.19734155e+24 2.87657827e+11
+ 6.59722408e+09 2.11991956e+16 2.50790689e+15 5.68573951e+10
+ 4.87661297e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [C1, X]$
+
+
+
+
+$f_{hat}(1) = - \frac{C_{1} k_{bp} \left(- C_{1} + P_{tot}\right) \left(k_{bp} + k_{tx}\right)}{k_{up} \left(C_{1} - P_{tot}\right)} - C_{1} \left(k_{tx} + k_{up}\right)$
+
+
+$f_{hat}(2) = C_{1} k_{tx} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[2.48726857e+12 2.29721613e+13 2.23007056e+10 4.97034321e+14
+ 3.01932060e+05 1.15044367e+10 2.19734155e+24 2.88027528e+11
+ 6.78207279e+09 3.14485689e+14 2.24888333e+15 8.42098956e+08
+ 4.87661196e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [T, X]$
+
+
+
+
+$f_{hat}(1) = \frac{R_{tot} T k_{br} k_{ur}}{T k_{br} + k_{tl} + k_{ur}} - T k_{br} \left(- \frac{R_{tot} T k_{br}}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$f_{hat}(2) = \frac{R_{tot} T k_{br} k_{tl}}{T k_{br} + k_{tl} + k_{ur}} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[2.48726857e+12 2.29721613e+13 2.23007056e+10 4.97034321e+14
+ 3.01932060e+05 1.15044367e+10 2.19734155e+24 2.88027528e+11
+ 6.78207279e+09 3.14485689e+14 2.24888333e+15 8.42098956e+08
+ 4.87661196e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [C2, X]$
+
+
+
+
+$f_{hat}(1) = - \frac{C_{2} k_{ur} \left(- C_{2} + R_{tot}\right)}{C_{2} - R_{tot}} - C_{2} \left(k_{tl} + k_{ur}\right)$
+
+
+$f_{hat}(2) = C_{2} k_{tl} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[2.48726857e+12 2.29721613e+13 2.23007056e+10 4.97034321e+14
+ 3.01932060e+05 1.15044367e+10 2.19734155e+24 2.88027528e+11
+ 6.78207279e+09 3.14485689e+14 2.24888333e+15 8.42098956e+08
+ 4.87661196e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [C3, X]$
+
+
+
+
+$f_{hat}(1) = - C_{3} \left(d_{i} + k_{ue}\right)$
+
+
+$f_{hat}(2) = - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[2.48726857e+12 2.29721613e+13 2.23007056e+10 4.97034321e+14
+ 3.01932060e+05 1.15044367e+10 2.19734155e+24 2.88027528e+11
+ 6.78207279e+09 3.14485689e+14 2.24888333e+15 8.42098956e+08
+ 4.87661196e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [G, C1, X]$
+
+
+
+
+$f_{hat}(1) = C_{1} \left(k_{bp} + k_{tx}\right) - G k_{up} \left(- C_{1} + P_{tot}\right)$
+
+
+$f_{hat}(2) = - C_{1} \left(k_{tx} + k_{up}\right) + G k_{bp} \left(- C_{1} + P_{tot}\right)$
+
+
+$f_{hat}(3) = C_{1} k_{tx} - X d$
+
+
+
+
+
+Error metric:13389.071050497472
+
+
+
+Robustness metric:[9.16582588e+13 7.90819014e+13 4.51069114e+15 3.42160800e+11
+ 7.62525488e+02 3.26757706e+07 4.11093527e+20 2.92923907e+01
+ 2.27402524e+05 3.54379958e+16 2.50712286e+15 8.35885194e+08
+ 5.11860795e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [G, T, X]$
+
+
+
+
+$f_{hat}(1) = \frac{G P_{tot} k_{bp} \left(k_{bp} + k_{tx}\right)}{G k_{bp} + k_{tx} + k_{up}} - G k_{up} \left(- \frac{G P_{tot} k_{bp}}{G k_{bp} + k_{tx} + k_{up}} + P_{tot}\right)$
+
+
+$f_{hat}(2) = \frac{G P_{tot} k_{bp} k_{tx}}{G k_{bp} + k_{tx} + k_{up}} + \frac{R_{tot} T k_{br} k_{ur}}{T k_{br} + k_{tl} + k_{ur}} - T k_{br} \left(- \frac{R_{tot} T k_{br}}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$f_{hat}(3) = \frac{R_{tot} T k_{br} k_{tl}}{T k_{br} + k_{tl} + k_{ur}} - X d$
+
+
+
+
+
+Error metric:1461.9084492341426
+
+
+
+Robustness metric:[9.20313296e+13 7.93645529e+13 3.51901392e+09 3.42160713e+11
+ 7.54427551e+02 3.52526764e+07 4.11093527e+20 2.24714215e+01
+ 1.13714088e+05 3.55287576e+16 2.50712286e+15 8.41835679e+08
+ 2.40154367e+12]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [G, C2, X]$
+
+
+
+
+$f_{hat}(1) = \frac{G P_{tot} k_{bp} \left(k_{bp} + k_{tx}\right)}{G k_{bp} + k_{tx} + k_{up}} - G k_{up} \left(- \frac{G P_{tot} k_{bp}}{G k_{bp} + k_{tx} + k_{up}} + P_{tot}\right)$
+
+
+$f_{hat}(2) = - C_{2} \left(k_{tl} + k_{ur}\right) - \frac{\left(- C_{2} + R_{tot}\right) \left(C_{2} G k_{bp} k_{ur} + C_{2} k_{tx} k_{ur} + C_{2} k_{up} k_{ur} + G P_{tot} k_{bp} k_{tx}\right)}{C_{2} G k_{bp} + C_{2} k_{tx} + C_{2} k_{up} - G R_{tot} k_{bp} - R_{tot} k_{tx} - R_{tot} k_{up}}$
+
+
+$f_{hat}(3) = C_{2} k_{tl} - X d$
+
+
+
+
+
+Error metric:6895.623999323205
+
+
+
+Robustness metric:[9.20313297e+13 7.93645529e+13 3.51901393e+09 3.42160724e+11
+ 7.62705762e+02 1.96576829e+07 4.11093527e+20 2.67895003e+00
+ 2.05621809e+00 3.55287576e+16 2.50712286e+15 8.41835679e+08
+ 5.11861021e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [G, C3, X]$
+
+
+
+
+$f_{hat}(1) = \frac{G P_{tot} k_{bp} \left(k_{bp} + k_{tx}\right)}{G k_{bp} + k_{tx} + k_{up}} - G k_{up} \left(- \frac{G P_{tot} k_{bp}}{G k_{bp} + k_{tx} + k_{up}} + P_{tot}\right)$
+
+
+$f_{hat}(2) = - C_{3} \left(d_{i} + k_{ue}\right) - \frac{k_{be} \left(- C_{3} + E_{tot}\right) \left(\frac{G^{2} P_{tot} k_{bp}^{2} k_{tx} k_{ur}}{k_{tl} \left(G k_{bp} + k_{tx} + k_{up}\right)} + G P_{tot} k_{bp} k_{tx} + \frac{G P_{tot} k_{bp} k_{tx}^{2} k_{ur}}{k_{tl} \left(G k_{bp} + k_{tx} + k_{up}\right)} + \frac{G P_{tot} k_{bp} k_{tx} k_{up} k_{ur}}{k_{tl} \left(G k_{bp} + k_{tx} + k_{up}\right)}\right)}{k_{br} \left(\frac{G^{2} P_{tot} k_{bp}^{2} k_{tx}}{k_{tl} \left(G k_{bp} + k_{tx} + k_{up}\right)} + \frac{G P_{tot} k_{bp} k_{tx}^{2}}{k_{tl} \left(G k_{bp} + k_{tx} + k_{up}\right)} + \frac{G P_{tot} k_{bp} k_{tx} k_{up}}{k_{tl} \left(G k_{bp} + k_{tx} + k_{up}\right)} - G R_{tot} k_{bp} - R_{tot} k_{tx} - R_{tot} k_{up}\right)}$
+
+
+$f_{hat}(3) = \frac{G P_{tot} k_{bp} k_{tx}}{G k_{bp} + k_{tx} + k_{up}} - X d$
+
+
+
+
+
+Error metric:13413.160310875575
+
+
+
+Robustness metric:[9.20314129e+13 7.93639204e+13 4.63988908e+18 3.42160853e+11
+ 7.62729274e+02 2.46827436e+10 4.11093527e+20 4.29428406e+01
+ 2.27426163e+05 3.55287576e+16 2.50712286e+15 2.21821768e+16
+ 5.11860773e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [C1, T, X]$
+
+
+
+
+$f_{hat}(1) = - \frac{C_{1} k_{bp} \left(- C_{1} + P_{tot}\right) \left(k_{bp} + k_{tx}\right)}{k_{up} \left(C_{1} - P_{tot}\right)} - C_{1} \left(k_{tx} + k_{up}\right)$
+
+
+$f_{hat}(2) = C_{1} k_{tx} + \frac{R_{tot} T k_{br} k_{ur}}{T k_{br} + k_{tl} + k_{ur}} - T k_{br} \left(- \frac{R_{tot} T k_{br}}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$f_{hat}(3) = \frac{R_{tot} T k_{br} k_{tl}}{T k_{br} + k_{tl} + k_{ur}} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[9.20313411e+13 7.93645529e+13 3.51901393e+09 3.42160708e+11
+ 7.61705759e+02 3.54251384e+07 2.41292663e+21 3.69697420e+08
+ 8.47750218e+06 3.14387784e+14 2.50712286e+15 8.41835678e+08
+ 5.11860673e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [C1, C2, X]$
+
+
+
+
+$f_{hat}(1) = - \frac{C_{1} k_{bp} \left(- C_{1} + P_{tot}\right) \left(k_{bp} + k_{tx}\right)}{k_{up} \left(C_{1} - P_{tot}\right)} - C_{1} \left(k_{tx} + k_{up}\right)$
+
+
+$f_{hat}(2) = - C_{2} \left(k_{tl} + k_{ur}\right) - \frac{\left(- C_{2} + R_{tot}\right) \left(C_{1} k_{tx} + C_{2} k_{ur}\right)}{C_{2} - R_{tot}}$
+
+
+$f_{hat}(3) = C_{2} k_{tl} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[9.20313411e+13 7.93645529e+13 3.51901393e+09 3.42160708e+11
+ 7.61705759e+02 3.54251384e+07 2.41292663e+21 3.69697420e+08
+ 8.47750218e+06 3.14387784e+14 2.50712286e+15 8.41835678e+08
+ 5.11860673e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [C1, C3, X]$
+
+
+
+
+$f_{hat}(1) = - \frac{C_{1} k_{bp} \left(- C_{1} + P_{tot}\right) \left(k_{bp} + k_{tx}\right)}{k_{up} \left(C_{1} - P_{tot}\right)} - C_{1} \left(k_{tx} + k_{up}\right)$
+
+
+$f_{hat}(2) = - C_{3} \left(d_{i} + k_{ue}\right) - \frac{k_{be} \left(- C_{3} + E_{tot}\right) \left(C_{1} k_{tx} + \frac{C_{1} k_{tx} k_{ur}}{k_{tl}}\right)}{k_{br} \left(\frac{C_{1} k_{tx}}{k_{tl}} - R_{tot}\right)}$
+
+
+$f_{hat}(3) = C_{1} k_{tx} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[9.20313411e+13 7.93645529e+13 3.51901393e+09 3.42160708e+11
+ 7.61705759e+02 3.54251384e+07 2.41292663e+21 3.69697420e+08
+ 8.47750218e+06 3.14387784e+14 2.50712286e+15 8.41835678e+08
+ 5.11860673e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [T, C2, X]$
+
+
+
+
+$f_{hat}(1) = C_{2} k_{ur} - T k_{br} \left(- C_{2} + R_{tot}\right)$
+
+
+$f_{hat}(2) = - C_{2} \left(k_{tl} + k_{ur}\right) + T k_{br} \left(- C_{2} + R_{tot}\right)$
+
+
+$f_{hat}(3) = C_{2} k_{tl} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[9.20313411e+13 7.93645529e+13 3.51901393e+09 3.42160708e+11
+ 7.61705759e+02 3.54251384e+07 2.41292663e+21 3.69697420e+08
+ 8.47750218e+06 3.14387784e+14 2.50712286e+15 8.41835678e+08
+ 5.11860673e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [T, C3, X]$
+
+
+
+
+$f_{hat}(1) = \frac{R_{tot} T k_{br} k_{ur}}{T k_{br} + k_{tl} + k_{ur}} - T k_{br} \left(- \frac{R_{tot} T k_{br}}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$f_{hat}(2) = - C_{3} \left(d_{i} + k_{ue}\right) + T k_{be} \left(- C_{3} + E_{tot}\right)$
+
+
+$f_{hat}(3) = \frac{R_{tot} T k_{br} k_{tl}}{T k_{br} + k_{tl} + k_{ur}} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[9.20313411e+13 7.93645529e+13 3.51901393e+09 3.42160708e+11
+ 7.61705759e+02 3.54251384e+07 2.41292663e+21 3.69697420e+08
+ 8.47750218e+06 3.14387784e+14 2.50712286e+15 8.41835678e+08
+ 5.11860673e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [C2, C3, X]$
+
+
+
+
+$f_{hat}(1) = - \frac{C_{2} k_{ur} \left(- C_{2} + R_{tot}\right)}{C_{2} - R_{tot}} - C_{2} \left(k_{tl} + k_{ur}\right)$
+
+
+$f_{hat}(2) = - \frac{C_{2} k_{be} k_{ur} \left(- C_{3} + E_{tot}\right)}{k_{br} \left(C_{2} - R_{tot}\right)} - C_{3} \left(d_{i} + k_{ue}\right)$
+
+
+$f_{hat}(3) = C_{2} k_{tl} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[9.20313411e+13 7.93645529e+13 3.51901393e+09 3.42160708e+11
+ 7.61705759e+02 3.54251384e+07 2.41292663e+21 3.69697420e+08
+ 8.47750218e+06 3.14387784e+14 2.50712286e+15 8.41835678e+08
+ 5.11860673e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [G, C1, T, X]$
+
+
+
+
+$f_{hat}(1) = C_{1} \left(k_{bp} + k_{tx}\right) - G k_{up} \left(- C_{1} + P_{tot}\right)$
+
+
+$f_{hat}(2) = - C_{1} \left(k_{tx} + k_{up}\right) + G k_{bp} \left(- C_{1} + P_{tot}\right)$
+
+
+$f_{hat}(3) = C_{1} k_{tx} + \frac{R_{tot} T k_{br} k_{ur}}{T k_{br} + k_{tl} + k_{ur}} - T k_{br} \left(- \frac{R_{tot} T k_{br}}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$f_{hat}(4) = \frac{R_{tot} T k_{br} k_{tl}}{T k_{br} + k_{tl} + k_{ur}} - X d$
+
+
+
+
+
+Error metric:1449.5785421330525
+
+
+
+Robustness metric:[9.42440700e+11 7.82295766e+11 3.34279639e+11 1.67727402e+09
+ 3.02092481e+04 1.30935286e+12 2.26237914e+15 1.13205952e+05
+ 5.64592056e+04 7.85450539e+15 4.83196671e+10 2.13555996e+00
+ 9.23406837e+04]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [G, C1, C2, X]$
+
+
+
+
+$f_{hat}(1) = C_{1} \left(k_{bp} + k_{tx}\right) - G k_{up} \left(- C_{1} + P_{tot}\right)$
+
+
+$f_{hat}(2) = - C_{1} \left(k_{tx} + k_{up}\right) + G k_{bp} \left(- C_{1} + P_{tot}\right)$
+
+
+$f_{hat}(3) = - C_{2} \left(k_{tl} + k_{ur}\right) - \frac{\left(- C_{2} + R_{tot}\right) \left(C_{1} k_{tx} + C_{2} k_{ur}\right)}{C_{2} - R_{tot}}$
+
+
+$f_{hat}(4) = C_{2} k_{tl} - X d$
+
+
+
+
+
+Error metric:6876.368996329553
+
+
+
+Robustness metric:[9.39996093e+11 7.80323570e+11 3.76719790e+09 1.67726143e+09
+ 3.04293155e+04 4.39189986e+11 2.76328508e+17 1.48142174e+05
+ 5.69882029e+04 7.85450539e+15 7.91343883e+10 2.00546131e+00
+ 1.68784147e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [G, C1, C3, X]$
+
+
+
+
+$f_{hat}(1) = C_{1} \left(k_{bp} + k_{tx}\right) - G k_{up} \left(- C_{1} + P_{tot}\right)$
+
+
+$f_{hat}(2) = - C_{1} \left(k_{tx} + k_{up}\right) + G k_{bp} \left(- C_{1} + P_{tot}\right)$
+
+
+$f_{hat}(3) = - C_{3} \left(d_{i} + k_{ue}\right) - \frac{k_{be} \left(- C_{3} + E_{tot}\right) \left(C_{1} k_{tx} + \frac{C_{1} k_{tx} k_{ur}}{k_{tl}}\right)}{k_{br} \left(\frac{C_{1} k_{tx}}{k_{tl}} - R_{tot}\right)}$
+
+
+$f_{hat}(4) = C_{1} k_{tx} - X d$
+
+
+
+
+
+Error metric:nan
+
+
+
+Robustness metric:[2.89083741e+15 6.66963638e+12 9.24960044e+20 2.11705861e+12
+ 2.02286693e+09 4.03789580e+13 5.11824147e+12 3.84888188e+08
+ 6.54609660e+07 4.67668922e+13 7.91344325e+10 1.59905613e+03
+ 1.68757082e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [G, T, C2, X]$
+
+
+
+
+$f_{hat}(1) = \frac{G P_{tot} k_{bp} \left(k_{bp} + k_{tx}\right)}{G k_{bp} + k_{tx} + k_{up}} - G k_{up} \left(- \frac{G P_{tot} k_{bp}}{G k_{bp} + k_{tx} + k_{up}} + P_{tot}\right)$
+
+
+$f_{hat}(2) = C_{2} k_{ur} + \frac{G P_{tot} k_{bp} k_{tx}}{G k_{bp} + k_{tx} + k_{up}} - T k_{br} \left(- C_{2} + R_{tot}\right)$
+
+
+$f_{hat}(3) = - C_{2} \left(k_{tl} + k_{ur}\right) + T k_{br} \left(- C_{2} + R_{tot}\right)$
+
+
+$f_{hat}(4) = C_{2} k_{tl} - X d$
+
+
+
+
+
+Error metric:17.051165417841794
+
+
+
+Robustness metric:[7.39258782e+33 6.37021284e+33 2.05544339e+29 9.73505572e+34
+ 4.92558452e+24 1.08901423e+35 7.41622785e+44 8.90671091e+26
+ 5.19404045e+20 1.43425256e+33 8.51123224e+37 6.24200632e+32
+ 3.97894826e+31]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [G, T, C3, X]$
+
+
+
+
+$f_{hat}(1) = \frac{G P_{tot} k_{bp} \left(k_{bp} + k_{tx}\right)}{G k_{bp} + k_{tx} + k_{up}} - G k_{up} \left(- \frac{G P_{tot} k_{bp}}{G k_{bp} + k_{tx} + k_{up}} + P_{tot}\right)$
+
+
+$f_{hat}(2) = \frac{G P_{tot} k_{bp} k_{tx}}{G k_{bp} + k_{tx} + k_{up}} + \frac{R_{tot} T k_{br} k_{ur}}{T k_{br} + k_{tl} + k_{ur}} - T k_{br} \left(- \frac{R_{tot} T k_{br}}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$f_{hat}(3) = - C_{3} \left(d_{i} + k_{ue}\right) + T k_{be} \left(- C_{3} + E_{tot}\right)$
+
+
+$f_{hat}(4) = \frac{R_{tot} T k_{br} k_{tl}}{T k_{br} + k_{tl} + k_{ur}} - X d$
+
+
+
+
+
+Error metric:1461.9083683958988
+
+
+
+Robustness metric:[9.40697503e+11 7.80889684e+11 3.76720202e+09 3.00423710e+09
+ 3.01640678e+04 1.30935340e+12 2.64700758e+18 1.13858372e+05
+ 5.65913822e+04 7.86882787e+15 7.91342953e+10 2.14905560e+00
+ 8.20676825e+04]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [G, C2, C3, X]$
+
+
+
+
+$f_{hat}(1) = \frac{G P_{tot} k_{bp} \left(k_{bp} + k_{tx}\right)}{G k_{bp} + k_{tx} + k_{up}} - G k_{up} \left(- \frac{G P_{tot} k_{bp}}{G k_{bp} + k_{tx} + k_{up}} + P_{tot}\right)$
+
+
+$f_{hat}(2) = - C_{2} \left(k_{tl} + k_{ur}\right) - \frac{\left(- C_{2} + R_{tot}\right) \left(C_{2} G k_{bp} k_{ur} + C_{2} k_{tx} k_{ur} + C_{2} k_{up} k_{ur} + G P_{tot} k_{bp} k_{tx}\right)}{C_{2} G k_{bp} + C_{2} k_{tx} + C_{2} k_{up} - G R_{tot} k_{bp} - R_{tot} k_{tx} - R_{tot} k_{up}}$
+
+
+$f_{hat}(3) = - C_{3} \left(d_{i} + k_{ue}\right) - \frac{k_{be} \left(- C_{3} + E_{tot}\right) \left(C_{2} G k_{bp} k_{ur} + C_{2} k_{tx} k_{ur} + C_{2} k_{up} k_{ur} + G P_{tot} k_{bp} k_{tx}\right)}{k_{br} \left(C_{2} G k_{bp} + C_{2} k_{tx} + C_{2} k_{up} - G R_{tot} k_{bp} - R_{tot} k_{tx} - R_{tot} k_{up}\right)}$
+
+
+$f_{hat}(4) = C_{2} k_{tl} - X d$
+
+
+
+
+
+Error metric:6895.623924395788
+
+
+
+Robustness metric:[9.40697525e+11 7.80889687e+11 3.76720655e+09 1.81633793e+09
+ 3.04307687e+04 5.83778440e+11 5.35755606e+14 1.41264172e+05
+ 5.62687279e+04 7.86882788e+15 7.91343874e+10 2.01550835e+00
+ 1.68784147e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [C1, T, C2, X]$
+
+
+
+
+$f_{hat}(1) = - \frac{C_{1} k_{bp} \left(- C_{1} + P_{tot}\right) \left(k_{bp} + k_{tx}\right)}{k_{up} \left(C_{1} - P_{tot}\right)} - C_{1} \left(k_{tx} + k_{up}\right)$
+
+
+$f_{hat}(2) = C_{1} k_{tx} + C_{2} k_{ur} - T k_{br} \left(- C_{2} + R_{tot}\right)$
+
+
+$f_{hat}(3) = - C_{2} \left(k_{tl} + k_{ur}\right) + T k_{br} \left(- C_{2} + R_{tot}\right)$
+
+
+$f_{hat}(4) = C_{2} k_{tl} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[9.40697482e+11 7.80889690e+11 3.76720878e+09 1.67715534e+09
+ 3.04279700e+04 2.63022100e+12 2.82399424e+21 1.68410297e+07
+ 5.52917695e+04 4.96113092e+13 7.91343872e+10 1.00547753e+00
+ 1.68784047e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [C1, T, C3, X]$
+
+
+
+
+$f_{hat}(1) = - \frac{C_{1} k_{bp} \left(- C_{1} + P_{tot}\right) \left(k_{bp} + k_{tx}\right)}{k_{up} \left(C_{1} - P_{tot}\right)} - C_{1} \left(k_{tx} + k_{up}\right)$
+
+
+$f_{hat}(2) = C_{1} k_{tx} + \frac{R_{tot} T k_{br} k_{ur}}{T k_{br} + k_{tl} + k_{ur}} - T k_{br} \left(- \frac{R_{tot} T k_{br}}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$f_{hat}(3) = - C_{3} \left(d_{i} + k_{ue}\right) + T k_{be} \left(- C_{3} + E_{tot}\right)$
+
+
+$f_{hat}(4) = \frac{R_{tot} T k_{br} k_{tl}}{T k_{br} + k_{tl} + k_{ur}} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[9.40697482e+11 7.80889690e+11 3.76720878e+09 1.67715534e+09
+ 3.04279700e+04 2.63022100e+12 2.82399424e+21 1.68410297e+07
+ 5.52917695e+04 4.96113092e+13 7.91343872e+10 1.00547753e+00
+ 1.68784047e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [C1, C2, C3, X]$
+
+
+
+
+$f_{hat}(1) = - \frac{C_{1} k_{bp} \left(- C_{1} + P_{tot}\right) \left(k_{bp} + k_{tx}\right)}{k_{up} \left(C_{1} - P_{tot}\right)} - C_{1} \left(k_{tx} + k_{up}\right)$
+
+
+$f_{hat}(2) = - C_{2} \left(k_{tl} + k_{ur}\right) - \frac{\left(- C_{2} + R_{tot}\right) \left(C_{1} k_{tx} + C_{2} k_{ur}\right)}{C_{2} - R_{tot}}$
+
+
+$f_{hat}(3) = - C_{3} \left(d_{i} + k_{ue}\right) - \frac{k_{be} \left(- C_{3} + E_{tot}\right) \left(C_{1} k_{tx} + C_{2} k_{ur}\right)}{k_{br} \left(C_{2} - R_{tot}\right)}$
+
+
+$f_{hat}(4) = C_{2} k_{tl} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[9.40697482e+11 7.80889690e+11 3.76720878e+09 1.67715534e+09
+ 3.04279700e+04 2.63022100e+12 2.82399424e+21 1.68410297e+07
+ 5.52917695e+04 4.96113092e+13 7.91343872e+10 1.00547753e+00
+ 1.68784047e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
+A possible reduced model: 
+ 
+
+$x_{hat} = [T, C2, C3, X]$
+
+
+
+
+$f_{hat}(1) = C_{2} k_{ur} - T k_{br} \left(- C_{2} + R_{tot}\right)$
+
+
+$f_{hat}(2) = - C_{2} \left(k_{tl} + k_{ur}\right) + T k_{br} \left(- C_{2} + R_{tot}\right)$
+
+
+$f_{hat}(3) = - C_{3} \left(d_{i} + k_{ue}\right) + T k_{be} \left(- C_{3} + E_{tot}\right)$
+
+
+$f_{hat}(4) = C_{2} k_{tl} - X d$
+
+
+
+
+
+Error metric:11356.043571306587
+
+
+
+Robustness metric:[9.40697482e+11 7.80889690e+11 3.76720878e+09 1.67715534e+09
+ 3.04279700e+04 2.63022100e+12 2.82399424e+21 1.68410297e+07
+ 5.52917695e+04 4.96113092e+13 7.91343872e+10 1.00547753e+00
+ 1.68784047e+06]
+
+
+Other properties
+
+
+
+ C = [[0. 0. 0. 1.]]
+$ g = None$
+ h = None
+$h = None$
+ Solutions : 
+
+
+
+
+
+ Sensitivity Solutions : 
+
+
+
+
