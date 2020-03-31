@@ -269,7 +269,7 @@ class Reduce(System):
                     if sub == 0:
                         x_c_sub.remove(0)
             count = 0
-            print(x_c_sub[0])
+            # print(x_c_sub[0])
             while count >= 0:
                 # print(count)
                 if count == len(list(x_c_sub[0].free_symbols)):
