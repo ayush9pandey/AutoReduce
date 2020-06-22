@@ -271,21 +271,26 @@ class Reduce(System):
             else:
                 for sym in x_c_sub[0].free_symbols:
                     if sym in solved_states and sym in x:
-                        # print('The state {0} has been solved for but appears in the solution for the next variable, making the sub with {1} into the corresponding f_c and solving again should fix this.'.format(sym, lookup_collapsed[sym][0]))
+                        # print('The state {0} has been solved for but appears in the solution for {1}, making the sub with {2} into the corresponding f_c and solving again should fix this.'.format(sym, x_c[i], lookup_collapsed[sym][0]))
                         f_c[i] = f_c[i].subs(sym, lookup_collapsed[sym][0])
+                        # print(f_c[i])
                         # print('Updating old x_c_sub then')
                         x_c_sub = solve(Eq(f_c[i]), x_c[i])
+                        # print(x_c_sub)
                         if len(x_c_sub) > 1:
                             # print('Multiple solutions obtained. Chooosing non-zero solution, check consistency. The solutions are ', x_c_sub)
                             for sub in x_c_sub:
                                 if sub == 0:
                                     x_c_sub.remove(0)
+                        elif len(x_c_sub) == 0:
+                            return None, None
                         # print('with ',x_c_sub)
                         lookup_collapsed[x_c[i]] = x_c_sub
                     else:
                         solved_states.append(x_c[i])
                 # print('Solved for {0} to get {1}'.format(x_c[i], x_c_sub[0]))
                 # This x_c_sub should not contain previously eliminated variables otherwise circles continue
+                # print(x_c_sub)
                 fast_states.append(x_c_sub[0])
 
         for i in range(len(fast_states)):
@@ -331,6 +336,7 @@ class Reduce(System):
         if flag:
             warnings.warn('Check model consistency')
             print('The time-scale separation that retains states {0} does not work because the state-variables {1} appear in the reduced model'.format(attempt, bugged_states))
+            return None, None
         else:
             print('Successful time-scale separation solution obtained.')
             # return None, None
@@ -518,6 +524,8 @@ class Reduce(System):
                 continue
             # Get metrics for this reduced system
             e = self.get_error_metric(reduced_sys)
+            if e is np.nan:
+                continue
             Se = self.get_robustness_metric(reduced_sys)
             results_dict[reduced_sys] = [e, Se]
         self.results_dict = results_dict
