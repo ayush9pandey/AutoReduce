@@ -17,5 +17,7 @@ class TestTimeScaleSeparation(TestCase):
         A = Symbol("A")
         A = Symbol("A")
         A = Symbol("A")
+        pass
 
     def test_check_crn_validity(self):
+        pass

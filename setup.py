@@ -9,7 +9,7 @@ setup(
     version='0.1.0',
     author='Ayush Pandey',
     url='https://github.com/ayush9pandey/AutoReduce/',
-    description='Python based automated model reduction tool for SBML models'
+    description='Python based automated model reduction tools for SBML models',
     long_description=long_description,
     packages=['autoreduce'],
     classifiers=[
@@ -35,7 +35,7 @@ setup(
             },
     setup_requires=["pytest-runner"],
     python_requires='>=3.6',
-    keywords="SBML Automated Model Reduction Modeling QSSA Hill functions"
+    keywords="SBML Automated Model Reduction Modeling QSSA Hill functions",
     tests_require=["pytest", "pytest-cov", "nbval"],
     project_urls={
     'Documentation': 'https://readthedocs.org/projects/AutoReduce/',

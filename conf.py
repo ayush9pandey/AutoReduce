@@ -19,7 +19,7 @@
 
 project = 'AutoReduce'
 copyright = '2020, Ayush Pandey'
-author = 'Ayush Pandey, Richard M. Murray'
+author = 'Ayush Pandey'
 
 # The full version, including alpha/beta/rc tags
 release = '0.1'
