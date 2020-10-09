@@ -13,7 +13,7 @@ class Reduce(System):
     and then find out the best reduced model choice using doi : https://doi.org/10.1101/640276 
     '''
     def __init__(self, x, f, params = None, C = None, g = None, h = None, u = None,
-                params_values = [], x_init = [], timepoints_ode = None, timepoints_ssm = None,
+                params_values = None, x_init = None, timepoints_ode = None, timepoints_ssm = None,
                 error_tol = None, nstates_tol = None, nstates_tol_min = None):
         super().__init__(x, f, params, C, g, h, u, params_values, x_init)
         self.f_hat = [] # Should be a list of Sympy objects
@@ -653,7 +653,7 @@ class ReduceUtils(Reduce):
 
 
 def create_system(x, f, params = None, C = None, g = None, h = None, u = None,
-                params_values = [], x_init = []):
+                params_values = None, x_init = None):
     return System(x, f = f, params = params, C = C, g = g, h = h, u = u,
                 params_values = params_values, x_init = x_init)
 

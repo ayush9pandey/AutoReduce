@@ -14,7 +14,7 @@ class SSM(System):
     order central difference as given in the paper.
     '''
     def __init__(self, x, f, params = None, C = None, g = None, h = None, u = None,
-                params_values = [], x_init = [], timepoints = None):
+                params_values = None, x_init = None, timepoints = None):
         super().__init__(x, f, params, C, g, h, u, params_values, x_init)
         if timepoints is None:
             timepoints = []

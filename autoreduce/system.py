@@ -13,7 +13,7 @@ class System(object):
     Class that stores the system model in this form:  x_dot = f(x, theta), y = Cx.
     '''
     def __init__(self, x, f, params = None, C = None, g = None, h = None, u = None,
-                params_values = [], x_init = [], input_values = []):
+                params_values = None, x_init = None, input_values = None):
         """
         The general system dynamics : x_dot = f(x, P) + g(x, P)u, y = h(x,P)
         Use the utility function ode_to_sympy to write these.
@@ -46,12 +46,21 @@ class System(object):
         self.g = g
         self.h = h
         self.u = u
-        self.params_values = params_values
-        self.input_values = input_values
-        self.x_init = x_init
+        if params_values is not None:
+            self.params_values = params_values
+        else:
+            self.params_values = []
+        if input_values is not None:
+            self.input_values = input_values
+        else:
+            self.input_values = []
+        if x_init is not None:
+            self.x_init = x_init
+        else:
+            self.x_init = []
         return
 
-    def set_dynamics(self, f = None, g = None, h = None, C = None, u = None, params = []):
+    def set_dynamics(self, f = None, g = None, h = None, C = None, u = None, params = None):
         """
         Set either f, g, h, or C to the System object or parameter values using P.
         """
@@ -65,8 +74,10 @@ class System(object):
             self.C = C
         if u:
             self.u = u
-        if params:
+        if params is not None:
             self.params = params
+        else:
+            self.params = []
         return self
 
     def evaluate(self, f, x, P, u = None):
@@ -84,18 +95,22 @@ class System(object):
             fs.append(fi)
         return fs
 
-    def set_parameters(self, params_values = [], x_init = []):
+    def set_parameters(self, params_values = None, x_init = None):
         """
         Set model parameters and initial conditions
         """
         f_new = []
-        if params_values:
+        if params_values is not None:
             self.params_values = [pi for pi in params_values]
             if self.params:
                 for fi in self.f:
                     f_new.append(fi.subs(list(zip(self.params, self.params_values))))
-        if x_init:
+        else:
+            self.params_values = []
+        if x_init is not None:
             self.x_init = [pi for pi in x_init]
+        else:
+            self.x_init = []
         self.f = f_new
         return f_new
 
