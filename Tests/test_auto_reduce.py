@@ -4,13 +4,19 @@
 from unittest import TestCase
 from unittest.mock import mock_open, patch
 from sympy import Symbol
+import numpy as np
 from autoreduce.system import System
+from autoreduce.utils import get_reducible
+from autoreduce.model_reduction import Reduce
 import libsbml
 import warnings
 
 
 class TestAutoReduce(TestCase):
-
+    """
+    Super class of all testing in AutoReduce as it sets up a System with 
+    a simple test CRN
+    """
     def setUp(self) -> None:
         """
         This method gets executed before every test. It sets up a test CRN:
@@ -33,17 +39,25 @@ class TestAutoReduce(TestCase):
             -k1 * A**2 * B + k2 * C,
             k1 * A**2 * B - k2 * C - k3 * C,
             k3 * C]
+        init_cond = np.zeros(len(self.x))
+        self.system = System(self.x, self.f, params = self.params, x_init = init_cond)   
+        self.reducible_system = get_reducible(self.system)
+    
+    def test_get_reduced_model(self, x_hat = None):
+        """
+        This function creates a reducible System object that can be used 
+        to create reduced models given the x_hat (the list of states in reduced model). 
+        All other states are collapsed to be at quasi-steady state and both the reduced and 
+        the collapsed models are returned.
+        """
+        if x_hat is None:
+            x_hat = []
+        self.assertIsInstance(self.reducible_system, System)
+        reduced_system, collapsed_system = self.reducible_system.solve_timescale_separation(x_hat)
+        if reduced_system is not None:
+            self.assertIsInstance(reduced_system, System)
+        if collapsed_system is not None:
+            self.assertIsInstance(collapsed_system, System)
+        return reduced_system, collapsed_system
         
-        self.system = System(self.x, self.f)   
-        
-class TestTimeScaleSeparation(TestAutoReduce):
 
-    def test_states(self):
-        assert self.system.x
-        assert len(self.system.x) == 4
-
-    def test_fast_states(self):
-        pass
-
-    def test_slow_states(self):
-        pass

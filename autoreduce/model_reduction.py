@@ -6,7 +6,7 @@ import sympy
 import numpy as np
 import warnings
 from scipy.linalg import solve_lyapunov, block_diag, eigvals, norm
-from auto_reduce import utils
+from autoreduce import utils
 class Reduce(System):
     '''
     The class can be used to compute the various possible reduced models for the System object 
@@ -45,6 +45,8 @@ class Reduce(System):
         return
 
     def get_output_states(self):
+        if self.C is None and self.h is None:
+            return []
         x = self.x
         outputs = list(np.dot(np.array(self.C), np.array(x))) # Get y = C*x
         output_symbols = [list(i.free_symbols) for i in outputs]
@@ -227,126 +229,102 @@ class Reduce(System):
         return x_sol_c
 
 
-    def solve_timescale_separation(self, attempt_states):
-        attempt = []
-        for state in attempt_states:
-            attempt.append(self.x.index(state))
-        print('attempting to retain :', attempt)
-        x_c = []
-        fast_states = []
-        f_c = []
-        f_hat = []
-        x_hat_init = []
-        x_c_init = []
-        x_hat = []
+    def solve_timescale_separation(self, slow_states, fast_states = None, **kwargs):
+        """
+        This function solves the time-scale separation problem for the System object passed through.
+        Arguments:
+        * slow_states: List of states assumed to have slow dynamics => retained in the reduced model. 
+        This is list of Sympy Symbol objects corresponding to the System.x list. 
+        * fast_states: List of states assumed to have fast dynamics => states that will be collapsed. Usually,
+        this is automatically populated as all those states that are in System.x but not in slow_states. 
+        """
+        # Get 'debug' keyword (if called in debug = True mode):
+        if 'debug' in kwargs:
+            debug = kwargs.get('debug')
+        else:
+            debug = False
+
+        # If slow_states is empty, then reduced model = given model
+        # and collapsed model is None
+        if not slow_states:
+            return self.get_system(), None
         x, f, x_init = self.x, self.f, self.x_init
-        for i in range(self.n):
-            if i not in attempt:
-                x_c.append(x[i])
-                f_c.append(f[i])
-                x_c_init.append(x_init[i])
-            else:
-                f_hat.append(f[i])
-                x_hat.append(x[i])
-                x_hat_init.append(x_init[i])
-        # print('Reduced set of variables is', x_hat)
-        # print('f_hat = ',f_hat)
-        # print('Collapsed set of variables is', x_c)
 
-        # Try 1
-        solved_states = []
-        lookup_collapsed = {}
-        for i in range(len(x_c)):
-            x_c_sub = solve(Eq(f_c[i]), x_c[i])
-            lookup_collapsed[x_c[i]] = x_c_sub
-            if len(x_c_sub) == 0:
-                print('Could not find solution for this collapsed variable : {0} from {1}'.format(x_c[i], f_c[i]))
-                fast_states.append([])
-                continue
-            elif len(x_c_sub) > 1:
-                # print('Multiple solutions obtained. Chooosing non-zero solution, check consistency. The solutions are ', x_c_sub)
-                for sub in x_c_sub:
-                    if sub == 0:
-                        x_c_sub.remove(0)
-            else:
-                for sym in x_c_sub[0].free_symbols:
-                    if sym in solved_states and sym in x:
-                        # print('The state {0} has been solved for but appears in the solution for {1}, making the sub with {2} into the corresponding f_c and solving again should fix this.'.format(sym, x_c[i], lookup_collapsed[sym][0]))
-                        f_c[i] = f_c[i].subs(sym, lookup_collapsed[sym][0])
-                        # print(f_c[i])
-                        # print('Updating old x_c_sub then')
-                        x_c_sub = solve(Eq(f_c[i]), x_c[i])
-                        # print(x_c_sub)
-                        if len(x_c_sub) > 1:
-                            # print('Multiple solutions obtained. Chooosing non-zero solution, check consistency. The solutions are ', x_c_sub)
-                            for sub in x_c_sub:
-                                if sub == 0:
-                                    x_c_sub.remove(0)
-                        elif len(x_c_sub) == 0:
-                            return None, None
-                        # print('with ',x_c_sub)
-                        lookup_collapsed[x_c[i]] = x_c_sub
-                    else:
-                        solved_states.append(x_c[i])
-                # print('Solved for {0} to get {1}'.format(x_c[i], x_c_sub[0]))
-                # This x_c_sub should not contain previously eliminated variables otherwise circles continue
-                # print(x_c_sub)
-                fast_states.append(x_c_sub[0])
+        len_slow_states = len(slow_states)
+        x_hat = [None]* len_slow_states
+        x_hat_init = [None]* len_slow_states
+        f_hat = [None]* len_slow_states
 
-        for i in range(len(fast_states)):
-            if fast_states[i] == []:
-                continue
-            for j in range(len(f_hat)):
-                # print('Substituting {0} for variable {1} into f_hat{2}'.format(fast_states[i], x_c[i], j))
-                f_hat[j] = f_hat[j].subs(x_c[i], fast_states[i])
-                # print('f_hat = ',f_hat[j])
-            for j in range(len(f_c)):
-                # print('Substituting {0} for variable {1} into f_c{2}'.format(fast_states[i], x_c[i], j))
-                f_c[j] = f_c[j].subs(x_c[i], fast_states[i])
-                # print('f_c = ',f_c[j])
+        max_len_fast_states = len(x) - len(slow_states)
+        x_c = [None]* max_len_fast_states
+        x_c_init = [None]*max_len_fast_states
+        f_c = [None]*max_len_fast_states
+        # print('f_c',f_c)
+
+        # Populate the list of states that will retained (x_hat)
+        # and those that will be collapsed (x_c)
+        x_hat = slow_states
+
+        # Check if fast states are already provided as well:
+        if fast_states:
+            x_c = fast_states
+        else:
+            # If not, automatically fill it up.
+            count_x_c = 0
+            for i in x:
+                if i not in slow_states:
+                    x_c[count_x_c] = i
+                    count_x_c += 1
+            fast_states = x_c
+        # Now populate the default corresponding f_c and f_hat dynamics from self.f
+        # and inital conditions from self.x_init
+        for i in x:
+            state_index = x.index(i)
+            if i in x_c:
+                x_c_index = x_c.index(i)
+                f_c[x_c_index] = f[state_index]
+                x_c_init[x_c_index] = x_init[state_index]
+            if i in x_hat:
+                x_hat_index = x_hat.index(i)
+                f_hat[x_hat_index] = f[state_index]
+                x_hat_init[x_hat_index] = x_init[state_index]
         
-        # Continue
+        if debug:
+            print('Reduced set of variables is', x_hat)
+            print('f_hat = ',f_hat)
+            print('Collapsed set of variables is', x_c)
+
+        # Get the reduced (slow system) dynamics:
+        # Check after substituting each solution into f_hat whether resulting f_hat sympy ODE 
+        # has any remaining variables that should have been collapsed.
+        loop_sanity = True
+        count = 0
+        while sympy_variables_exist(ode_function = f_hat, variables_to_check = x_c)[0] and loop_sanity:
+            f_hat = sympy_solve_and_substitute(ode_function = f_hat, collapsed_states = x_c, collapsed_dynamics = f_c, debug = debug)
+            if count > 2:
+                loop_sanity = False
+                warnings.warn('Solve time-scale separation failed. Check model consistency.')
+                print('The time-scale separation that retains states {0} does not work'.format(slow_states) +
+                ' because either a collapsed state-variables appears in the reduced model or a solution is not possible.')
+                return None, None
+            count += 1
+
+        # Get the collapsed (fast system) dynamics to create collapsed_system
         for i in range(len(x_hat)):
             for j in range(len(f_c)):
                 # The slow variables stay at steady state in the fast subsystem
                 f_c[j] = f_c[j].subs(x_hat[i], x_hat_init[i])
 
         # Create C_hat 
-        output_states = self.get_output_states()
-        C_hat = np.zeros((np.shape(self.C)[0], np.shape(x_hat)[0]))
-        is_output = 0
-        for i in range(len(x_hat)):
-            if x_hat[i] in output_states:
-                is_output = 1
-            for row_ind in range(np.shape(C_hat)[0]):
-                C_hat[row_ind][i] = 1 * is_output
-
-        # Create list of all free symbols
-        flag = False
-        free_symbols_all = []
-        for fi in f_hat:
-            for sym in fi.free_symbols:
-                if sym not in free_symbols_all:
-                    free_symbols_all.append(sym)
-        bugged_states = []
-        for syms in free_symbols_all:
-            if syms not in x_hat + self.params:
-                bugged_states.append(syms)
-                flag = True
-        if flag:
-            warnings.warn('Check model consistency')
-            print('The time-scale separation that retains states {0} does not work because the state-variables {1} appear in the reduced model'.format(attempt, bugged_states))
-            return None, None
-        else:
-            print('Successful time-scale separation solution obtained.')
-            # return None, None
-
+        C_hat = self.create_C_hat(x_hat)
+        
         reduced_sys = create_system(x_hat, f_hat, params = self.params, C = C_hat,
                             params_values = self.params_values, x_init = x_hat_init)
         fast_subsystem = create_system(x_c, f_c, params = self.params,
                             params_values = self.params_values, x_init = x_c_init)
-        reduced_sys.x_c = x_c
         reduced_sys.fast_states = fast_states
+        # If you got to here,
+        print('Successful time-scale separation solution obtained!')
         return reduced_sys, fast_subsystem
 
     def solve_timescale_separation_with_input(self, attempt_states):
@@ -464,7 +442,24 @@ class Reduce(System):
         reduced_sys.fast_states = fast_states
         return reduced_sys, fast_subsystem
 
-
+    def create_C_hat(self, x_hat):
+        """
+        Returns C_hat matrix for the reduced system
+        given the x_hat (reduced system state vector) and using the C matrix
+        for the full system (if any)
+        """
+        if self.C is None:
+            C_hat = None
+        else:
+            output_states = self.get_output_states()
+            C_hat = np.zeros((np.shape(self.C)[0], np.shape(x_hat)[0]))
+            is_output = 0
+            for i in range(len(x_hat)):
+                if x_hat[i] in output_states:
+                    is_output = 1
+                for row_ind in range(np.shape(C_hat)[0]):
+                    C_hat[row_ind][i] = 1 * is_output
+        return C_hat
     def set_conservation_laws(self, conserved_quantities, sym_states_to_eliminate):
         '''
         From the conserved_quantities list, this method computes the expressions for each of the 
@@ -487,6 +482,9 @@ class Reduce(System):
         self.C = np.delete(np.array(self.C), states_to_eliminate, axis=1)
         self.n = self.n - len(states_to_eliminate)
         return self.f
+
+    
+
 
     def solve_approximations(self):
         pass
@@ -577,6 +575,74 @@ class Reduce(System):
         return System(self.x, self.f, params = self.params, C = self.C, g = self.g,
                     h = self.h, u = self.u, params_values = self.params_values, x_init = self.x_init)
 
+def sympy_variables_exist(ode_function, variables_to_check, **kwargs):
+    """
+    To check whether any variable in variables_to_check appears in any Sympy equation
+    in the ode_function list of functions.
+    Arguments:
+    * ode_function: A list of Sympy functions that need to be checked.
+    * variables_to_check: A list of variables that need to be checked for in the ode_function
+    * kwargs:  
+    Returns a tuple: 
+    True, variables_that_appear: If any variable found, True is returned along with a list of variables that appear
+    False, []: If no variable found, False is returned with a None (since no variables are found in ode_function). 
+    """
+    flag = False
+    all_free_symbols = []
+    for fi in ode_function:
+        for sym in fi.free_symbols:
+            if sym not in all_free_symbols:
+                all_free_symbols.append(sym)
+
+    variables_that_appear = []
+    for sym in all_free_symbols:
+        if sym in variables_to_check:
+            variables_that_appear.append(sym)
+            flag = True
+    return flag, variables_that_appear
+
+def sympy_solve_and_substitute(ode_function, collapsed_states, collapsed_dynamics, debug = False):
+    for s in collapsed_states:
+        index = collapsed_states.index(s)
+        f = collapsed_dynamics[index]
+        solution_dict = sympy_get_steady_state_solutions([s], [f], debug)
+        if solution_dict is None:
+            return ode_function
+        updated_ode_function = []
+        for func in ode_function:
+            updated_func = func.subs(s, solution_dict[s][0])
+            updated_ode_function.append(updated_func)
+    return updated_ode_function
+
+def sympy_get_steady_state_solutions(collapsed_variables, collapsed_dynamics, debug = False):
+    """
+    Solve for each collapsed_variable from corresponding collapsed_dynamics one by one. 
+    Return the solutions as a lookup dictionary as a map for variables and their solutions.
+    """
+    lookup_collapsed_solutions = {}
+    x_c = collapsed_variables
+    f_c = collapsed_dynamics
+    for i in range(len(x_c)):   
+        x_c_sub = solve(Eq(f_c[i]), x_c[i])
+        if x_c_sub is None or len(x_c_sub) == 0:
+            if debug:
+                print('Could not find solution for this collapsed variable : {0} from {1}'.format(x_c[i], f_c[i]))
+                warnings.warn('Solve time-scale separation failed. Check model consistency.')
+            return None
+        elif len(x_c_sub) > 1:
+            if debug:
+                print('Multiple solutions obtained for {0}. '.format(x_c[i]))
+                print('Chooosing one non-zero solution, check consistency. ')
+                print('The solutions are {0}. Highly recommend manuallly solving for this variable first then try this function. '.format(x_c_sub))
+            for sub in x_c_sub:
+                if sub == 0:
+                    x_c_sub.remove(0)
+        elif x_c_sub == 0:
+            if debug:
+                warnings.warn('Zero solution for collapsed variable: {0} from {1}. Check model consistency.'.format(x_c[i], f_c[i]))
+        # Store solution in a lookup dictionary:
+        lookup_collapsed_solutions[x_c[i]] = x_c_sub
+    return lookup_collapsed_solutions
 
 class ReduceUtils(Reduce):
     '''

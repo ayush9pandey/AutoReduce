@@ -1,6 +1,6 @@
-from auto_reduce import ode
-from auto_reduce import local_sensitivity
-from auto_reduce import model_reduction 
+from autoreduce import ode
+from autoreduce import local_sensitivity
+from autoreduce import model_reduction 
 
 def get_ODE(system_obj, timepoints, **kwargs):
     '''
@@ -33,7 +33,7 @@ def get_SSM(system_obj, timepoints, **kwargs):
                 timepoints = timepoints, **kwargs)
     return ssm_obj
 
-def reduce(system_obj, timepoints_ode, timepoints_ssm, **kwargs):
+def get_reducible(system_obj, timepoints_ode = None, timepoints_ssm = None, **kwargs):
     red_obj = model_reduction.Reduce(system_obj.x, system_obj.f, C = system_obj.C, 
                 params = system_obj.params, g = system_obj.g, h = system_obj.h, u = system_obj.u,
                 params_values = system_obj.params_values, x_init = system_obj.x_init, 

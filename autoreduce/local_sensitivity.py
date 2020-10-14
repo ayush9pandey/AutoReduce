@@ -1,5 +1,5 @@
 from .system import System
-from auto_reduce import utils
+from autoreduce import utils
 import numpy as np
 # from .ode import ODE
 from scipy.integrate import solve_ivp, odeint
