@@ -79,8 +79,7 @@ class Reduce(System):
         x = self.x
         for attempt in self.all_combinations:
             states_attempt = [x[i] for i in attempt]
-            if not len(set(states_attempt).intersection(set(output_states))) == len(output_states) 
-               or len(attempt) > self.nstates_tol:
+            if not len(set(states_attempt).intersection(set(output_states))) == len(output_states) or len(attempt) > self.nstates_tol:
                 restart = True
             if restart:
                 possible_reductions.remove(attempt)
@@ -323,9 +322,7 @@ class Reduce(System):
         # has any remaining variables that should have been collapsed.
         loop_sanity = True
         count = 0
-        while sympy_variables_exist(ode_function = f_hat, 
-                                    variables_to_check = x_c)[0] 
-                                    and loop_sanity:
+        while sympy_variables_exist(ode_function = f_hat, variables_to_check = x_c)[0] and loop_sanity:
             f_hat = sympy_solve_and_substitute(ode_function = f_hat, 
                                               collapsed_states = x_c, 
                                               collapsed_dynamics = f_c, 
