@@ -7,13 +7,16 @@ from sympy import lambdify
 
 class SSM(System):
     '''
-    Class that computes local sensitivity analysis coefficients for the given Model using a numerical 
-    approximation method discussed in doi: https://doi.org/10.1016/0021-9991(76)90007-3
+    Class that computes local sensitivity 
+    analysis coefficients for the given Model using a numerical 
+    approximation method discussed in 
+    doi: https://doi.org/10.1016/0021-9991(76)90007-3
     Uses numerical method to find sensitivity analysis matrix (SSM).
     Both the Jacobian matrix and the Z matrix are estimated using 4th
     order central difference as given in the paper.
     '''
-    def __init__(self, x, f, params = None, C = None, g = None, h = None, u = None,
+    def __init__(self, x, f, params = None, 
+                C = None, g = None, h = None, u = None,
                 params_values = None, x_init = None, timepoints = None):
         super().__init__(x, f, params, C, g, h, u, params_values, x_init)
         if timepoints is None:
@@ -25,9 +28,11 @@ class SSM(System):
 
     def compute_Zj(self, x, j, **kwargs):
         '''
-        Compute Z_j, i.e. df/dp_j at a particular timepoint k for the parameter p_j. 
+        Compute Z_j, i.e. df/dp_j at a particular 
+        timepoint k for the parameter p_j. 
         Returns a vector of size n x 1. 
-        Use mode = 'accurate' for this object attribute to use accurate computations using numdifftools.
+        Use mode = 'accurate' for this object attribute 
+        to use accurate computations using numdifftools.
         '''
         # if 'mode' in kwargs:
         #     if kwargs.get('mode') == 'accurate':
@@ -68,7 +73,8 @@ class SSM(System):
         '''
         Compute the Jacobian J = df/dx at a timepoint k.
         Returns a matrix of size n x n.
-        Use mode = 'accurate' for this object attribute to use accurate computations using numdifftools.
+        Use mode = 'accurate' for this object attribute
+        to use accurate computations using numdifftools.
         '''
         if 'fun' in kwargs:
             fun = kwargs.get('fun')
@@ -88,7 +94,8 @@ class SSM(System):
                 try:
                     import numdifftools as nd
                 except:
-                    raise ValueError('The package numdifftools is not installed for this method to work.')
+                    raise ValueError('The package numdifftools is not' +
+                                    'installed for this method to work.')
                 fun_l = lambdify((self.x, self.params), fun)
                 def fun_ode(t, x, params):
                     y = fun_l(x, params)
@@ -126,12 +133,18 @@ class SSM(System):
         return J
 
     def compute_SSM(self, normalize = False, **kwargs):
-        '''
-        Returns the sensitivity coefficients S_j for each parameter p_j. 
-        The sensitivity coefficients are written in a sensitivity matrix SSM of size len(timepoints) x len(params) x n
-        If normalize argument is true, the coefficients are normalized by the nominal value of each paramneter.
-        Use mode = 'accurate' for this object attribute to use accurate computations using numdifftools.
-        '''
+        """
+        Returns the sensitivity coefficients 
+        S_j for each parameter p_j. 
+        The sensitivity coefficients are written 
+        in a sensitivity matrix SSM of size 
+        len(timepoints) x len(params) x n
+        If normalize argument is true, 
+        the coefficients are normalized by 
+        the nominal value of each paramneter.
+        Use mode = 'accurate' for this object attribute 
+        to use accurate computations using numdifftools.
+        """
         if 'mode' in kwargs:
             if kwargs.get('mode') == 'accurate_SSM':
                 return self.solve_extended_ode(**kwargs)
@@ -159,7 +172,9 @@ class SSM(System):
             J = self.compute_J(xs[k,:], **kwargs)
             #Solve for S = dx/dp for all x and all P (or theta, the parameters) at time point k
             for j in range(len(P)): 
-                utils.printProgressBar(int(j + k*len(P)), len(self.timepoints)*len(P) - 1, prefix = 'SSM Progress:', suffix = 'Complete', length = 50)
+                utils.printProgressBar(int(j + k*len(P)), len(self.timepoints)*len(P) - 1, 
+                                      prefix = 'SSM Progress:', suffix = 'Complete', 
+                                      length = 50)
                 # print('for parameter',P[j])
                 # get the pmatrix
                 Zj = self.compute_Zj(xs[k,:], j, **kwargs)
@@ -177,8 +192,10 @@ class SSM(System):
     def normalize_SSM(self):
         '''
         Returns normalized sensitivity coefficients. 
-        Multiplies each sensitivity coefficient with the corresponding parameter p_j
-        Divides the result by the corresponding state to obtain the normalized coefficient that is returned.
+        Multiplies each sensitivity coefficient with 
+        the corresponding parameter p_j
+        Divides the result by the corresponding state to 
+        obtain the normalized coefficient that is returned.
         '''
         SSM_normalized = np.zeros(np.shape(self.SSM))
         for j in range(len(self.params_values)):
@@ -203,7 +220,8 @@ class SSM(System):
         keyword argument options?:
             ode_sol - An OdeSolution object holding a continuously-interpolated
                         solution for ode.
-            ode_jac - Jacobian of the ode, as calculated by numdifftools.Jacobian.
+            ode_jac - Jacobian of the ode, as calculated by 
+                        numdifftools.Jacobian.
             ode - The ODE for the system, of the form ode(t, x, params)
             params - A list of parameters to feed to ode.
             p - The index of the parameter to calculate sensitivities to.

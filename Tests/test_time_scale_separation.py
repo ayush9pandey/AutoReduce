@@ -15,19 +15,33 @@ class TestTimeScaleSeparation(TestAutoReduce):
         possible_reductions = self.reducible_system.get_all_combinations()
         for attempt in possible_reductions:
             attempt_states = [self.x[i] for i in attempt]
-            self.test_solve_timescale_separation(attempt_states = [A, B], mode = 'fail')
-            self.test_solve_timescale_separation(attempt_states = [A, D], mode = 'fail')
+            self.test_solve_timescale_separation(attempt_states = [A, B], 
+                                                mode = 'fail')
+            self.test_solve_timescale_separation(attempt_states = [A, D], 
+                                                mode = 'fail')
 
-            self.test_solve_timescale_separation(attempt_states = [A, C], mode = 'fail')
-            self.test_solve_timescale_separation(attempt_states = [B, C, D], mode = 'success', answer = [0, -k3 * C, k3 * C])
-            self.test_solve_timescale_separation(attempt_states = [A, C, D], mode = 'success', answer = [0, -k3 * C, k3 * C])
-            # self.test_solve_timescale_separation(attempt_states = [A, B, C], mode = 'success', answer = [-k1 * A**2 * B, -k1 * A**2 * B, k1 * A**2 * B]) 
-            self.test_solve_timescale_separation(attempt_states = [C, D], mode = 'success', answer = [-k3 * C, k3 * C])
+            self.test_solve_timescale_separation(attempt_states = [A, C], 
+                                                mode = 'fail')
+            self.test_solve_timescale_separation(attempt_states = [B, C, D], 
+                                                mode = 'success', 
+                                                answer = [0, -k3 * C, k3 * C])
+            self.test_solve_timescale_separation(attempt_states = [A, C, D], 
+                                                mode = 'success', 
+                                                answer = [0, -k3 * C, k3 * C])
+            # self.test_solve_timescale_separation(attempt_states = [A, B, C], 
+        #                                       mode = 'success', 
+        #                                       answer = [-k1 * A**2 * B, 
+    #                                                   -k1 * A**2 * B, 
+    #                                                   k1 * A**2 * B]) 
+            self.test_solve_timescale_separation(attempt_states = [C, D], 
+                                                mode = 'success', 
+                                                answer = [-k3 * C, k3 * C])
             answer_ABD = [k1 * k2 * A**2 * B / (k2 + k3) - k1 * A**2 * B, 
                         k1 * k2 * A**2 * B / (k2 + k3) - k1 * A**2 * B, 
                         k1 * k3 * A**2 * B / (k2 + k3)]
-            self.test_solve_timescale_separation(attempt_states = [A, B, D], mode = 'success', answer = answer_ABD)
-            
+            self.test_solve_timescale_separation(attempt_states = [A, B, D], 
+                                                mode = 'success',
+                                                answer = answer_ABD)
 
     def test_solve_timescale_separation(self, attempt_states = None, mode = None, answer = None):
         if mode == 'fail':

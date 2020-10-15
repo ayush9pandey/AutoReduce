@@ -9,28 +9,39 @@ def load_ODE_model(n_states, n_params = 0):
     return x, f, P
 
 class System(object):
-    '''
-    Class that stores the system model in this form:  x_dot = f(x, theta), y = Cx.
-    '''
-    def __init__(self, x, f, params = None, C = None, g = None, h = None, u = None,
-                params_values = None, x_init = None, input_values = None):
+    """
+    Class that stores the system model in this form: 
+    x_dot = f(x, theta), y = Cx.
+    """
+    def __init__(self, x, f, params = None, 
+                C = None, g = None, h = None, 
+                u = None,
+                params_values = None, 
+                x_init = None, input_values = None):
         """
-        The general system dynamics : x_dot = f(x, P) + g(x, P)u, y = h(x,P)
+        The general system dynamics : 
+        x_dot = f(x, P) + g(x, P)u, y = h(x,P)
         Use the utility function ode_to_sympy to write these.
 
         x : (Symbolic) state variable vector
 
-        f : The system model dynamics. Writted symbolically with symbols x = [x_0, x_1, ...]
-        for states and P = [P_0, P_1, ...] for parameters.
+        f : The system model dynamics. 
+            Written symbolically with symbols x = [x_0, x_1, ...]
+            for states and P = [P_0, P_1, ...] for parameters.
 
-        params : (Symbolic) parameters used to define f, g, h. None if no symbolic parameters.
+        params : (Symbolic) parameters used to 
+                define f, g, h. None if no symbolic parameters.
 
-        g : The actuator / input dynamics. None by default if the system is autonomous.
+        g : The actuator / input dynamics. 
+            None by default if the system is autonomous.
 
-        C : The output matrix for y = Cx, size of C must be #outputs times #states. If None,
-        the argument h is expected. Cannot set C and h both.
+        C : The output matrix for y = Cx, 
+            size of C must be #outputs times #states. If None,
+            the argument h is expected. Cannot set C and h both.
 
-        h : The output description y = h(x, P) where x are states and P are parameters.
+        h : The output description y = h(x, P) 
+            where x are states and P are parameters.
+
         params_values : Values for model parameters
 
         u : List of inputs
@@ -60,9 +71,12 @@ class System(object):
             self.x_init = []
         return
 
-    def set_dynamics(self, f = None, g = None, h = None, C = None, u = None, params = None):
+    def set_dynamics(self, f = None, g = None, 
+                    h = None, C = None, u = None, 
+                    params = None):
         """
-        Set either f, g, h, or C to the System object or parameter values using P.
+        Set either f, g, h, or C to the 
+        System object or parameter values using P.
         """
         if f:
             self.f = f
@@ -82,8 +96,10 @@ class System(object):
 
     def evaluate(self, f, x, P, u = None):
         """
-        Evaluate the given symbolic function (f) that is part of the System
-        at the values given by x for self.x and P for self.params
+        Evaluate the given symbolic 
+        function (f) that is part of the System
+        at the values given by x for self.x 
+        and P for self.params
         """
         fs = []
         for i in range(len(f)):

@@ -39,7 +39,6 @@ setup(
     tests_require=["pytest", "pytest-cov", "nbval"],
     project_urls={
     'Documentation': 'https://readthedocs.org/projects/AutoReduce/',
-    'Funding': 'http://www.cds.caltech.edu/~murray/wiki/index.php?title=Developing_Standardized_Cell-Free_Platforms_for_Rapid_Prototyping_of_Synthetic_Biology_Circuits_and_Pathways',
     'Source': 'https://github.com/ayush9pandey/AutoReduce',
     'Tracker': 'https://github.com/ayush9pandey/AutoReduce/issues',
     }, 

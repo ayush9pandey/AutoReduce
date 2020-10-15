@@ -58,7 +58,8 @@ class TestSystem(TestCase):
     
     def test_params_values(self):
         if self.system1 is not None and self.system2 is not None:
-            self.assertEqual(self.system1.params_values, self.system2.params_values)
+            self.assertEqual(self.system1.params_values, 
+                            self.system2.params_values)
 
     def test_initial_conditions(self):
         if self.system1 is not None and self.system2 is not None:

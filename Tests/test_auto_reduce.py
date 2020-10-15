@@ -36,9 +36,9 @@ class TestAutoReduce(TestCase):
 
         # ODE in Sympy for the given test CRN with mass-action kinetics
         self.f = [-k1 * A**2 * B + k2 * C,
-            -k1 * A**2 * B + k2 * C,
-            k1 * A**2 * B - k2 * C - k3 * C,
-            k3 * C]
+                -k1 * A**2 * B + k2 * C,
+                k1 * A**2 * B - k2 * C - k3 * C,
+                k3 * C]
         init_cond = np.ones(len(self.x))
         self.C = None
         self.g = None
@@ -46,16 +46,20 @@ class TestAutoReduce(TestCase):
         self.u = None
         self.input_values = None
         self.params_values = [2, 4, 6]
-        self.system = System(self.x, self.f, params = self.params, x_init = init_cond, params_values = self.params_values,
-                            C = self.C, g = self.g, h = self.h, u = self.u, input_values = self.input_values)   
+        self.system = System(self.x, self.f, params = self.params, 
+                            x_init = init_cond, params_values = self.params_values,
+                            C = self.C, g = self.g, h = self.h, u = self.u, 
+                            input_values = self.input_values)   
         self.reducible_system = get_reducible(self.system)
     
     def test_get_reduced_model(self, x_hat = None):
         """
-        This function creates a reducible System object that can be used 
-        to create reduced models given the x_hat (the list of states in reduced model). 
-        All other states are collapsed to be at quasi-steady state and both the reduced and 
-        the collapsed models are returned.
+        This function creates a reducible System object 
+        that can be used to create reduced models given 
+        the x_hat (the list of states in reduced model). 
+        All other states are collapsed to be at quasi-steady 
+        state and both the reduced and the collapsed models 
+        are returned.
         """
         if x_hat is None:
             x_hat = []
@@ -66,5 +70,3 @@ class TestAutoReduce(TestCase):
         if collapsed_system is not None:
             self.assertIsInstance(collapsed_system, System)
         return reduced_system, collapsed_system
-        
-
