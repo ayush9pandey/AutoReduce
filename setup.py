@@ -8,6 +8,7 @@ setup(
     name='AutoReduce',
     version='0.1.0',
     author='Ayush Pandey',
+    author_email='apandey@caltech.edu',
     url='https://github.com/ayush9pandey/AutoReduce/',
     description='Python based automated model reduction tools for SBML models',
     long_description=long_description,
