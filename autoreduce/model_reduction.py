@@ -139,6 +139,7 @@ class Reduce(System):
 
 
     def get_error_metric(self, reduced_sys):
+        # Give option for get_error_metric(sys1, sys2)
         """
         Returns the error defined as the 2-norm of y - y_hat.
         y = Cx and y_hat = C_hat x_hat OR
@@ -162,6 +163,7 @@ class Reduce(System):
         return
 
     def get_robustness_metric(self, reduced_sys):
+        # Create an option so the default way this is done is given two systems compute robustness metric. 
         # Implementing Theorem 2
         timepoints_ssm = self.timepoints_ssm
         _, x_sols, full_ssm = self.get_solutions()
