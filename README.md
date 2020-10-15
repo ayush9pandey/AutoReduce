@@ -1,12 +1,13 @@
 # Automated Model Reduction Tool for SBML models
 ## Python toolbox to automatically obtain reduced model expressions using time-scale separation, conservation laws, and other assumptions.
 
-Refer to the [bioRxiv paper](https://www.biorxiv.org/content/10.1101/2020.02.15.950840v2.full.pdf) for more details.
-To run - Go through tutorial files inside tutorials folder then check out some common examples in the examples folder. To check if different tools are working properly, run tests. 
-Contact : Ayush Pandey (apandet at caltech dot edu) for any feedback or suggestions.
 [![Build Status](https://travis-ci.com/ayush9pandey/AutoReduce.svg?branch=master)](https://travis-ci.com/ayush9pandey/AutoReduce)
 [![codecov](https://codecov.io/gh/ayush9pandey/AutoReduce/branch/master/graph/badge.svg)](https://codecov.io/gh/ayush9pandey/AutoReduce)
 [![PyPI version](https://badge.fury.io/py/autoreduce.svg)](https://badge.fury.io/py/autoreduce)
+
+Refer to the [bioRxiv paper](https://www.biorxiv.org/content/10.1101/2020.02.15.950840v2.full.pdf) for more details.
+To run - Go through tutorial files inside tutorials folder then check out some common examples in the examples folder. To check if different tools are working properly, run tests. 
+Contact : Ayush Pandey (apandet at caltech dot edu) for any feedback or suggestions.
 
 
 
