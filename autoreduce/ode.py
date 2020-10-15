@@ -9,7 +9,7 @@ class ODE(System):
     To solve the Model using scipy.odeint
     '''
     def __init__(self, x, f, params = None, C = None, g = None, h = None, u = None,
-                params_values = [], x_init = [], input_values = [], timepoints = None):
+                params_values = None, x_init = None, input_values = None, timepoints = None):
         super().__init__(x, f, params, C, g, h, u, params_values, x_init, input_values)
         if timepoints is None:
             timepoints = []

@@ -5,33 +5,41 @@ with open('README.md') as fp:
     long_description = fp.read()
 
 setup(
-    name='auto_reduce',
-    version='0.1',
+    name='AutoReduce',
+    version='0.1.0',
     author='Ayush Pandey',
-    author_email='apandey@caltech.edu',
-    url='https://github.com/ayush9pandey/autoReduce/',
-    description='An automated model reduction toolbox',
+    url='https://github.com/ayush9pandey/AutoReduce/',
+    description='Python based automated model reduction tools for SBML models',
     long_description=long_description,
-    packages=['auto_reduce'],
+    packages=['autoreduce'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
-        'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
-        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Topic :: Software Development',
         'Topic :: Scientific/Engineering',
-        'Operating System :: POSIX',
-        'Operating System :: Unix'
-        'Operating System :: MacOS'
+        'Operating System :: OS Independent',
     ],
     install_requires=[
-          'sympy',
-          'scipy',
-          'numpy',
-          'nose',
-      ],
-    test_suite='nose.collector',
-    tests_require=['nose'],
+          "python-libsbml",
+          "sympy",
+          "scipy",
+          "numpy"
+          ],
+    extras_require = { 
+        "all": [
+            "matplotlib",
+            "seaborn",
+            ]
+            },
+    setup_requires=["pytest-runner"],
+    python_requires='>=3.6',
+    keywords="SBML Automated Model Reduction Modeling QSSA Hill functions",
+    tests_require=["pytest", "pytest-cov", "nbval"],
+    project_urls={
+    'Documentation': 'https://readthedocs.org/projects/AutoReduce/',
+    'Source': 'https://github.com/ayush9pandey/AutoReduce',
+    'Tracker': 'https://github.com/ayush9pandey/AutoReduce/issues',
+    }, 
 )
