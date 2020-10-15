@@ -39,8 +39,15 @@ class TestAutoReduce(TestCase):
             -k1 * A**2 * B + k2 * C,
             k1 * A**2 * B - k2 * C - k3 * C,
             k3 * C]
-        init_cond = np.zeros(len(self.x))
-        self.system = System(self.x, self.f, params = self.params, x_init = init_cond)   
+        init_cond = np.ones(len(self.x))
+        self.C = None
+        self.g = None
+        self.h = None
+        self.u = None
+        self.input_values = None
+        self.params_values = [2, 4, 6]
+        self.system = System(self.x, self.f, params = self.params, x_init = init_cond, params_values = self.params_values,
+                            C = self.C, g = self.g, h = self.h, u = self.u, input_values = self.input_values)   
         self.reducible_system = get_reducible(self.system)
     
     def test_get_reduced_model(self, x_hat = None):
