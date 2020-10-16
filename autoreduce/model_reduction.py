@@ -354,7 +354,7 @@ class Reduce(System):
                             params_values = self.params_values, x_init = x_c_init)
         reduced_sys.fast_states = fast_states
         # If you got to here,
-        print('Successful time-scale separation solution obtained!')
+        print('Successful time-scale separation solution obtained with states:!', reduced_sys.x)
         return reduced_sys, fast_subsystem
 
     def solve_timescale_separation_with_input(self, attempt_states):
@@ -690,11 +690,13 @@ def sympy_solve_and_substitute(ode_function, collapsed_states,
     return ode_function, solution_dict
 
 def sympy_get_steady_state_solutions(collapsed_variables, collapsed_dynamics, 
-                                    solution_dict = {}, debug = False):
+                                    solution_dict = None, debug = False):
     """
     Solve for each collapsed_variable from corresponding collapsed_dynamics one by one. 
     Return the solutions as a lookup dictionary as a map for variables and their solutions.
     """
+    if solution_dict is None:
+        solution_dict = {}
     x_c = collapsed_variables
     f_c = collapsed_dynamics
     for i in range(len(x_c)):   
