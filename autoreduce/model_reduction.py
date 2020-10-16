@@ -310,10 +310,11 @@ class Reduce(System):
                 x_hat_index = x_hat.index(i)
                 f_hat[x_hat_index] = f[state_index]
                 x_hat_init[x_hat_index] = x_init[state_index]
-        
+        self.f_hat = f_hat
+        self.f_c = f_c 
         if debug:
             print('Reduced set of variables is', x_hat)
-            print('f_hat = ',f_hat)
+            print('f_hat = ',self.f_hat)
             print('Collapsed set of variables is', x_c)
 
         # Get the reduced (slow system) dynamics:
@@ -322,10 +323,12 @@ class Reduce(System):
         # has any remaining variables that should have been collapsed.
         loop_sanity = True
         count = 0
-        while sympy_variables_exist(ode_function = f_hat, variables_to_check = x_c)[0] and loop_sanity:
-            f_hat = sympy_solve_and_substitute(ode_function = f_hat, 
+        solution_dict = {}
+        while sympy_variables_exist(ode_function = self.f_hat, variables_to_check = x_c)[0] and loop_sanity:
+            self.f_hat, solution_dict = sympy_solve_and_substitute(ode_function = self.f_hat, 
                                               collapsed_states = x_c, 
-                                              collapsed_dynamics = f_c, 
+                                              collapsed_dynamics = self.f_c,
+                                              solution_dict = solution_dict, 
                                               debug = debug)
             if count > 2:
                 loop_sanity = False
@@ -338,16 +341,16 @@ class Reduce(System):
 
         # Get the collapsed (fast system) dynamics to create collapsed_system
         for i in range(len(x_hat)):
-            for j in range(len(f_c)):
+            for j in range(len(self.f_c)):
                 # The slow variables stay at steady state in the fast subsystem
-                f_c[j] = f_c[j].subs(x_hat[i], x_hat_init[i])
+                self.f_c[j] = self.f_c[j].subs(x_hat[i], x_hat_init[i])
 
         # Create C_hat 
         C_hat = self.create_C_hat(x_hat)
         
-        reduced_sys = create_system(x_hat, f_hat, params = self.params, C = C_hat,
+        reduced_sys = create_system(x_hat, self.f_hat, params = self.params, C = C_hat,
                             params_values = self.params_values, x_init = x_hat_init)
-        fast_subsystem = create_system(x_c, f_c, params = self.params,
+        fast_subsystem = create_system(x_c, self.f_c, params = self.params,
                             params_values = self.params_values, x_init = x_c_init)
         reduced_sys.fast_states = fast_states
         # If you got to here,
@@ -496,6 +499,7 @@ class Reduce(System):
                 for row_ind in range(np.shape(C_hat)[0]):
                     C_hat[row_ind][i] = 1 * is_output
         return C_hat
+
     def set_conservation_laws(self, conserved_quantities, sym_states_to_eliminate):
         '''
         From the conserved_quantities list, 
@@ -521,9 +525,6 @@ class Reduce(System):
         self.C = np.delete(np.array(self.C), states_to_eliminate, axis=1)
         self.n = self.n - len(states_to_eliminate)
         return self.f
-
-    
-
 
     def solve_approximations(self):
         pass
@@ -643,6 +644,12 @@ def sympy_variables_exist(ode_function, variables_to_check, **kwargs):
     """
     flag = False
     all_free_symbols = []
+    if 'debug' in kwargs:
+        debug = kwargs.get('debug')
+    else:
+        debug = False
+    if debug:
+        print('In sympy_variables_exist. Checking for presence of ',variables_to_check)
     for fi in ode_function:
         for sym in fi.free_symbols:
             if sym not in all_free_symbols:
@@ -653,27 +660,41 @@ def sympy_variables_exist(ode_function, variables_to_check, **kwargs):
         if sym in variables_to_check:
             variables_that_appear.append(sym)
             flag = True
+    if flag and debug:
+        print('Found! The following: ', variables_that_appear)
     return flag, variables_that_appear
 
-def sympy_solve_and_substitute(ode_function, collapsed_states, collapsed_dynamics, debug = False):
+def sympy_solve_and_substitute(ode_function, collapsed_states, 
+                              collapsed_dynamics, solution_dict, 
+                              debug = False):
     for s in collapsed_states:
         index = collapsed_states.index(s)
         f = collapsed_dynamics[index]
-        solution_dict = sympy_get_steady_state_solutions([s], [f], debug)
+        if debug:
+            print('In sympy_solve_and_substitute, solving for ', s)
+            print('From ', f)
+        solution_dict = sympy_get_steady_state_solutions(collapsed_variables = [s], 
+                                                        collapsed_dynamics = [f], 
+                                                        solution_dict = solution_dict,
+                                                        debug = debug)
+        if debug:
+            print('Solution found: ', solution_dict)
         if solution_dict is None:
             return ode_function
-        updated_ode_function = []
         for func in ode_function:
+            func_index = ode_function.index(func)
             updated_func = func.subs(s, solution_dict[s][0])
-            updated_ode_function.append(updated_func)
-    return updated_ode_function
+            ode_function[func_index] = updated_func
+        if debug:
+            print('Updated f_hat now is ', ode_function)
+    return ode_function, solution_dict
 
-def sympy_get_steady_state_solutions(collapsed_variables, collapsed_dynamics, debug = False):
+def sympy_get_steady_state_solutions(collapsed_variables, collapsed_dynamics, 
+                                    solution_dict = {}, debug = False):
     """
     Solve for each collapsed_variable from corresponding collapsed_dynamics one by one. 
     Return the solutions as a lookup dictionary as a map for variables and their solutions.
     """
-    lookup_collapsed_solutions = {}
     x_c = collapsed_variables
     f_c = collapsed_dynamics
     for i in range(len(x_c)):   
@@ -697,8 +718,8 @@ def sympy_get_steady_state_solutions(collapsed_variables, collapsed_dynamics, de
             if debug:
                 warnings.warn('Zero solution for collapsed variable: {0} from {1}. Check model consistency.'.format(x_c[i], f_c[i]))
         # Store solution in a lookup dictionary:
-        lookup_collapsed_solutions[x_c[i]] = x_c_sub
-    return lookup_collapsed_solutions
+        solution_dict[x_c[i]] = x_c_sub
+    return solution_dict
 
 class ReduceUtils(Reduce):
     '''
