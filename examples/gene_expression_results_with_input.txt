@@ -1,0 +1,136 @@
+Model reduction results.
+
+$x_{hat} = [T, X]$
+
+
+
+
+$f_{hat}(1) = - \frac{E_{tot} T k_{be} \left(d_{i} + k_{ue}\right)}{T k_{be} + d_{i} + k_{ue}} - \frac{R_{tot} T k_{br} \left(k_{tl} + k_{ur}\right)}{T k_{br} + k_{tl} + k_{ur}} - T d_{T} + k_{tx} \left(- \frac{P_{tot} \left(k_{tx} + k_{up}\right)}{G k_{bp} + k_{tx} + k_{up}} + P_{tot}\right) + k_{ue} \left(- \frac{E_{tot} \left(d_{i} + k_{ue}\right)}{T k_{be} + d_{i} + k_{ue}} + E_{tot}\right) + \left(k_{tl} + k_{ur}\right) \left(- \frac{R_{tot} \left(k_{tl} + k_{ur}\right)}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$f_{hat}(2) = - X d + k_{tl} \left(- \frac{R_{tot} \left(k_{tl} + k_{ur}\right)}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$x_{hat} = [P, T, X]$
+
+
+
+
+$f_{hat}(1) = - G P k_{bp} + \left(- P + P_{tot}\right) \left(k_{tx} + k_{up}\right)$
+
+
+$f_{hat}(2) = - \frac{E_{tot} T k_{be} \left(d_{i} + k_{ue}\right)}{T k_{be} + d_{i} + k_{ue}} - \frac{R_{tot} T k_{br} \left(k_{tl} + k_{ur}\right)}{T k_{br} + k_{tl} + k_{ur}} - T d_{T} + k_{tx} \left(- P + P_{tot}\right) + k_{ue} \left(- \frac{E_{tot} \left(d_{i} + k_{ue}\right)}{T k_{be} + d_{i} + k_{ue}} + E_{tot}\right) + \left(k_{tl} + k_{ur}\right) \left(- \frac{R_{tot} \left(k_{tl} + k_{ur}\right)}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$f_{hat}(3) = - X d + k_{tl} \left(- \frac{R_{tot} \left(k_{tl} + k_{ur}\right)}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$x_{hat} = [T, R, X]$
+
+
+
+
+$f_{hat}(1) = - \frac{E_{tot} T k_{be} \left(d_{i} + k_{ue}\right)}{T k_{be} + d_{i} + k_{ue}} - R T k_{br} - T d_{T} + k_{tx} \left(- \frac{P_{tot} \left(k_{tx} + k_{up}\right)}{G k_{bp} + k_{tx} + k_{up}} + P_{tot}\right) + k_{ue} \left(- \frac{E_{tot} \left(d_{i} + k_{ue}\right)}{T k_{be} + d_{i} + k_{ue}} + E_{tot}\right) + \left(- R + R_{tot}\right) \left(k_{tl} + k_{ur}\right)$
+
+
+$f_{hat}(2) = - R T k_{br} + \left(- R + R_{tot}\right) \left(k_{tl} + k_{ur}\right)$
+
+
+$f_{hat}(3) = - X d + k_{tl} \left(- R + R_{tot}\right)$
+
+
+$x_{hat} = [T, E, X]$
+
+
+
+
+$f_{hat}(1) = - E T k_{be} - \frac{R_{tot} T k_{br} \left(k_{tl} + k_{ur}\right)}{T k_{br} + k_{tl} + k_{ur}} - T d_{T} + k_{tx} \left(- \frac{P_{tot} \left(k_{tx} + k_{up}\right)}{G k_{bp} + k_{tx} + k_{up}} + P_{tot}\right) + k_{ue} \left(- E + E_{tot}\right) + \left(k_{tl} + k_{ur}\right) \left(- \frac{R_{tot} \left(k_{tl} + k_{ur}\right)}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$f_{hat}(2) = - E T k_{be} + \left(- E + E_{tot}\right) \left(d_{i} + k_{ue}\right)$
+
+
+$f_{hat}(3) = - X d + k_{tl} \left(- \frac{R_{tot} \left(k_{tl} + k_{ur}\right)}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$x_{hat} = [R, E, X]$
+
+
+
+
+$f_{hat}(1) = - \frac{R k_{br} \left(- E k_{ue} + E_{tot} k_{ue} - \frac{P_{tot} k_{tx} \left(k_{tx} + k_{up}\right)}{G k_{bp} + k_{tx} + k_{up}} + P_{tot} k_{tx} - R k_{tl} - R k_{ur} + R_{tot} k_{tl} + R_{tot} k_{ur}\right)}{E k_{be} + R k_{br} + d_{T}} + \left(- R + R_{tot}\right) \left(k_{tl} + k_{ur}\right)$
+
+
+$f_{hat}(2) = - \frac{E k_{be} \left(- E k_{ue} + E_{tot} k_{ue} - \frac{P_{tot} k_{tx} \left(k_{tx} + k_{up}\right)}{G k_{bp} + k_{tx} + k_{up}} + P_{tot} k_{tx} - R k_{tl} - R k_{ur} + R_{tot} k_{tl} + R_{tot} k_{ur}\right)}{E k_{be} + R k_{br} + d_{T}} + \left(- E + E_{tot}\right) \left(d_{i} + k_{ue}\right)$
+
+
+$f_{hat}(3) = - X d + k_{tl} \left(- R + R_{tot}\right)$
+
+
+$x_{hat} = [P, T, R, X]$
+
+
+
+
+$f_{hat}(1) = - G P k_{bp} + \left(- P + P_{tot}\right) \left(k_{tx} + k_{up}\right)$
+
+
+$f_{hat}(2) = - \frac{E_{tot} T k_{be} \left(d_{i} + k_{ue}\right)}{T k_{be} + d_{i} + k_{ue}} - R T k_{br} - T d_{T} + k_{tx} \left(- P + P_{tot}\right) + k_{ue} \left(- \frac{E_{tot} \left(d_{i} + k_{ue}\right)}{T k_{be} + d_{i} + k_{ue}} + E_{tot}\right) + \left(- R + R_{tot}\right) \left(k_{tl} + k_{ur}\right)$
+
+
+$f_{hat}(3) = - R T k_{br} + \left(- R + R_{tot}\right) \left(k_{tl} + k_{ur}\right)$
+
+
+$f_{hat}(4) = - X d + k_{tl} \left(- R + R_{tot}\right)$
+
+
+$x_{hat} = [P, T, E, X]$
+
+
+
+
+$f_{hat}(1) = - G P k_{bp} + \left(- P + P_{tot}\right) \left(k_{tx} + k_{up}\right)$
+
+
+$f_{hat}(2) = - E T k_{be} - \frac{R_{tot} T k_{br} \left(k_{tl} + k_{ur}\right)}{T k_{br} + k_{tl} + k_{ur}} - T d_{T} + k_{tx} \left(- P + P_{tot}\right) + k_{ue} \left(- E + E_{tot}\right) + \left(k_{tl} + k_{ur}\right) \left(- \frac{R_{tot} \left(k_{tl} + k_{ur}\right)}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$f_{hat}(3) = - E T k_{be} + \left(- E + E_{tot}\right) \left(d_{i} + k_{ue}\right)$
+
+
+$f_{hat}(4) = - X d + k_{tl} \left(- \frac{R_{tot} \left(k_{tl} + k_{ur}\right)}{T k_{br} + k_{tl} + k_{ur}} + R_{tot}\right)$
+
+
+$x_{hat} = [P, R, E, X]$
+
+
+
+
+$f_{hat}(1) = - G P k_{bp} + \left(- P + P_{tot}\right) \left(k_{tx} + k_{up}\right)$
+
+
+$f_{hat}(2) = - \frac{R k_{br} \left(- E k_{ue} + E_{tot} k_{ue} - P k_{tx} + P_{tot} k_{tx} - R k_{tl} - R k_{ur} + R_{tot} k_{tl} + R_{tot} k_{ur}\right)}{E k_{be} + R k_{br} + d_{T}} + \left(- R + R_{tot}\right) \left(k_{tl} + k_{ur}\right)$
+
+
+$f_{hat}(3) = - \frac{E k_{be} \left(- E k_{ue} + E_{tot} k_{ue} - P k_{tx} + P_{tot} k_{tx} - R k_{tl} - R k_{ur} + R_{tot} k_{tl} + R_{tot} k_{ur}\right)}{E k_{be} + R k_{br} + d_{T}} + \left(- E + E_{tot}\right) \left(d_{i} + k_{ue}\right)$
+
+
+$f_{hat}(4) = - X d + k_{tl} \left(- R + R_{tot}\right)$
+
+
+$x_{hat} = [T, R, E, X]$
+
+
+
+
+$f_{hat}(1) = - E T k_{be} - R T k_{br} - T d_{T} + k_{tx} \left(- \frac{P_{tot} \left(k_{tx} + k_{up}\right)}{G k_{bp} + k_{tx} + k_{up}} + P_{tot}\right) + k_{ue} \left(- E + E_{tot}\right) + \left(- R + R_{tot}\right) \left(k_{tl} + k_{ur}\right)$
+
+
+$f_{hat}(2) = - R T k_{br} + \left(- R + R_{tot}\right) \left(k_{tl} + k_{ur}\right)$
+
+
+$f_{hat}(3) = - E T k_{be} + \left(- E + E_{tot}\right) \left(d_{i} + k_{ue}\right)$
+
+
+$f_{hat}(4) = - X d + k_{tl} \left(- R + R_{tot}\right)$
+

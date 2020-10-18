@@ -7,14 +7,16 @@ import numpy as np
 import warnings
 from scipy.linalg import solve_lyapunov, block_diag, eigvals, norm
 from autoreduce import utils
+
+
 class Reduce(System):
     '''
-    The class can be used to compute the various 
-    possible reduced models for the System object 
-    and then find out the best reduced 
-    model choice using doi : https://doi.org/10.1101/640276 
+    The class can be used to compute the various
+    possible reduced models for the System object
+    and then find out the best reduced
+    model choice using doi : https://doi.org/10.1101/640276
     '''
-    def __init__(self, x, f, params = None, C = None, 
+    def __init__(self, x, f, params=None, C=None, 
                 g = None, h = None, u = None,
                 params_values = None, x_init = None, 
                 timepoints_ode = None, timepoints_ssm = None,
@@ -61,7 +63,7 @@ class Reduce(System):
         '''
         Combinatorially create sets of all states 
         that can be reduced in self.all_reductions.
-        In addition, returns the possible_reductions 
+        In addition, returns the possible reductions
         list after removing the sets that
         contain states involved in the outputs.
         '''
@@ -207,7 +209,7 @@ class Reduce(System):
                     max_eig_P = max(eigvals(P))
                 Z = full_ssm.compute_Zj(x_sols[k,:], j)
                 Z_hat = reduced_ssm.compute_Zj(x_sols_hat[k,:], j)
-                Z_bar = np.concatenate((Z,Z_hat), axis = 0)
+                Z_bar = np.concatenate((Z, Z_hat), axis = 0)
                 Z_bar = np.reshape(Z_bar, ( (self.n + reduced_sys.n), 1 ) )
                 S_metric = norm(Z_bar.T@P@S_bar[k,:,j])
                 if  S_metric > S_metric_max:
@@ -264,7 +266,6 @@ class Reduce(System):
             debug = kwargs.get('debug')
         else:
             debug = False
-
         # If slow_states is empty, then reduced model = given model
         # and collapsed model is None
         if not slow_states:
@@ -281,11 +282,10 @@ class Reduce(System):
         x_c_init = [None]*max_len_fast_states
         f_c = [None]*max_len_fast_states
         # print('f_c',f_c)
-
         # Populate the list of states that will retained (x_hat)
         # and those that will be collapsed (x_c)
         x_hat = slow_states
-
+        # Make sure fast_states (direct sum) slow_states is all of it. 
         # Check if fast states are already provided as well:
         if fast_states:
             x_c = fast_states
@@ -297,6 +297,12 @@ class Reduce(System):
                     x_c[count_x_c] = i
                     count_x_c += 1
             fast_states = x_c
+        # Consistency check for slow and fast states:
+        if len(slow_states) + len(fast_states) != len(self.x):
+            raise RuntimeError('Number of slow states plus number of fast states must equal the number of total states.')
+        for state in slow_states:
+            if state in fast_states:
+                raise RuntimeError('Found a state that is both fast and slow! Unfortunately, that is not yet possible in this reality.')
         # Now populate the default corresponding 
         # f_c and f_hat dynamics from self.f
         # and inital conditions from self.x_init
@@ -325,11 +331,15 @@ class Reduce(System):
         count = 0
         solution_dict = {}
         while sympy_variables_exist(ode_function = self.f_hat, variables_to_check = x_c)[0] and loop_sanity:
-            self.f_hat, solution_dict = sympy_solve_and_substitute(ode_function = self.f_hat, 
-                                              collapsed_states = x_c, 
-                                              collapsed_dynamics = self.f_c,
-                                              solution_dict = solution_dict, 
-                                              debug = debug)
+            # print(sympy_solve_and_substitute(ode_function = self.f_hat, collapsed_states = x_c, 
+            #                                 collapsed_dynamics = self.f_c,
+            #                                 solution_dict = solution_dict, 
+            #                                 debug = debug))
+            self.f_hat, solution_dict, self.f_c = sympy_solve_and_substitute(ode_function = self.f_hat, 
+                                                                            collapsed_states = x_c, 
+                                                                            collapsed_dynamics = self.f_c,
+                                                                            solution_dict = solution_dict, 
+                                                                            debug = debug)
             if count > 2:
                 loop_sanity = False
                 warnings.warn('Solve time-scale separation failed. Check model consistency.')
@@ -354,7 +364,7 @@ class Reduce(System):
                             params_values = self.params_values, x_init = x_c_init)
         reduced_sys.fast_states = fast_states
         # If you got to here,
-        print('Successful time-scale separation solution obtained with states:!', reduced_sys.x)
+        print('Successful time-scale separation solution obtained with states: {0}!'.format(reduced_sys.x))
         return reduced_sys, fast_subsystem
 
     def solve_timescale_separation_with_input(self, attempt_states):
@@ -542,7 +552,7 @@ class Reduce(System):
         return self.x_sol, self.x_sol2, self.full_ssm
 
 
-    def reduce_simple(self):
+    def reduce_simple(self, **kwargs):
         if self.u is not None:
             raise ValueError('For models with inputs use reduce_with_input method.')
         results_dict = {}
@@ -558,15 +568,22 @@ class Reduce(System):
                 continue
             attempt_states = [self.x[i] for i in attempt]
             # Create reduced systems
-            reduced_sys, fast_subsystem = self.solve_timescale_separation(attempt_states)
+            reduced_sys, fast_subsystem = self.solve_timescale_separation(attempt_states, **kwargs)
             if reduced_sys is None or fast_subsystem is None:
                 continue
-            # Get metrics for this reduced system
-            e = self.get_error_metric(reduced_sys)
-            if e is np.nan:
-                continue
-            Se = self.get_robustness_metric(reduced_sys)
-            results_dict[reduced_sys] = [e, Se]
+            if 'skip_numerical_computations' in kwargs:
+                skip_numerical_computations = kwargs.get('skip_numerical_computations')
+            else:
+                skip_numerical_computations = False
+            if skip_numerical_computations:
+                results_dict[reduced_sys] = None
+            else:
+                # Get metrics for this reduced system
+                e = self.get_error_metric(reduced_sys)
+                if e is np.nan:
+                    continue
+                Se = self.get_robustness_metric(reduced_sys)
+                results_dict[reduced_sys] = [e, Se]
         self.results_dict = results_dict
         return self.results_dict
 
@@ -679,15 +696,29 @@ def sympy_solve_and_substitute(ode_function, collapsed_states,
                                                         debug = debug)
         if debug:
             print('Solution found: ', solution_dict)
-        if solution_dict is None:
-            return ode_function
+            print('current state', s)
+        if solution_dict[s] is None or len(solution_dict[s]) == 0:
+            continue
         for func in ode_function:
             func_index = ode_function.index(func)
             updated_func = func.subs(s, solution_dict[s][0])
             ode_function[func_index] = updated_func
+        for func in collapsed_dynamics:
+            if func == f:
+                continue
+            func_index = collapsed_dynamics.index(func)
+            updated_func = func.subs(s, solution_dict[s][0])
+            collapsed_dynamics[func_index] = updated_func
         if debug:
             print('Updated f_hat now is ', ode_function)
-    return ode_function, solution_dict
+        # print('returning', ode_function)
+        # print('returning', solution_dict)
+        # print('returning', collapsed_dynamics)
+        # returned_tuple = (ode_function, solution_dict, collapsed_dynamics)
+        # if len(returned_tuple) == 3:
+            # print('WTF is happening')
+    # return returned_tuple
+    return (ode_function, solution_dict, collapsed_dynamics)
 
 def sympy_get_steady_state_solutions(collapsed_variables, collapsed_dynamics, 
                                     solution_dict = None, debug = False):
@@ -702,10 +733,8 @@ def sympy_get_steady_state_solutions(collapsed_variables, collapsed_dynamics,
     for i in range(len(x_c)):   
         x_c_sub = solve(Eq(f_c[i]), x_c[i])
         if x_c_sub is None or len(x_c_sub) == 0:
-            if debug:
-                print('Could not find solution for this collapsed variable : {0} from {1}'.format(x_c[i], f_c[i]))
-                warnings.warn('Solve time-scale separation failed. Check model consistency.')
-            return None
+            print('Could not find solution for this collapsed variable : {0} from {1}'.format(x_c[i], f_c[i]))
+            warnings.warn('Solve time-scale separation failed. Check model consistency.')
         elif len(x_c_sub) > 1:
             if debug:
                 print('Multiple solutions obtained for {0}. '.format(x_c[i]))
@@ -716,9 +745,22 @@ def sympy_get_steady_state_solutions(collapsed_variables, collapsed_dynamics,
             for sub in x_c_sub:
                 if sub == 0:
                     x_c_sub.remove(0)
-        elif x_c_sub == 0:
+        elif not any(x_c_sub):
+            warnings.warn('Solve time-scale separation failed. Check model consistency.')
             if debug:
-                warnings.warn('Zero solution for collapsed variable: {0} from {1}. Check model consistency.'.format(x_c[i], f_c[i]))
+                warnings.warn('Zero solution(s) for collapsed variable: {0} from {1}.'.format(x_c[i], f_c[i]))
+        # Search for variables existing in x_c_sub that might have been solved for before:
+        # flag, solved_variables = sympy_variables_exist(ode_function = x_c_sub, 
+        #                                               variables_to_check = list(solution_dict.keys()), 
+        #                                               debug = debug)
+        # if debug and flag:
+        #     print('Found variables while solving that have already been solved:', solved_variables)
+        # if flag:
+        #     for solved_variable in solved_variables:
+        #         for sub_func in x_c_sub:
+        #             i = x_c_sub.index(sub_func)
+        #             sub_func = sub_func.subs(solved_variable, solution_dict[solved_variable][0])
+        #             x_c_sub[i] = sub_func
         # Store solution in a lookup dictionary:
         solution_dict[x_c[i]] = x_c_sub
     return solution_dict
