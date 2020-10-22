@@ -28,7 +28,7 @@ setup(
           "scipy",
           "numpy"
           ],
-    extras_require = { 
+    extras_require={ 
         "all": [
             "matplotlib",
             "seaborn",
@@ -42,5 +42,5 @@ setup(
     'Documentation': 'https://readthedocs.org/projects/AutoReduce/',
     'Source': 'https://github.com/ayush9pandey/AutoReduce',
     'Tracker': 'https://github.com/ayush9pandey/AutoReduce/issues',
-    }, 
+    },
 )
