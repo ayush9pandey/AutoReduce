@@ -15,13 +15,14 @@ class TestTimeScaleSeparation(TestAutoReduce):
         possible_reductions = self.reducible_system.get_all_combinations()
         for attempt in possible_reductions:
             attempt_states = [self.x[i] for i in attempt]
+            answer_AB = [A**2*B*k1*k2/(k2+k3) - A**2*B*k1,
+                         A**2*B*k1*k2/(k2+k3) - A**2*B*k1]
             self.test_solve_timescale_separation(attempt_states = [A, B], 
-                                                mode = 'fail')
+                                                mode = 'fail', answer = answer_AB)
             self.test_solve_timescale_separation(attempt_states = [A, D], 
-                                                mode = 'fail')
-
+                                                mode = 'fail', answer = [0, 0])
             self.test_solve_timescale_separation(attempt_states = [A, C], 
-                                                mode = 'fail')
+                                                mode = 'fail', answer = [0, -C*k3])
             self.test_solve_timescale_separation(attempt_states = [B, C, D], 
                                                 mode = 'success', 
                                                 answer = [0, -k3 * C, k3 * C])
@@ -46,9 +47,10 @@ class TestTimeScaleSeparation(TestAutoReduce):
     def test_solve_timescale_separation(self, attempt_states = None, mode = None, answer = None):
         if mode == 'fail':
             with self.assertWarnsRegex(Warning, 'Solve time-scale separation failed. Check model consistency.'):
-                reduced_system, collapsed_system = self.test_get_reduced_model(x_hat = attempt_states)
-                self.assertEqual(reduced_system, None)
-                self.assertEqual(collapsed_system, None)
+                reduced_system, collapsed_system = self.test_get_reduced_model(x_hat=attempt_states)
+                print(reduced_system.f)
+                self.assertEqual(reduced_system.f, answer)
+                self.assertEqual(collapsed_system.x, [x for x in self.x if x not in attempt_states])
         elif mode == 'success':
             reduced_system, collapsed_system = self.test_get_reduced_model(x_hat = attempt_states)
             assert answer is not None

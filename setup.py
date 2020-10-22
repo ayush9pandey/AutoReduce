@@ -6,7 +6,7 @@ with open('README.md') as fp:
 
 setup(
     name='AutoReduce',
-    version='0.1.0',
+    version='0.1.2',
     author='Ayush Pandey',
     author_email='apandey@caltech.edu',
     url='https://github.com/ayush9pandey/AutoReduce/',
@@ -28,7 +28,7 @@ setup(
           "scipy",
           "numpy"
           ],
-    extras_require = { 
+    extras_require={
         "all": [
             "matplotlib",
             "seaborn",
@@ -39,8 +39,8 @@ setup(
     keywords="SBML Automated Model Reduction Modeling QSSA Hill functions",
     tests_require=["pytest", "pytest-cov", "nbval"],
     project_urls={
-    'Documentation': 'https://readthedocs.org/projects/AutoReduce/',
-    'Source': 'https://github.com/ayush9pandey/AutoReduce',
-    'Tracker': 'https://github.com/ayush9pandey/AutoReduce/issues',
-    }, 
+            'Documentation': 'https://readthedocs.org/projects/AutoReduce/',
+            'Source': 'https://github.com/ayush9pandey/AutoReduce',
+            'Tracker': 'https://github.com/ayush9pandey/AutoReduce/issues',
+            },
 )

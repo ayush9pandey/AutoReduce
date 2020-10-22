@@ -46,19 +46,19 @@ class TestAutoReduce(TestCase):
         self.u = None
         self.input_values = None
         self.params_values = [2, 4, 6]
-        self.system = System(self.x, self.f, params = self.params, 
+        self.system = System(self.x, self.f, params = self.params,
                             x_init = init_cond, params_values = self.params_values,
-                            C = self.C, g = self.g, h = self.h, u = self.u, 
-                            input_values = self.input_values)   
+                            C = self.C, g = self.g, h = self.h, u = self.u,
+                            input_values = self.input_values)
         self.reducible_system = get_reducible(self.system)
     
-    def test_get_reduced_model(self, x_hat = None):
+    def test_get_reduced_model(self, x_hat=None):
         """
-        This function creates a reducible System object 
-        that can be used to create reduced models given 
-        the x_hat (the list of states in reduced model). 
-        All other states are collapsed to be at quasi-steady 
-        state and both the reduced and the collapsed models 
+        This function creates a reducible System object
+        that can be used to create reduced models given
+        the x_hat (the list of states in reduced model).
+        All other states are collapsed to be at quasi-steady
+        state and both the reduced and the collapsed models
         are returned.
         """
         if x_hat is None:

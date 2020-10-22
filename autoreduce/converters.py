@@ -49,7 +49,7 @@ def sympy_to_sbml(model):
  
 
 
-def sbml_to_ode(filename):
+def load_sbml(filename):
     '''A function that takes in an SBML file and returns x,f,P,params_values.
     x is a list of species written as Sympy objects
     f is a list of functions written as Sympy objects
@@ -100,7 +100,7 @@ def sbml_to_ode(filename):
  
     # Append species symbol to 'x' and append initial amount/concentration to x_init
     # x[i] corresponds to x_init[i]
-    for i in range(mod.getNumSpecies()): 
+    for i in range(mod.getNumSpecies()):
         species = mod.getSpecies(i)
         x.append(Symbol(species.getId()))
         if species.isSetInitialConcentration():
@@ -111,16 +111,13 @@ def sbml_to_ode(filename):
             x_init.append(0)
 
     # Append parameter symbol to 'P' and parameter values to 'params_values'
-    for i in range(mod.getNumParameters()): 
+    for i in range(mod.getNumParameters()):
         params = mod.getParameter(i)
         params_values.append(params.getValue())
         P.append(Symbol(params.getId()))
-
-    
-    
     
     # Get kinetic formula for each reaction, store in dictionary 'reactions'
-    for i in range(mod.getNumReactions()): 
+    for i in range(mod.getNumReactions()):
         reaction = mod.getReaction(i)
         kinetics = reaction.getKineticLaw()
         reactions[reaction.getId()] = sympify(kinetics.getFormula())
@@ -129,7 +126,7 @@ def sbml_to_ode(filename):
     f = [0] * len(x)
     
     # Loop to define functions in 'f'
-    for i in range(mod.getNumReactions()): 
+    for i in range(mod.getNumReactions()):
         reaction = mod.getReaction(i)
         # subtract reactant kinetic formula
         for j in range(reaction.getNumReactants()):
@@ -137,20 +134,18 @@ def sbml_to_ode(filename):
             species = sympify(mod.getSpecies(ref.getSpecies()).getId())
             curr_index = x.index(species)
             # Check stoichiometry
-            if ref.getStoichiometry() == 1.0:  
+            if ref.getStoichiometry() == 1.0: 
                 f[curr_index] += -reactions[reaction.getId()]
             else:
-                f[curr_index] += -reactions[reaction.getId()] * ref.getStoichiometry()
+                f[curr_index] += -reactions[reaction.getId()]*ref.getStoichiometry()
         # add product kinetic formula
         for j in range(reaction.getNumProducts()):
             ref = reaction.getProduct(j)
             species = sympify(mod.getSpecies(ref.getSpecies()).getId())
             curr_index = x.index(species)
             # Check stoichiometry
-            if ref.getStoichiometry() == 1.0: 
+            if ref.getStoichiometry() == 1.0:
                 f[curr_index] += +reactions[reaction.getId()]
             else:
-                f[curr_index] += +reactions[reaction.getId()] * ref.getStoichiometry()
-
-
-    return x,f,P,params_values,x_init
+                f[curr_index] += +reactions[reaction.getId()]*ref.getStoichiometry()
+    return x, f, P, params_values, x_init
