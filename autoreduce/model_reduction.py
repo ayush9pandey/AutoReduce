@@ -20,8 +20,8 @@ class Reduce(System):
                 g = None, h = None, u = None,
                 params_values = None, x_init = None, 
                 timepoints_ode = None, timepoints_ssm = None,
-                error_tol = None, nstates_tol = None, nstates_tol_min = None):
-        super().__init__(x, f, params, C, g, h, u, params_values, x_init)
+                error_tol = None, nstates_tol = None, nstates_tol_min = None, **kwargs):
+        super().__init__(x, f, params, C, g, h, u, params_values, x_init, **kwargs)
         self.f_hat = [] # Should be a list of Sympy objects
         if nstates_tol is None:
             self.nstates_tol = self.n - 1
@@ -53,8 +53,11 @@ class Reduce(System):
     def get_output_states(self):
         if self.C is None and self.h is None:
             return []
-        x = self.x
-        outputs = list(np.dot(np.array(self.C), np.array(x))) # Get y = C*x
+        outputs = np.dot(np.array(self.C), np.array(self.x)) # Get y = C*x
+        if type(outputs) is not np.ndarray:
+            outputs = [outputs]
+        else:
+            outputs = outputs.tolist()
         output_symbols = [list(i.free_symbols) for i in outputs]
         output_states = [item for sublist in output_symbols for item in sublist]
         return output_states
@@ -173,10 +176,14 @@ class Reduce(System):
     def get_robustness_metric_with_input(self, reduced_sys):
         return
 
-    def get_robustness_metric(self, reduced_sys):
+    def get_robustness_metric(self, reduced_sys, **kwargs):
         # Create an option so the default way this is 
         # done is given two systems compute robustness metric. 
         # Implementing Theorem 2
+        if 'method' in kwargs:
+            method = kwargs.get('method')
+        else:
+            method = 'direct'
         timepoints_ssm = self.timepoints_ssm
         _, x_sols, full_ssm = self.get_solutions()
         S = full_ssm.compute_SSM()
@@ -190,37 +197,64 @@ class Reduce(System):
         reduced_sys.S = S_hat
         S_bar = np.concatenate((S, S_hat), axis = 2)
         S_bar = np.reshape(S_bar, (len(timepoints_ssm), self.n + reduced_sys.n, len(self.params_values)))
-        for j in range(len(self.params_values)):
-            S_metric_max = 0
-            for k in range(len(self.timepoints_ssm)):
-                J = full_ssm.compute_J(x_sols[k,:])
-                J_hat = reduced_ssm.compute_J(x_sols_hat[k,:])
-                J_bar = block_diag(J, J_hat)
-                # print(J)
-                # print(J_bar)
-                C_bar = np.concatenate((self.C, -1*reduced_sys.C), axis = 1)
-                C_bar = np.reshape(C_bar, (np.shape(self.C)[0], (self.n + reduced_sys.n)))
-                # if np.isnan(J).any() or np.isnan(J_hat).any() 
-                # or np.isfinite(J).all() or np.isfinite(J_hat).all():
-                #     warnings.warn('NaN or inf found in Jacobians, continuing')
-                #     continue
-                P = solve_lyapunov(J_bar, -1 * C_bar.T@C_bar)
-                if k == 0:
-                    max_eig_P = max(eigvals(P))
-                Z = full_ssm.compute_Zj(x_sols[k,:], j)
-                Z_hat = reduced_ssm.compute_Zj(x_sols_hat[k,:], j)
-                Z_bar = np.concatenate((Z, Z_hat), axis = 0)
-                Z_bar = np.reshape(Z_bar, ( (self.n + reduced_sys.n), 1 ) )
-                S_metric = norm(Z_bar.T@P@S_bar[k,:,j])
-                if  S_metric > S_metric_max:
-                    S_metric_max = S_metric
-            Se[j] = max_eig_P + 2*len(reduced_ssm.timepoints)*S_metric_max
-            utils.printProgressBar(int(j + k*len(self.params_values)), 
-                                  len(timepoints_ssm)*len(self.params_values) - 1, 
-                                  prefix = 'Robustness Metric Progress:', 
-                                  suffix = 'Complete', length = 50)
+        C_bar = np.concatenate((self.C, -1*reduced_sys.C), axis = 1)
+        C_bar = np.reshape(C_bar, (np.shape(self.C)[0], (self.n + reduced_sys.n)))
+        weighted_Se_sum = 0
+        if method == 'bound':
+            for j in range(len(self.params_values)):
+                S_metric_max = 0
+                sens_max = 0
+                max_eig_P = 0
+                max_eig_dot_P = 0
+                for k in range(len(self.timepoints_ssm)):
+                    curr_time = self.timepoints_ssm[k]
+                    J = full_ssm.compute_J(x_sols[k,:])
+                    J_hat = reduced_ssm.compute_J(x_sols_hat[k,:])
+                    J_bar = block_diag(J, J_hat)
+                    # print(J)
+                    # print(J_bar)
+                    # if np.isnan(J).any() or np.isnan(J_hat).any() 
+                    # or np.isfinite(J).all() or np.isfinite(J_hat).all():
+                    #     warnings.warn('NaN or inf found in Jacobians, continuing')
+                    #     continue
+                    P = solve_lyapunov(J_bar, -1 * C_bar.T@C_bar)
+                    eig_P = max(eigvals(P))
+                    #if k == 0: # used when proof I thought said that lambda_max_P was at time 0 for IC term.
+                    if max_eig_P < eig_P:
+                        max_eig_P = eig_P
+                    if k != 0:
+                        dot_P = (P - P_prev)/(curr_time - prev_time)
+                        eig_dot_P = max(eigvals(dot_P))
+                        if max_eig_dot_P < eig_dot_P:
+                            max_eig_dot_P = eig_dot_P
+                    Z = full_ssm.compute_Zj(x_sols[k,:], j)
+                    Z_hat = reduced_ssm.compute_Zj(x_sols_hat[k,:], j)
+                    Z_bar = np.concatenate((Z, Z_hat), axis = 0)
+                    Z_bar = np.reshape(Z_bar, ( (self.n + reduced_sys.n), 1 ) )
+                    S_metric = norm(Z_bar.T@P@S_bar[k,:,j])
+                    if  S_metric > S_metric_max:
+                        S_metric_max = S_metric
+                    sens_norm = norm(S_bar[k,:,j])**2
+                    if sens_norm > sens_max:
+                        sens_max = sens_norm
+                    P_prev = P
+                    prev_time = curr_time 
+                    utils.printProgressBar(int(j + k*len(self.params_values)), 
+                                        len(timepoints_ssm)*len(self.params_values) - 1, 
+                                        prefix = 'Robustness Metric Progress:', 
+                                        suffix = 'Complete', length = 50)
+                dot_P_term = max_eig_dot_P*len(reduced_ssm.timepoints)*sens_max
+                Se[j] = max_eig_P + 2*len(reduced_ssm.timepoints)*S_metric_max + dot_P_term
+                weighted_Se_sum += self.params_values[j] * Se[j]
+        elif method == 'direct':
+            for j in range(len(self.params_values)):
+                Se[j] = norm(C_bar@S_bar[:,:,j].T)
+                weighted_Se_sum += self.params_values[j] * Se[j]
+        err_norm = norm(self.get_error_metric(reduced_sys))
+        R = 1/(1+ (weighted_Se_sum/err_norm))
+        reduced_sys.R = R
         reduced_sys.Se = Se
-        return Se
+        return Se, R
 
     def get_invariant_manifold(self, reduced_sys):
         timepoints_ode = self.timepoints_ode
@@ -311,11 +345,19 @@ class Reduce(System):
             if i in x_c:
                 x_c_index = x_c.index(i)
                 f_c[x_c_index] = f[state_index]
-                x_c_init[x_c_index] = x_init[state_index]
+                if self.parameter_dependent_ic:
+                    param_as_ic = self.ic_parameters[state_index]
+                    value_ic = self.set_ic_from_params(x_c_init, param_as_ic, x_c_index)
+                else:
+                    x_c_init[x_c_index] = x_init[state_index]
             if i in x_hat:
                 x_hat_index = x_hat.index(i)
                 f_hat[x_hat_index] = f[state_index]
-                x_hat_init[x_hat_index] = x_init[state_index]
+                if self.parameter_dependent_ic:
+                    param_as_ic = self.ic_parameters[state_index]
+                    value_ic = self.set_ic_from_params(x_hat_init, param_as_ic, x_hat_index)
+                else:
+                    x_hat_init[x_hat_index] = x_init[state_index]
         self.f_hat = f_hat
         self.f_c = f_c 
         if debug:
@@ -357,7 +399,10 @@ class Reduce(System):
 
         # Create C_hat 
         C_hat = self.create_C_hat(x_hat)
-        
+        for index in range(len(f_hat)):
+            f_hat[index] = sympy.simplify(f_hat[index])
+        for index in range(len(f_c)):
+            f_c[index] = sympy.simplify(f_c[index])
         reduced_sys = create_system(x_hat, self.f_hat, params = self.params, C = C_hat,
                             params_values = self.params_values, x_init = x_hat_init)
         fast_subsystem = create_system(x_c, self.f_c, params = self.params,
@@ -468,6 +513,7 @@ class Reduce(System):
         flag = False
         free_symbols_all = []
         for fi in f_hat:
+            fi = sympy.sympify(fi)
             for sym in fi.free_symbols:
                 if sym not in free_symbols_all:
                     free_symbols_all.append(sym)
@@ -511,7 +557,7 @@ class Reduce(System):
         return C_hat
 
     def set_conservation_laws(self, conserved_quantities, sym_states_to_eliminate):
-        '''
+        """
         From the conserved_quantities list, 
         this method computes the expressions 
         for each of the state indices in states_to_eliminate, 
@@ -519,7 +565,14 @@ class Reduce(System):
         Both lists should contain symbolic variables 
         referencing states in self.f.
         Returns the dynamics self.f. 
-        '''
+        
+        Args:
+            conserved_quantities ([type]): [description]
+            sym_states_to_eliminate ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         states_to_eliminate = [self.x.index(state) for state in sym_states_to_eliminate]
         for i in range(len(states_to_eliminate)):
             state = self.x[states_to_eliminate[i]]
@@ -532,6 +585,8 @@ class Reduce(System):
         arr_f = np.array(self.f)
         self.f = np.delete(arr_f, states_to_eliminate).tolist()
         self.x_init = np.delete(self.x_init, states_to_eliminate).tolist()
+        if self.parameter_dependent_ic:
+            self.ic_parameters = np.delete(self.ic_parameters, states_to_eliminate).tolist()
         self.C = np.delete(np.array(self.C), states_to_eliminate, axis=1)
         self.n = self.n - len(states_to_eliminate)
         return self.f
@@ -553,6 +608,18 @@ class Reduce(System):
 
 
     def reduce_simple(self, **kwargs):
+        if 'skip_numerical_computations' in kwargs:
+            skip_numerical_computations = kwargs.get('skip_numerical_computations')
+        else:
+            skip_numerical_computations = False
+        if 'skip_error_computation' in kwargs:
+            skip_error_computation = kwargs.get('skip_error_computation')
+        else:
+            skip_error_computation = False
+        if 'skip_robustness_computation' in kwargs:
+            skip_robustness_computation = kwargs.get('skip_robustness_computation')
+        else:
+            skip_robustness_computation = False
         if self.u is not None:
             raise ValueError('For models with inputs use reduce_with_input method.')
         results_dict = {}
@@ -571,19 +638,20 @@ class Reduce(System):
             reduced_sys, fast_subsystem = self.solve_timescale_separation(attempt_states, **kwargs)
             if reduced_sys is None or fast_subsystem is None:
                 continue
-            if 'skip_numerical_computations' in kwargs:
-                skip_numerical_computations = kwargs.get('skip_numerical_computations')
-            else:
-                skip_numerical_computations = False
             if skip_numerical_computations:
                 results_dict[reduced_sys] = None
             else:
                 # Get metrics for this reduced system
-                e = self.get_error_metric(reduced_sys)
-                if e is np.nan:
-                    continue
-                Se = self.get_robustness_metric(reduced_sys)
-                results_dict[reduced_sys] = [e, Se]
+                if skip_error_computation:
+                    e = np.nan
+                else:
+                    e = self.get_error_metric(reduced_sys)
+                if skip_robustness_computation:
+                    Se = np.nan
+                    R = np.nan
+                else:
+                    Se, R = self.get_robustness_metric(reduced_sys, **kwargs)
+                results_dict[reduced_sys] = [e, Se, R]
         self.results_dict = results_dict
         return self.results_dict
 
@@ -604,8 +672,8 @@ class Reduce(System):
                 continue
             # Get metrics for this reduced system
             e = self.get_error_metric_with_input(reduced_sys)
-            Se = self.get_robustness_metric_with_input(reduced_sys)
-            results_dict[reduced_sys] = [e, Se]
+            Se, R = self.get_robustness_metric_with_input(reduced_sys)
+            results_dict[reduced_sys] = [e, Se, R]
         self.results_dict = results_dict
         return self.results_dict
 
@@ -668,6 +736,7 @@ def sympy_variables_exist(ode_function, variables_to_check, **kwargs):
     if debug:
         print('In sympy_variables_exist. Checking for presence of ',variables_to_check)
     for fi in ode_function:
+        fi = sympy.sympify(fi)
         for sym in fi.free_symbols:
             if sym not in all_free_symbols:
                 all_free_symbols.append(sym)
@@ -700,6 +769,7 @@ def sympy_solve_and_substitute(ode_function, collapsed_states,
         if solution_dict[s] is None or len(solution_dict[s]) == 0:
             continue
         for func in ode_function:
+            func = sympy.sympify(func)
             func_index = ode_function.index(func)
             updated_func = func.subs(s, solution_dict[s][0])
             ode_function[func_index] = updated_func

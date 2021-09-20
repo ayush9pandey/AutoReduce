@@ -1,13 +1,7 @@
 
 # Import required libraries and dependencies
-from .converters import ode_to_sympy
 from sympy import *
 import numpy as np
-
-def load_ODE_model(n_states, n_params = 0):
-    x, f, P = ode_to_sympy(n_states, n_params)
-    return x, f, P
-
 class System(object):
     """
     Class that stores the system model in this form: 
@@ -17,7 +11,7 @@ class System(object):
                 C = None, g = None, h = None, 
                 u = None,
                 params_values = None, 
-                x_init = None, input_values = None):
+                x_init = None, input_values = None, **kwargs):
         """
         The general system dynamics : 
         x_dot = f(x, P) + g(x, P)u, y = h(x,P)
@@ -46,7 +40,7 @@ class System(object):
 
         u : List of inputs
 
-        x_init : Model initial condition
+        x_init : Model initial conditions
         """
 
         self.x = x
@@ -69,6 +63,22 @@ class System(object):
             self.x_init = x_init
         else:
             self.x_init = []
+        if 'parameter_dependent_ic' in kwargs:
+            self.parameter_dependent_ic = kwargs.get('parameter_dependent_ic')
+        else:
+            self.parameter_dependent_ic = False
+        if 'ic_parameters' in kwargs and kwargs.get('ic_parameters'):
+            self.ic_parameters = kwargs.get('ic_parameters')
+            if self.parameter_dependent_ic is False:
+                raise ValueError('Make sure to set parameter_dependent_ic argument to True to use parameters as initial conditions')
+            if self.x_init == []:
+                self.x_init = []*len(self.ic_parameters)
+            elif isinstance(self.x_init , np.ndarray):
+                self.x_init = list(self.x_init)
+            for ic_param, ic_index in zip(self.ic_parameters, range(len(self.x_init))):
+                self.set_ic_from_params(self.x_init, ic_param, ic_index)
+        else:
+            self.ic_parameters = None
         return
 
     def set_dynamics(self, f = None, g = None, 
@@ -130,9 +140,18 @@ class System(object):
         self.f = f_new
         return f_new
 
-    def load_SBML_model(self, filename):
-        raise NotImplementedError
-
-
-    def load_Sympy_model(self, sympy_model):
-        raise NotImplementedError
+    def set_ic_from_params(self, x_init, ic_param, ic_index):
+        """
+        Set System initial conditions using parameter values
+        """
+        if isinstance(ic_param, Symbol):
+            param_index = self.params.index(ic_param)
+            value_from_params = self.params_values[param_index]
+            x_init[ic_index] = value_from_params
+            return value_from_params
+        elif isinstance(ic_param, (int, float)):
+            x_init[ic_index] = ic_param
+            return ic_param
+        else:
+            raise ValueError('Sympy Symbol or float expected in ic_parameters argument.')
+            
