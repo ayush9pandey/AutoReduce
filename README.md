@@ -1,7 +1,7 @@
 # Automated Model Reduction Tool for SBML models
 ## Python toolbox to automatically obtain reduced model expressions using time-scale separation, conservation laws, and other assumptions.
 
-|Build Status| image:: https://github.com/ayush9pandey/autoreduce/actions/workflows/autoreduce_ci.yml/badge.svg :target: https://github.com/ayush9pandey/autoreduce
+[![Build Status](https://github.com/ayush9pandey/autoreduce/actions/workflows/autoreduce_ci.yml/badge.svg)](https://github.com/ayush9pandey/autoreduce)
 [![codecov](https://codecov.io/gh/ayush9pandey/AutoReduce/branch/master/graph/badge.svg)](https://codecov.io/gh/ayush9pandey/AutoReduce)
 [![PyPI version](https://badge.fury.io/py/autoreduce.svg)](https://badge.fury.io/py/autoreduce)
 
