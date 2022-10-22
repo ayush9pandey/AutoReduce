@@ -2,6 +2,11 @@ from libsbml import *
 import sys
 import numpy as np
 from sympy import Symbol,sympify
+from .model_reduction import Reduce
+
+def load_ODE_model(n_states, n_params = 0):
+    x, f, P = ode_to_sympy(n_states, n_params)
+    return System(x, f, P)
 
 def ode_to_sympy(odesize, n_params = 0):
     '''
@@ -49,13 +54,16 @@ def sympy_to_sbml(model):
  
 
 
-def load_sbml(filename):
+def load_sbml(filename, **kwargs):
     '''A function that takes in an SBML file and returns x,f,P,params_values.
     x is a list of species written as Sympy objects
     f is a list of functions written as Sympy objects
     P is a list of parameters written as Sympy objects
     params_values is a list of parameter values, in the same order as P
-    x_init is a list of initial conditions, in the same order as x'''
+    x_init is a list of initial conditions, in the same order as x
+
+    Returns: A reducible Reduce(System) object
+    '''
 
     # Get the sbml file, check for errors, and perform conversions
     doc = readSBMLFromFile(filename)
@@ -63,33 +71,25 @@ def load_sbml(filename):
         print('Encountered serious errors while reading file')
         print(doc.getErrorLog().toString())
         sys.exit(1)
-    
     doc.getErrorLog().clearLog()
-    
     # Convert local params to global params
     props = ConversionProperties()
     props.addOption("promoteLocalParameters", True)
-  
     if doc.convert(props) != LIBSBML_OPERATION_SUCCESS: 
         print('The document could not be converted')
         print(doc.getErrorLog().toString())
-    
     # Expand initial assignments
     props = ConversionProperties()
     props.addOption("expandInitialAssignments", True)
-  
     if doc.convert(props) != LIBSBML_OPERATION_SUCCESS: 
         print('The document could not be converted')
         print(doc.getErrorLog().toString())
-    
     # Expand functions definitions
     props = ConversionProperties()
     props.addOption("expandFunctionDefinitions", True)
-  
     if doc.convert(props) != LIBSBML_OPERATION_SUCCESS: 
         print('The document could not be converted')
         print(doc.getErrorLog().toString())
-    
     # Get model and define important lists, dictionaries
     mod = doc.getModel()
     x = []
@@ -97,7 +97,6 @@ def load_sbml(filename):
     P = []
     params_values = []
     reactions = {}
- 
     # Append species symbol to 'x' and append initial amount/concentration to x_init
     # x[i] corresponds to x_init[i]
     for i in range(mod.getNumSpecies()):
@@ -109,22 +108,18 @@ def load_sbml(filename):
             x_init.append(species.getInitialAmount())
         else:
             x_init.append(0)
-
     # Append parameter symbol to 'P' and parameter values to 'params_values'
     for i in range(mod.getNumParameters()):
         params = mod.getParameter(i)
         params_values.append(params.getValue())
         P.append(Symbol(params.getId()))
-    
     # Get kinetic formula for each reaction, store in dictionary 'reactions'
     for i in range(mod.getNumReactions()):
         reaction = mod.getReaction(i)
         kinetics = reaction.getKineticLaw()
         reactions[reaction.getId()] = sympify(kinetics.getFormula())
-
     # Define f
-    f = [0] * len(x)
-    
+    f = [sympify(0)] * len(x)
     # Loop to define functions in 'f'
     for i in range(mod.getNumReactions()):
         reaction = mod.getReaction(i)
@@ -148,4 +143,17 @@ def load_sbml(filename):
                 f[curr_index] += +reactions[reaction.getId()]
             else:
                 f[curr_index] += +reactions[reaction.getId()]*ref.getStoichiometry()
-    return x, f, P, params_values, x_init
+    if 'outputs' in kwargs:
+        outputs = kwargs['outputs']
+        if type(outputs) is not list:
+            outputs = [outputs]
+        C = np.zeros( (len(outputs), len(x)))
+        output_count = 0
+        for output in outputs:
+            index_output = x.index(sympify(output))
+            C[output_count, index_output] = 1
+            output_count += 1
+    else:
+        C = None
+    sys = Reduce(x, f, params = P, params_values = params_values, x_init = x_init, C = C, **kwargs)
+    return sys

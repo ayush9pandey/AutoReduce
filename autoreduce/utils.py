@@ -52,6 +52,8 @@ def get_reducible(system_obj, timepoints_ode = None,
                                     u = system_obj.u,
                                     params_values = system_obj.params_values, 
                                     x_init = system_obj.x_init, 
+                                    parameter_dependent_ic = system_obj.parameter_dependent_ic,
+                                    ic_parameters = system_obj.ic_parameters,
                                     timepoints_ode = timepoints_ode, 
                                     timepoints_ssm = timepoints_ssm, **kwargs)
     return red_obj
