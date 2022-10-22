@@ -1,7 +1,8 @@
 # Automated Model Reduction Tool for SBML models
 ## Python toolbox to automatically obtain reduced model expressions using time-scale separation, conservation laws, and other assumptions.
 
-[![Build Status](https://travis-ci.com/ayush9pandey/AutoReduce.svg?branch=master)](https://travis-ci.com/ayush9pandey/AutoReduce)
+.. |Build Status| image:: https://github.com/ayush9pandey/autoreduce/actions/workflows/autoreduce_ci.yml/badge.svg
+   :target: https://github.com/ayush9pandey/autoreduce
 [![codecov](https://codecov.io/gh/ayush9pandey/AutoReduce/branch/master/graph/badge.svg)](https://codecov.io/gh/ayush9pandey/AutoReduce)
 [![PyPI version](https://badge.fury.io/py/autoreduce.svg)](https://badge.fury.io/py/autoreduce)
 
@@ -11,12 +12,10 @@ Contact : Ayush Pandey (apandet at caltech dot edu) for any feedback or suggesti
 
 
 - **Website:** https://github.com/ayush9pandey/AutoReduce
-- **Paper:** [Introduction](https://www.biorxiv.org/content/10.1101/640276v1.full), [Toolbox](https://www.biorxiv.org/content/10.1101/2020.02.15.950840v2.full.pdf)
+- **Paper:** [Journal of Robust and Nonlinear Control](https://onlinelibrary.wiley.com/doi/full/10.1002/rnc.6013)
 - **Source:** https://github.com/ayush9pandey/autoreduce
 - **Bug reports:** https://github.com/ayush9pandey/autoreduce/issues
 - **Documentation:** Coming Soon on: [autoreduce.readthedocs.io](https://readthedocs.org/projects/autoreduce/)
-
-# Simple example
 
 # Installation
 
@@ -38,10 +37,11 @@ will help you make the PR if you are new to `git` (just create a new issue)
 
 AutoReduce versions:
 
+* 0.2.0 (alpha release): To install run `pip install autoreduce=0.2.0`
 * 0.1.0 (alpha release): To install run `pip install autoreduce==0.1.0`
 
 # License
 Released under the BSD 3-Clause License (see `LICENSE`)
 
-Copyright (c) 2020, Ayush Pandey. All rights reserved.
+Copyright (c) 2022, Ayush Pandey. All rights reserved.
 

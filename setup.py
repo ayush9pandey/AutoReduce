@@ -6,7 +6,7 @@ with open('README.md') as fp:
 
 setup(
     name='AutoReduce',
-    version='0.1.2',
+    version='0.2.0',
     author='Ayush Pandey',
     author_email='apandey@caltech.edu',
     url='https://github.com/ayush9pandey/AutoReduce/',
