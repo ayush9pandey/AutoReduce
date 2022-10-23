@@ -103,3 +103,6 @@ dmypy.json
 
 *.tex
 *.svg
+
+# Package specific
+examples/*.xml
