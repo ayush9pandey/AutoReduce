@@ -105,4 +105,4 @@ dmypy.json
 *.svg
 
 # Package specific
-examples/*.xml
+examples/reduced_gene_expression.xml
