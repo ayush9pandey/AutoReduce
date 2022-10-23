@@ -85,8 +85,13 @@ class SSM(System):
         else:
             var = x
         # initialize J
-        J = np.zeros( (self.n, len(var)) )   
+        J = [[0]*self.n]*len(var)
+        # Change this variable name P to params_values or something
         P = self.params_values 
+        if 'set_params_as' in kwargs:
+            set_params_as = kwargs['set_params_as']
+        else:
+            set_params_as = None
         u = self.u
         if 'mode' in kwargs:
             if kwargs.get('mode') == 'accurate':
@@ -106,30 +111,33 @@ class SSM(System):
         X = var 
         for i in range(self.n):
             for j in range(len(var)):
-                F = np.zeros( (4,1) )
-                h = X[j]*0.01
+                # F = np.zeros( (4,1) )
+                F = [None]*4
+                h = 0.01
                 # Gets O(4) central difference on dfi/dvarj
                 if h != 0:
                     var = X
                     var[j] = X[j] + 2*h
-                    f = self.evaluate(fun, var, P, u)
+                    f = self.evaluate(fun, var, P, u, set_params_as = set_params_as)
                     F[0] = f[i]
                     var[j] = X[j] + h
-                    f = self.evaluate(fun, var, P, u)
+                    f = self.evaluate(fun, var, P, u, set_params_as = set_params_as)
                     F[1] = f[i]
                     var[j] = X[j] - h
-                    f = self.evaluate(fun, var, P, u)
+                    f = self.evaluate(fun, var, P, u, set_params_as = set_params_as)
                     F[2] = f[i]
                     var[j] = X[j] - 2*h
-                    f = self.evaluate(fun, var, P, u)
+                    f = self.evaluate(fun, var, P, u, set_params_as = set_params_as)
                     F[3] = f[i]
                     #Store approvar. dfi/dvarj into J
-                    J[i,j]= (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
+                    J[i][j]= (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
                     # print(J[i,j])
                     # if J[i,j] == np.Inf:
                     #     J[i,j] = 1
                     # elif J[i,j] == np.NaN:
                     #     J[i,j] = 0
+        if set_params_as is None:
+            J = np.array(J, dtype = float)
         return J
 
     def compute_SSM(self, normalize = False, **kwargs):
@@ -231,20 +239,21 @@ class SSM(System):
                     sensitivity of each variable to the specified parameter over
                     time.
         '''
+        pass
         # Build a scipy-integratable derivative-of-sensitivity function.
-        import numdifftools as nd
-        import copy
-        def dS_dt(t, s):
-            xs = ode_sol(t)
-            # Wrapper to let numdifftools calculate df/dp.
-            def ode_as_parameter_call(param):
-                call_params = copy.deepcopy(self.params_values)
-                call_params[j] = self.params_values
-                return ode(t, xs, call_params)
-            df_dp = lambda xs: nd.Jacobian(ode_as_parameter_call)(xs).transpose()[:,0]
-            return df_dp(params[j]) + np.matmul(ode_jac(xs), s)
-        sol = odeint(dS_dt, np.zeros(n_vars), self.timepoints, **kwargs)
-        return sol
+        # import numdifftools as nd
+        # import copy
+        # def dS_dt(t, s):
+        #     xs = ode_sol(t)
+        #     # Wrapper to let numdifftools calculate df/dp.
+        #     def ode_as_parameter_call(param):
+        #         call_params = copy.deepcopy(self.params_values)
+        #         call_params[j] = self.params_values
+        #         return ode(t, xs, call_params)
+        #     df_dp = lambda xs: nd.Jacobian(ode_as_parameter_call)(xs).transpose()[:,0]
+        #     return df_dp(params[j]) + np.matmul(ode_jac(xs), s)
+        # sol = odeint(dS_dt, np.zeros(n_vars), self.timepoints, **kwargs)
+        # return sol
 
 
     ############## Sam Clamons ###########

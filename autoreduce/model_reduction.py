@@ -1,9 +1,9 @@
-
 from .system import System
 from sympy.parsing.sympy_parser import parse_expr
-from sympy import solve, Eq
+from sympy import Symbol, solve, Eq
 import sympy
 import numpy as np
+from itertools import combinations
 import warnings
 from scipy.linalg import solve_lyapunov, block_diag, eigvals, norm
 from autoreduce import utils
@@ -200,6 +200,8 @@ class Reduce(System):
         C_bar = np.concatenate((self.C, -1*reduced_sys.C), axis = 1)
         C_bar = np.reshape(C_bar, (np.shape(self.C)[0], (self.n + reduced_sys.n)))
         weighted_Se_sum = 0
+        P_prev = None
+        prev_time = None
         if method == 'bound':
             for j in range(len(self.params_values)):
                 S_metric_max = 0
@@ -442,7 +444,7 @@ class Reduce(System):
         solved_states = []
         lookup_collapsed = {}
         for i in range(len(x_c)):
-            x_c_sub = solve(Eq(f_c[i]), x_c[i])
+            x_c_sub = solve(Eq(f_c[i], 0), x_c[i])
             lookup_collapsed[x_c[i]] = x_c_sub
             if len(x_c_sub) == 0:
                 # print('Could not find solution for this collapsed variable : 
@@ -464,7 +466,7 @@ class Reduce(System):
                         # fix this.'.format(sym, lookup_collapsed[sym][0]))
                         f_c[i] = f_c[i].subs(sym, lookup_collapsed[sym][0])
                         # print('Updating old x_c_sub then')
-                        x_c_sub = solve(Eq(f_c[i]), x_c[i])
+                        x_c_sub = solve(Eq(f_c[i], 0), x_c[i])
                         if len(x_c_sub) > 1:
                             print('Multiple solutions obtained.')
                             print('Chooosing non-zero solution, check consistency.')
@@ -556,7 +558,182 @@ class Reduce(System):
                     C_hat[row_ind][i] = 1 * is_output
         return C_hat
 
-    def set_conservation_laws(self, conserved_quantities, sym_states_to_eliminate):
+    def get_conservation_laws(self, num_conservation_laws: int, **kwargs):
+        """Finds sets of conserved species. 
+        Only linear combinations with coefficient = 1 supported.
+
+        Args:
+            num_conservation_laws (int): The null space of the 
+                                       stoichiometry matrix. In other words,
+                                       the number of expected conservation laws.
+        Returns:
+            List of conserved species (list)
+        """
+        all_conserved_sets = []
+        ode_list = [i for i in self.f if i != 0]
+        for d in range(num_conservation_laws):
+            curr_depth = d + 1
+            for i in combinations(ode_list, curr_depth):
+                sum_terms = 0
+                for element in i:
+                    if element == 0:
+                        continue
+                    sum_terms += element 
+                if sum_terms == 0:
+                    conserved_species = []
+                    for element in i:
+                        for ode_i in range(len(self.f)):
+                            if str(self.f[ode_i]) == str(element):
+                                conserved_species.append(self.x[ode_i])
+                    if len(conserved_species) <= 1:
+                        continue
+                    all_conserved_sets.append(conserved_species)
+        if not all_conserved_sets:
+            raise ValueError("No conserved sets found. Try increasing the "
+                             "depth of search by increasing the number of "
+                             "possible conservation laws: num_conservation_laws")
+        return all_conserved_sets
+
+    def setup_conservation_laws(self, total_quantities: dict, conserved_sets: list):
+        """Setup conservation laws and return a list of conservation laws where 
+        each conservation law is each sublist of conserved_sets equated to the corresponding
+        total quantity in the total quantities dictionary.
+
+        Args:
+            total_quantities (dict): Dictionary with total quantities
+                                     string keys and total value 
+            conserved_sets (list): A list of list consisting where each sublist is a
+                                   set of species that are conserved
+        Returns:
+            conservation_laws (list): A list of conservation laws
+        """
+        # Setup conservation laws
+        params = self.params
+        params_values = self.params_values
+        conservation_laws = []
+        for conserved_set, tot in zip(conserved_sets, total_quantities.keys()):
+            total_symbol = Symbol(tot)
+            params.append(total_symbol)
+            params_values.append(total_quantities[tot])
+            law = 0
+            for x in conserved_set:
+                law += x
+            law += -total_symbol
+            conservation_laws.append(law)
+        self.params = params
+        self.params_values = params_values
+        return conservation_laws
+
+    def solve_conservation_laws(self, conservation_laws: list = None,
+                                total_quantities: dict = None,
+                                conserved_sets: list = None, 
+                                states_to_eliminate: list = None, 
+                                num_conservation_laws: int = 0, **kwargs):
+        """User interface wrapper to find and set
+        conservation laws for a given Reduce System object
+
+        Args:
+            conservation_laws (list, optional): A list consisting of conservation laws 
+                                                in the form: LHS - RHS. 
+                                                The RHS is assumed to be zero. 
+                                                If None is provided, then attempts to find 
+                                                conservation laws, if num_conservation_laws is set.
+            total_quantities (dict, optional): A dictionary of total quantities with keys 
+                                               consisting of strings of total quantities 
+                                               (RHS of conservation law) and a float value. 
+                                               If None provided, then a dict with parameter name
+                                               is created from the state name appended by keyword
+                                               "_total" and with zero value.
+            conserved_sets (list of list, optional): A list of list where each sublist consists
+                                                     of species in System.x, for which, 
+                                                     if corresponding elements in System.f 
+                                                     are added would be equal to zero. 
+                                                     If None is provided, then attempts to find the 
+                                                     conserved_sets, if num_conservation_laws is set.
+            states_to_eliminate (list, optional): A list of states to eliminate from the set 
+                                                  of conserved species. Each element in this 
+                                                  list must correspond to each 
+                                                  sublist in conserved_sets and/or conservation_laws, 
+                                                  depending on which is passed in. 
+                                                  If None is provided, then creates a default list of
+                                                  states to eliminate from variables in each law in
+                                                  conservation_laws list.
+            num_conservation_laws (int, optional): The dimension of the nullspace of the stoichiometry 
+                                                 matrix. In other words, the number of expected 
+                                                 conservation laws. Defaults to 0 but then expects
+                                                 that either conservation_laws or conserved_sets is given.
+        Returns:
+            conserved_system (Reduce): The reduced system with conservation laws applied. 
+
+        """
+        debug = kwargs.get("debug", False)
+        if num_conservation_laws == 0 and conserved_sets is None and conservation_laws is None:
+            raise ValueError("Must pass in something to set conservation laws! "
+                             "Either the list of conservation_laws, or number of conservation "
+                             "laws through num_conservation_laws "
+                             "argument or the conserved_sets list")
+        if conservation_laws is None and num_conservation_laws == 0 and conserved_sets is not None:
+            if conserved_sets:
+                self.num_conservation_laws = len(conserved_sets)
+                self.conserved_sets = conserved_sets
+            else:
+                raise ValueError("List of conserved sets must not be empty.")
+        elif conservation_laws is None and num_conservation_laws != 0 and conserved_sets is None:
+            self.num_conservation_laws = num_conservation_laws
+            self.conserved_sets = self.get_conservation_laws(self.num_conservation_laws)
+        else:
+            self.conserved_sets = conserved_sets
+        
+        if conservation_laws is None:
+            if total_quantities is None:
+                total_quantities = {}
+                for c_set in self.conserved_sets:
+                    total_quantities[str(c_set[0]) + "_total"] = 0
+                self.total_quantities = total_quantities
+            else:
+                self.total_quantities = total_quantities
+            self.conservation_laws = self.setup_conservation_laws(self.total_quantities,
+                                                                  self.conserved_sets)
+            print('Found conservation laws:', self.conservation_laws)
+        else:
+            self.conservation_laws = conservation_laws
+        # Remove duplicate laws
+        for law_i, law in enumerate(self.conservation_laws):
+            list_conservation_laws = list(self.conservation_laws)
+            list_conservation_laws.remove(law)
+            if law in list_conservation_laws:
+                if debug: 
+                    print('Found duplicate law {0} on index {1}.'
+                          'This will be removed. Check conservation_laws'
+                          'attribute to confirm.'.format(law,law_i))
+                self.conservation_laws.remove(law)
+        if self.conservation_laws is not None and states_to_eliminate is None:
+            # Conservation laws are passed in as a list
+            # but states_to_eliminate list is not available
+            # Then, create it by choosing one variable from each law
+            states_to_eliminate = []
+            for law in self.conservation_laws:
+                list_of_symbols_in_law = list(law.free_symbols)
+                chosen_var = None
+                index = 0
+                while chosen_var is None:
+                    if list_of_symbols_in_law[index] in self.x:
+                        chosen_var = list_of_symbols_in_law[index]
+                    index += 1
+                    if index == len(list_of_symbols_in_law):
+                        raise ValueError("No variable found in conservation"
+                                         "law {0} that can be eliminated".format(law))
+                states_to_eliminate.append(chosen_var)
+            self.states_to_eliminate = states_to_eliminate
+            print('Choosing states to eliminate:', self.states_to_eliminate)
+        else:
+            self.states_to_eliminate = states_to_eliminate
+        
+        self.f = self.set_conservation_laws(conservation_laws=self.conservation_laws,
+                                            states_to_eliminate=self.states_to_eliminate)
+        return self
+
+    def set_conservation_laws(self, conservation_laws, states_to_eliminate):
         """
         From the conserved_quantities list, 
         this method computes the expressions 
@@ -567,16 +744,18 @@ class Reduce(System):
         Returns the dynamics self.f. 
         
         Args:
-            conserved_quantities ([type]): [description]
-            sym_states_to_eliminate ([type]): [description]
+            conservation_laws (list): List of conservation laws
+            states_to_eliminate (list): List of Symbols of states 
+                                            to eliminate when applying the 
+                                            conservation laws
 
         Returns:
-            [type]: [description]
+            Conserved ODE[list]: Conserved ODE as a list of expressions.
         """
-        states_to_eliminate = [self.x.index(state) for state in sym_states_to_eliminate]
+        states_to_eliminate = [self.x.index(state) for state in states_to_eliminate]
         for i in range(len(states_to_eliminate)):
             state = self.x[states_to_eliminate[i]]
-            state_sub = solve(Eq(conserved_quantities[i]), state)
+            state_sub = solve(Eq(conservation_laws[i], 0), state)
             for j in range(len(self.f)):
                 self.f[j] = self.f[j].subs(state, state_sub[0])
 
@@ -801,7 +980,7 @@ def sympy_get_steady_state_solutions(collapsed_variables, collapsed_dynamics,
     x_c = collapsed_variables
     f_c = collapsed_dynamics
     for i in range(len(x_c)):   
-        x_c_sub = solve(Eq(f_c[i]), x_c[i])
+        x_c_sub = solve(Eq(f_c[i], 0), x_c[i])
         if x_c_sub is None or len(x_c_sub) == 0:
             print('Could not find solution for this collapsed variable : {0} from {1}'.format(x_c[i], f_c[i]))
             warnings.warn('Solve time-scale separation failed. Check model consistency.')

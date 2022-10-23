@@ -5,8 +5,7 @@ from sympy import Symbol,sympify
 from .model_reduction import Reduce
 
 def load_ODE_model(n_states, n_params = 0):
-    x, f, P = ode_to_sympy(n_states, n_params)
-    return System(x, f, P)
+    return ode_to_sympy(n_states, n_params)
 
 def ode_to_sympy(odesize, n_params = 0):
     '''
@@ -70,7 +69,7 @@ def load_sbml(filename, **kwargs):
     if doc.getNumErrors(LIBSBML_SEV_FATAL):
         print('Encountered serious errors while reading file')
         print(doc.getErrorLog().toString())
-        sys.exit(1)
+        return
     doc.getErrorLog().clearLog()
     # Convert local params to global params
     props = ConversionProperties()

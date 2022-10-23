@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
-  <model id="biocrnpyler_721342" name="biocrnpyler_721342" substanceUnits="mole" timeUnits="second" volumeUnits="litre" areaUnits="square_metre" lengthUnits="metre" extentUnits="mole">
+  <model id="biocrnpyler_549370" name="biocrnpyler_549370" substanceUnits="mole" timeUnits="second" volumeUnits="litre" areaUnits="square_metre" lengthUnits="metre" extentUnits="mole">
     <listOfUnitDefinitions>
       <unitDefinition id="square_metre">
         <listOfUnits>
@@ -12,23 +12,13 @@
       <compartment id="default" name="default" spatialDimensions="3" size="1e-06" constant="true"/>
     </listOfCompartments>
     <listOfSpecies>
-      <species id="dna_X" name="dna_X" compartment="default" initialConcentration="0.5" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="protein_RNAP_machinery" name="protein_RNAP_machinery" compartment="default" initialConcentration="10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="rna_X" name="rna_X" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="complex_dna_X_protein_RNAP_machinery_" name="complex_dna_X_protein_RNAP_machinery_" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="protein_Ribo_machinery" name="protein_Ribo_machinery" compartment="default" initialConcentration="50" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="protein_X" name="protein_X" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="complex_protein_Ribo_machinery_rna_X_" name="complex_protein_Ribo_machinery_rna_X_" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="protein_RNAase_machinery" name="protein_RNAase_machinery" compartment="default" initialConcentration="5" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="dna_cellular_processes" name="dna_cellular_processes" compartment="default" initialConcentration="0.01" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="rna_cellular_processes" name="rna_cellular_processes" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="complex_dna_cellular_processes_protein_RNAP_machinery_" name="complex_dna_cellular_processes_protein_RNAP_machinery_" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="protein_cellular_processes" name="protein_cellular_processes" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="complex_protein_Ribo_machinery_rna_cellular_processes_" name="complex_protein_Ribo_machinery_rna_cellular_processes_" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="complex_protein_RNAase_machinery_rna_X_" name="complex_protein_RNAase_machinery_rna_X_" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="complex_complex_protein_Ribo_machinery_rna_X__protein_RNAase_machinery_" name="complex_complex_protein_Ribo_machinery_rna_X__protein_RNAase_machinery_" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="complex_protein_RNAase_machinery_rna_cellular_processes_" name="complex_protein_RNAase_machinery_rna_cellular_processes_" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="complex_complex_protein_Ribo_machinery_rna_cellular_processes__protein_RNAase_machinery_" name="complex_complex_protein_Ribo_machinery_rna_cellular_processes__protein_RNAase_machinery_" compartment="default" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="dna_X" name="X" compartment="default" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="protein_RNAP_machinery" name="RNAP" compartment="default" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="rna_X" name="X" compartment="default" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="complex_dna_X_protein_RNAP_machinery_" name="dna_X_protein_RNAP_machinery" compartment="default" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="protein_Ribo_machinery" name="Ribo" compartment="default" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="protein_X" name="X" compartment="default" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="complex_protein_Ribo_machinery_rna_X_" name="protein_Ribo_machinery_rna_X" compartment="default" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
     </listOfSpecies>
     <listOfParameters>
       <parameter id="kb__" value="100" constant="true"/>
@@ -36,14 +26,6 @@
       <parameter id="ktx_strong_" value="3.926187672" constant="true"/>
       <parameter id="ku_weak_" value="5" constant="true"/>
       <parameter id="ktl__" value="0.05" constant="true"/>
-      <parameter id="kb__transcription" value="500" constant="true"/>
-      <parameter id="ku__transcription" value="50" constant="true"/>
-      <parameter id="ktx__transcription" value="0.1" constant="true"/>
-      <parameter id="kb__translation" value="500" constant="true"/>
-      <parameter id="ku__translation" value="5" constant="true"/>
-      <parameter id="ktl__translation" value="0.1" constant="true"/>
-      <parameter id="ku__" value="10" constant="true"/>
-      <parameter id="kdeg__rna_degredation_mm" value="0.001" constant="true"/>
       <parameter id="kdil__" value="0.001" constant="true"/>
     </listOfParameters>
     <listOfReactions>
@@ -161,336 +143,6 @@
       </reaction>
       <reaction id="r4" name="r4" reversible="false">
         <listOfReactants>
-          <speciesReference species="dna_cellular_processes" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAP_machinery" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="complex_dna_cellular_processes_protein_RNAP_machinery_" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> kb__transcription </ci>
-              <ci> dna_cellular_processes </ci>
-              <ci> protein_RNAP_machinery </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r4rev" name="r4rev" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_dna_cellular_processes_protein_RNAP_machinery_" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="dna_cellular_processes" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAP_machinery" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> ku__transcription </ci>
-              <ci> complex_dna_cellular_processes_protein_RNAP_machinery_ </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r5" name="r5" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_dna_cellular_processes_protein_RNAP_machinery_" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="dna_cellular_processes" stoichiometry="1" constant="false"/>
-          <speciesReference species="rna_cellular_processes" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAP_machinery" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> ktx__transcription </ci>
-              <ci> complex_dna_cellular_processes_protein_RNAP_machinery_ </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r6" name="r6" reversible="false">
-        <listOfReactants>
-          <speciesReference species="rna_cellular_processes" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_Ribo_machinery" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="complex_protein_Ribo_machinery_rna_cellular_processes_" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> kb__translation </ci>
-              <ci> rna_cellular_processes </ci>
-              <ci> protein_Ribo_machinery </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r6rev" name="r6rev" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_protein_Ribo_machinery_rna_cellular_processes_" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="rna_cellular_processes" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_Ribo_machinery" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> ku__translation </ci>
-              <ci> complex_protein_Ribo_machinery_rna_cellular_processes_ </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r7" name="r7" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_protein_Ribo_machinery_rna_cellular_processes_" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="rna_cellular_processes" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_cellular_processes" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_Ribo_machinery" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> ktl__translation </ci>
-              <ci> complex_protein_Ribo_machinery_rna_cellular_processes_ </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r8" name="r8" reversible="false">
-        <listOfReactants>
-          <speciesReference species="rna_X" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAase_machinery" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="complex_protein_RNAase_machinery_rna_X_" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> kb__ </ci>
-              <ci> rna_X </ci>
-              <ci> protein_RNAase_machinery </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r8rev" name="r8rev" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_protein_RNAase_machinery_rna_X_" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="rna_X" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAase_machinery" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> ku__ </ci>
-              <ci> complex_protein_RNAase_machinery_rna_X_ </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r9" name="r9" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_protein_RNAase_machinery_rna_X_" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="protein_RNAase_machinery" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> kdeg__rna_degredation_mm </ci>
-              <ci> complex_protein_RNAase_machinery_rna_X_ </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r10" name="r10" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_protein_Ribo_machinery_rna_X_" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAase_machinery" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="complex_complex_protein_Ribo_machinery_rna_X__protein_RNAase_machinery_" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> kb__ </ci>
-              <ci> complex_protein_Ribo_machinery_rna_X_ </ci>
-              <ci> protein_RNAase_machinery </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r10rev" name="r10rev" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_complex_protein_Ribo_machinery_rna_X__protein_RNAase_machinery_" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="complex_protein_Ribo_machinery_rna_X_" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAase_machinery" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> ku__ </ci>
-              <ci> complex_complex_protein_Ribo_machinery_rna_X__protein_RNAase_machinery_ </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r11" name="r11" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_complex_protein_Ribo_machinery_rna_X__protein_RNAase_machinery_" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="protein_Ribo_machinery" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAase_machinery" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> kdeg__rna_degredation_mm </ci>
-              <ci> complex_complex_protein_Ribo_machinery_rna_X__protein_RNAase_machinery_ </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r12" name="r12" reversible="false">
-        <listOfReactants>
-          <speciesReference species="rna_cellular_processes" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAase_machinery" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="complex_protein_RNAase_machinery_rna_cellular_processes_" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> kb__ </ci>
-              <ci> rna_cellular_processes </ci>
-              <ci> protein_RNAase_machinery </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r12rev" name="r12rev" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_protein_RNAase_machinery_rna_cellular_processes_" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="rna_cellular_processes" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAase_machinery" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> ku__ </ci>
-              <ci> complex_protein_RNAase_machinery_rna_cellular_processes_ </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r13" name="r13" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_protein_RNAase_machinery_rna_cellular_processes_" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="protein_RNAase_machinery" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> kdeg__rna_degredation_mm </ci>
-              <ci> complex_protein_RNAase_machinery_rna_cellular_processes_ </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r14" name="r14" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_protein_Ribo_machinery_rna_cellular_processes_" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAase_machinery" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="complex_complex_protein_Ribo_machinery_rna_cellular_processes__protein_RNAase_machinery_" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> kb__ </ci>
-              <ci> complex_protein_Ribo_machinery_rna_cellular_processes_ </ci>
-              <ci> protein_RNAase_machinery </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r14rev" name="r14rev" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_complex_protein_Ribo_machinery_rna_cellular_processes__protein_RNAase_machinery_" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="complex_protein_Ribo_machinery_rna_cellular_processes_" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAase_machinery" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> ku__ </ci>
-              <ci> complex_complex_protein_Ribo_machinery_rna_cellular_processes__protein_RNAase_machinery_ </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r15" name="r15" reversible="false">
-        <listOfReactants>
-          <speciesReference species="complex_complex_protein_Ribo_machinery_rna_cellular_processes__protein_RNAase_machinery_" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="protein_Ribo_machinery" stoichiometry="1" constant="false"/>
-          <speciesReference species="protein_RNAase_machinery" stoichiometry="1" constant="false"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> kdeg__rna_degredation_mm </ci>
-              <ci> complex_complex_protein_Ribo_machinery_rna_cellular_processes__protein_RNAase_machinery_ </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r16" name="r16" reversible="false">
-        <listOfReactants>
           <speciesReference species="rna_X" stoichiometry="1" constant="false"/>
         </listOfReactants>
         <kineticLaw>
@@ -503,7 +155,7 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="r17" name="r17" reversible="false">
+      <reaction id="r5" name="r5" reversible="false">
         <listOfReactants>
           <speciesReference species="protein_X" stoichiometry="1" constant="false"/>
         </listOfReactants>
@@ -513,34 +165,6 @@
               <times/>
               <ci> kdil__ </ci>
               <ci> protein_X </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r18" name="r18" reversible="false">
-        <listOfReactants>
-          <speciesReference species="rna_cellular_processes" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> kdil__ </ci>
-              <ci> rna_cellular_processes </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="r19" name="r19" reversible="false">
-        <listOfReactants>
-          <speciesReference species="protein_cellular_processes" stoichiometry="1" constant="false"/>
-        </listOfReactants>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> kdil__ </ci>
-              <ci> protein_cellular_processes </ci>
             </apply>
           </math>
         </kineticLaw>
