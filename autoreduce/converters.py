@@ -69,7 +69,7 @@ def load_sbml(filename, **kwargs):
     if doc.getNumErrors(LIBSBML_SEV_FATAL):
         print('Encountered serious errors while reading file')
         print(doc.getErrorLog().toString())
-        sys.exit(1)
+        return
     doc.getErrorLog().clearLog()
     # Convert local params to global params
     props = ConversionProperties()

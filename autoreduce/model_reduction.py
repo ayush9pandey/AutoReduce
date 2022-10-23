@@ -200,6 +200,8 @@ class Reduce(System):
         C_bar = np.concatenate((self.C, -1*reduced_sys.C), axis = 1)
         C_bar = np.reshape(C_bar, (np.shape(self.C)[0], (self.n + reduced_sys.n)))
         weighted_Se_sum = 0
+        P_prev = None
+        prev_time = None
         if method == 'bound':
             for j in range(len(self.params_values)):
                 S_metric_max = 0

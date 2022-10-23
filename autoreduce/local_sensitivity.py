@@ -239,20 +239,21 @@ class SSM(System):
                     sensitivity of each variable to the specified parameter over
                     time.
         '''
+        pass
         # Build a scipy-integratable derivative-of-sensitivity function.
-        import numdifftools as nd
-        import copy
-        def dS_dt(t, s):
-            xs = ode_sol(t)
-            # Wrapper to let numdifftools calculate df/dp.
-            def ode_as_parameter_call(param):
-                call_params = copy.deepcopy(self.params_values)
-                call_params[j] = self.params_values
-                return ode(t, xs, call_params)
-            df_dp = lambda xs: nd.Jacobian(ode_as_parameter_call)(xs).transpose()[:,0]
-            return df_dp(params[j]) + np.matmul(ode_jac(xs), s)
-        sol = odeint(dS_dt, np.zeros(n_vars), self.timepoints, **kwargs)
-        return sol
+        # import numdifftools as nd
+        # import copy
+        # def dS_dt(t, s):
+        #     xs = ode_sol(t)
+        #     # Wrapper to let numdifftools calculate df/dp.
+        #     def ode_as_parameter_call(param):
+        #         call_params = copy.deepcopy(self.params_values)
+        #         call_params[j] = self.params_values
+        #         return ode(t, xs, call_params)
+        #     df_dp = lambda xs: nd.Jacobian(ode_as_parameter_call)(xs).transpose()[:,0]
+        #     return df_dp(params[j]) + np.matmul(ode_jac(xs), s)
+        # sol = odeint(dS_dt, np.zeros(n_vars), self.timepoints, **kwargs)
+        # return sol
 
 
     ############## Sam Clamons ###########
