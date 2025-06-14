@@ -1,7 +1,7 @@
 from libsbml import *
 import sys
 import numpy as np
-from sympy import Symbol,sympify
+from sympy import Symbol, Integer
 from .model_reduction import Reduce
 
 def load_ODE_model(n_states, n_params = 0):
@@ -116,18 +116,23 @@ def load_sbml(filename, **kwargs):
     for i in range(mod.getNumReactions()):
         reaction = mod.getReaction(i)
         kinetics = reaction.getKineticLaw()
-        reactions[reaction.getId()] = sympify(kinetics.getFormula())
+        # Convert species and parameter names to Symbols before sympify
+        formula = kinetics.getFormula()
+        for species in mod.getListOfSpecies():
+            formula = formula.replace(species.getId(), f"Symbol('{species.getId()}')")
+        for param in mod.getListOfParameters():
+            formula = formula.replace(param.getId(), f"Symbol('{param.getId()}')")
+        reactions[reaction.getId()] = eval(formula)
     # Define f
-    f = [sympify(0)] * len(x)
+    f = [Integer(0)] * len(x)
     # Loop to define functions in 'f'
     for i in range(mod.getNumReactions()):
         reaction = mod.getReaction(i)
         # subtract reactant kinetic formula
         for j in range(reaction.getNumReactants()):
             ref = reaction.getReactant(j)
-            species = sympify(mod.getSpecies(ref.getSpecies()).getId())
+            species = Symbol(ref.getSpecies())
             curr_index = x.index(species)
-            # Check stoichiometry
             if ref.getStoichiometry() == 1.0: 
                 f[curr_index] += -reactions[reaction.getId()]
             else:
@@ -135,9 +140,8 @@ def load_sbml(filename, **kwargs):
         # add product kinetic formula
         for j in range(reaction.getNumProducts()):
             ref = reaction.getProduct(j)
-            species = sympify(mod.getSpecies(ref.getSpecies()).getId())
+            species = Symbol(ref.getSpecies())
             curr_index = x.index(species)
-            # Check stoichiometry
             if ref.getStoichiometry() == 1.0:
                 f[curr_index] += +reactions[reaction.getId()]
             else:
@@ -149,10 +153,11 @@ def load_sbml(filename, **kwargs):
         C = np.zeros( (len(outputs), len(x)))
         output_count = 0
         for output in outputs:
-            index_output = x.index(sympify(output))
+            index_output = x.index(Symbol(output))
             C[output_count, index_output] = 1
             output_count += 1
     else:
         C = None
-    sys = Reduce(x, f, params = P, params_values = params_values, x_init = x_init, C = C, **kwargs)
+    sys = Reduce(x, f, params = P, params_values = params_values,
+                 x_init = x_init, C = C, **kwargs)
     return sys
