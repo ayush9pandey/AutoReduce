@@ -1,46 +1,94 @@
-# Automated Model Reduction Tool for SBML models
-## Python toolbox to automatically obtain reduced model expressions using time-scale separation, conservation laws, and other assumptions.
+# AutoReduce: An automated model reduction tool
 
-[![Build Status](https://github.com/ayush9pandey/autoreduce/actions/workflows/autoreduce_ci.yml/badge.svg)](https://github.com/ayush9pandey/autoreduce)
-[![codecov](https://codecov.io/gh/ayush9pandey/AutoReduce/branch/master/graph/badge.svg)](https://codecov.io/gh/ayush9pandey/AutoReduce)
+Python toolbox to automatically obtain reduced model expressions using time-scale separation, conservation laws, and other assumptions.
+
+[![Build](https://github.com/ayush9pandey/autoreduce/actions/workflows/build.yml/badge.svg)](https://github.com/ayush9pandey/autoreduce/actions/workflows/build.yml)
+[![Lint](https://github.com/ayush9pandey/autoreduce/actions/workflows/lint.yml/badge.svg)](https://github.com/ayush9pandey/autoreduce/actions/workflows/lint.yml)
+[![codecov](https://codecov.io/gh/ayush9pandey/AutoReduce/branch/main/graph/badge.svg)](https://codecov.io/gh/ayush9pandey/AutoReduce)
 [![PyPI version](https://badge.fury.io/py/autoreduce.svg)](https://badge.fury.io/py/autoreduce)
+[![Documentation Status](https://readthedocs.org/projects/autoreduce/badge/?version=latest)](https://autoreduce.readthedocs.io/en/latest/?badge=latest)
 
-Refer to the [bioRxiv paper](https://www.biorxiv.org/content/10.1101/2020.02.15.950840v2.full.pdf) for more details.
-To run - Go through tutorial files inside tutorials folder then check out some common examples in the examples folder. To check if different tools are working properly, run tests. 
-Contact : Ayush Pandey (apandet at caltech dot edu) for any feedback or suggestions.
+## Overview
 
+AutoReduce is a Python package for automated model reduction of SBML models. It provides tools for:
+- Automated model reduction using QSSA (Quasi-Steady State Approximation)
+- Hill function approximation
+- Integration with [BioCRNPyler](https://biocrnpyler.readthedocs.io/) for synthetic biology models
+- Analysis of gene expression models
 
-- **Website:** https://github.com/ayush9pandey/AutoReduce
-- **Paper:** [Journal of Robust and Nonlinear Control](https://onlinelibrary.wiley.com/doi/full/10.1002/rnc.6013)
-- **Source:** https://github.com/ayush9pandey/autoreduce
-- **Bug reports:** https://github.com/ayush9pandey/autoreduce/issues
-- **Documentation:** Coming Soon on: [autoreduce.readthedocs.io](https://readthedocs.org/projects/autoreduce/)
+Refer to the [bioRxiv paper](https://www.biorxiv.org/content/10.1101/2020.02.15.950840v2.full.pdf) and [Journal of Robust and Nonlinear Control paper](https://onlinelibrary.wiley.com/doi/full/10.1002/rnc.6013) for more details.
 
-# Installation
+## Quick Start
 
-Install the latest version of AutoReduce::
+```python
+from autoreduce.converters import load_sbml
 
-    $ pip install autoreduce 
+# Load your SBML model
+sys = load_sbml('your_sbml_file.xml', outputs=['your_output'])
 
-Install with all optional dependencies::
+# Solve conservation laws
+conservation_laws = sys.solve_conservation_laws(
+    conserved_sets=[
+        ['species1', 'species2', 'species3'],  # First conserved set
+        ['species4', 'species5']               # Second conserved set
+    ],
+    states_to_eliminate=['species_to_eliminate1', 'species_to_eliminate2']
+)
 
-    $ pip install autoreduce[all]
+# Solve timescale separation using QSSA
+reduced_qssa_model = sys.solve_timescale_separation(
+    ['fast_species1', 'fast_species2']
+    )
+```
 
-# Bugs
-Report any bugs that you find [here](https://github.com/ayush9pandey/autoreduce/issues).
-You can also fork the repository on [GitHub](https://github.com/ayush9pandey/autoreduce),
-and the create a pull request (PR) with any changes. We welcome all changes, big or small, and we
-will help you make the PR if you are new to `git` (just create a new issue)
+For more examples, check out the [documentation](https://autoreduce.readthedocs.io/en/latest/examples.html).
 
-# Versions
+## Installation
+
+Install the latest version of AutoReduce:
+
+```bash
+pip install autoreduce
+```
+
+Install with all optional dependencies:
+
+```bash
+pip install autoreduce[all]
+```
+
+For development installation:
+
+```bash
+git clone https://github.com/ayush9pandey/autoreduce.git
+cd autoreduce
+pip install -e ".[all]"
+```
+
+## Documentation
+
+Full documentation is available at [autoreduce.readthedocs.io](https://autoreduce.readthedocs.io/).
+
+## Contributing
+
+We welcome contributions! Please see our [contributing guide](https://autoreduce.readthedocs.io/en/latest/contributing.html) for details.
+
+## Versions
 
 AutoReduce versions:
+- 0.3.0 (current release): Major updates including improved API and documentation
+- 0.2.0 (alpha release): `pip install autoreduce==0.2.0`
+- 0.1.0 (alpha release): `pip install autoreduce==0.1.0`
 
-* 0.2.0 (alpha release): To install run `pip install autoreduce=0.2.0`
-* 0.1.0 (alpha release): To install run `pip install autoreduce==0.1.0`
+## Contact
 
-# License
+For questions, feedback, or suggestions, please contact:
+- Ayush Pandey (ayushpandey at ucmerced dot edu)
+- [GitHub Issues](https://github.com/ayush9pandey/autoreduce/issues)
+
+## License
+
 Released under the BSD 3-Clause License (see `LICENSE`)
 
-Copyright (c) 2022, Ayush Pandey. All rights reserved.
+Copyright (c) 2025, Ayush Pandey. All rights reserved.
 

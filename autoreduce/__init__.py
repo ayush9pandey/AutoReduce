@@ -1,5 +1,6 @@
-from .system import System
-# from .ode import ODE
-# from .local_sensitivity import SSM
+"""AutoReduce: Automated model reduction tools for SBML models."""
 
-from .converters import *  
+__version__ = "0.3.0"
+
+from .system import System
+from .converters import *
