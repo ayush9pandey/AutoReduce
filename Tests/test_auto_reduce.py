@@ -1,8 +1,7 @@
 #  Copyright (c) 2020, Ayush Pandey. All rights reserved.
 #  See LICENSE file in the project root directory for details.
 
-from unittest import TestCase
-from unittest.mock import mock_open, patch
+import pytest
 from sympy import Symbol
 import numpy as np
 from autoreduce.system import System
@@ -12,61 +11,63 @@ import libsbml
 import warnings
 
 
-class TestAutoReduce(TestCase):
+@pytest.fixture
+def test_system():
     """
-    Super class of all testing in AutoReduce as it sets up a System with 
-    a simple test CRN
+    Fixture that sets up a test CRN:
+    2A + B (k1)<->(k2) C, C (k3)--> D
     """
-    def setUp(self) -> None:
-        """
-        This method gets executed before every test. It sets up a test CRN:
-        2A + B (k1)<->(k2) C, C (k3)--> D
-        """
-        A = Symbol("A")
-        B = Symbol("B")
-        C = Symbol("C")
-        D = Symbol("D")
-        k1 = Symbol("k1")
-        k2 = Symbol("k2")
-        k3 = Symbol("k3")
-        
-        self.params = [k1, k2, k3]
-        # States:
-        self.x = [A, B, C, D]
-
-        # ODE in Sympy for the given test CRN with mass-action kinetics
-        self.f = [-k1 * A**2 * B + k2 * C,
-                -k1 * A**2 * B + k2 * C,
-                k1 * A**2 * B - k2 * C - k3 * C,
-                k3 * C]
-        init_cond = np.ones(len(self.x))
-        self.C = None
-        self.g = None
-        self.h = None
-        self.u = None
-        self.input_values = None
-        self.params_values = [2, 4, 6]
-        self.system = System(self.x, self.f, params = self.params,
-                            x_init = init_cond, params_values = self.params_values,
-                            C = self.C, g = self.g, h = self.h, u = self.u,
-                            input_values = self.input_values)
-        self.reducible_system = get_reducible(self.system)
+    A = Symbol("A")
+    B = Symbol("B")
+    C = Symbol("C")
+    D = Symbol("D")
+    k1 = Symbol("k1")
+    k2 = Symbol("k2")
+    k3 = Symbol("k3")
     
-    def test_get_reduced_model(self, x_hat=None):
-        """
-        This function creates a reducible System object
-        that can be used to create reduced models given
-        the x_hat (the list of states in reduced model).
-        All other states are collapsed to be at quasi-steady
-        state and both the reduced and the collapsed models
-        are returned.
-        """
-        if x_hat is None:
-            x_hat = []
-        self.assertIsInstance(self.reducible_system, System)
-        reduced_system, collapsed_system = self.reducible_system.solve_timescale_separation(x_hat)
-        if reduced_system is not None:
-            self.assertIsInstance(reduced_system, System)
-        if collapsed_system is not None:
-            self.assertIsInstance(collapsed_system, System)
-        return reduced_system, collapsed_system
+    params = [k1, k2, k3]
+    # States:
+    x = [A, B, C, D]
+
+    # ODE in Sympy for the given test CRN with mass-action kinetics
+    f = [-k1 * A**2 * B + k2 * C,
+         -k1 * A**2 * B + k2 * C,
+         k1 * A**2 * B - k2 * C - k3 * C,
+         k3 * C]
+    init_cond = np.ones(len(x))
+    C = None
+    g = None
+    h = None
+    u = None
+    input_values = None
+    params_values = [2, 4, 6]
+    system = System(x, f, params=params,
+                   x_init=init_cond, params_values=params_values,
+                   C=C, g=g, h=h, u=u,
+                   input_values=input_values)
+    reducible_system = get_reducible(system)
+    return system, reducible_system
+
+
+def test_get_reduced_model(test_system):
+    """
+    Test that creating a reduced model works correctly.
+    """
+    system, reducible_system = test_system
+    assert isinstance(reducible_system, System)
+    
+    # Test with empty x_hat
+    reduced_system, collapsed_system = reducible_system.solve_timescale_separation([])
+    if reduced_system is not None:
+        assert isinstance(reduced_system, System)
+    if collapsed_system is not None:
+        assert isinstance(collapsed_system, System)
+    
+    # Test with some states in x_hat
+    x_hat = [Symbol("A"), Symbol("D")]
+    reduced_system, collapsed_system = reducible_system.solve_timescale_separation(x_hat)
+    if reduced_system is not None:
+        assert isinstance(reduced_system, System)
+        assert all(state in x_hat for state in reduced_system.x)
+    if collapsed_system is not None:
+        assert isinstance(collapsed_system, System)

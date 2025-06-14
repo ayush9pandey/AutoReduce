@@ -1,6 +1,4 @@
-In order to run tests:
-1. cd to the AutoReduce/tests folder
-2. type: coverage run -m pytest
+In order to run tests, simply run `pytest` on your terminal.
 
 Building Tests:
 Tests can be added with existing tests (which are organized by object) or as new test sets for more complex features. 

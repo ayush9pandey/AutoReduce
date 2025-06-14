@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "AutoReduce"
+name = "autoreduce"
 version = "0.3.0"
 description = "Python based automated model reduction tools for SBML models"
 readme = "README.md"

@@ -1,76 +1,93 @@
-
 #  Copyright (c) 2020, Ayush Pandey. All rights reserved.
 #  See LICENSE file in the project root directory for details.
 
-from unittest import TestCase
-from unittest.mock import mock_open, patch
-from test_auto_reduce import TestAutoReduce
+import pytest
 import warnings
-import sympy
+from sympy import Symbol
+import numpy as np
+from autoreduce.system import System
+from autoreduce.utils import get_reducible
 
-class TestTimeScaleSeparation(TestAutoReduce):
-    def test_reduced_models(self):
-        A, B, C, D = self.x
-        k1, k2, k3 = self.params
-        possible_reductions = self.reducible_system.get_all_combinations()
-        for attempt in possible_reductions:
-            attempt_states = [self.x[i] for i in attempt]
-            answer_AB = [A**2*B*k1*k2/(k2+k3) - A**2*B*k1,
-                         A**2*B*k1*k2/(k2+k3) - A**2*B*k1]
-            # On simplification, the answer is:
-            answer_AB_eq = [-A**2*B*k1*k3/(k2 + k3),-A**2*B*k1*k3/(k2 + k3)] 
-            try:
-                self.test_solve_timescale_separation(attempt_states = [A, B], 
-                                                     mode = 'fail', answer = answer_AB)
-            except:
-                self.test_solve_timescale_separation(attempt_states = [A, B], 
-                                                     mode = 'fail', answer = answer_AB_eq)
-            self.test_solve_timescale_separation(attempt_states = [A, D], 
-                                                mode = 'fail', answer = [0, 0])
-            self.test_solve_timescale_separation(attempt_states = [A, C], 
-                                                mode = 'fail', answer = [0, -C*k3])
-            self.test_solve_timescale_separation(attempt_states = [B, C, D], 
-                                                mode = 'success', 
-                                                answer = [0, -k3 * C, k3 * C])
-            self.test_solve_timescale_separation(attempt_states = [A, C, D], 
-                                                mode = 'success', 
-                                                answer = [0, -k3 * C, k3 * C])
-            # self.test_solve_timescale_separation(attempt_states = [A, B, C], 
-        #                                       mode = 'success', 
-        #                                       answer = [-k1 * A**2 * B, 
-    #                                                   -k1 * A**2 * B, 
-    #                                                   k1 * A**2 * B]) 
-            self.test_solve_timescale_separation(attempt_states = [C, D], 
-                                                mode = 'success', 
-                                                answer = [-k3 * C, k3 * C])
-            answer_ABD = [k1 * k2 * A**2 * B / (k2 + k3) - k1 * A**2 * B, 
-                        k1 * k2 * A**2 * B / (k2 + k3) - k1 * A**2 * B, 
-                        k1 * k3 * A**2 * B / (k2 + k3)]
-            # On simplification, the answer is:
-            answer_ABD_eq = [-A**2*B*k1*k3/(k2 + k3), 
-                             -A**2*B*k1*k3/(k2 + k3),
-                             A**2*B*k1*k3/(k2 + k3)]
-            try:
-                self.test_solve_timescale_separation(attempt_states = [A, B, D], 
-                                                     mode = 'success',
-                                                     answer = answer_ABD)
-            except:
-                self.test_solve_timescale_separation(attempt_states = [A, B, D], 
-                                                     mode = 'success',
-                                                     answer = answer_ABD_eq)
 
-    def test_solve_timescale_separation(self, attempt_states = None, mode = None, answer = None):
-        if mode == 'fail':
-            with self.assertWarnsRegex(Warning, 'Solve time-scale separation failed. Check model consistency.'):
-                reduced_system, collapsed_system = self.test_get_reduced_model(x_hat=attempt_states)
-                print(reduced_system.f)
-                self.assertEqual(reduced_system.f, answer)
-                self.assertEqual(collapsed_system.x, [x for x in self.x if x not in attempt_states])
-        elif mode == 'success':
-            reduced_system, collapsed_system = self.test_get_reduced_model(x_hat = attempt_states)
-            assert answer is not None
-            self.assertEqual(reduced_system.f , answer)
-            # Test slow (retained) states
-            self.assertEqual(reduced_system.x, attempt_states)
-            # Test fast (collapsed) states
-            self.assertEqual(collapsed_system.x, [x for x in self.x if x not in attempt_states])
+@pytest.fixture
+def test_system():
+    """
+    Create a test system for time scale separation testing
+    """
+    A = Symbol("A")
+    B = Symbol("B")
+    C = Symbol("C")
+    D = Symbol("D")
+    k1 = Symbol("k1")
+    k2 = Symbol("k2")
+    k3 = Symbol("k3")
+    
+    params = [k1, k2, k3]
+    x = [A, B, C, D]
+    f = [-k1 * A**2 * B + k2 * C,
+         -k1 * A**2 * B + k2 * C,
+         k1 * A**2 * B - k2 * C - k3 * C,
+         k3 * C]
+    
+    init_cond = np.ones(4)
+    params_values = [2, 4, 6]
+    
+    system = System(x, f, params=params, x_init=init_cond,
+                    params_values=params_values)
+    reducible_system = get_reducible(system)
+    return system, reducible_system, x, params
+
+
+def test_reduced_models(test_system):
+    """
+    Test various reduced model combinations
+    """
+    _, reducible_system, x, params = test_system
+    A, B, C, D = x
+    k1, k2, k3 = params
+    
+    # Test AB reduction
+    answer_AB = [-A**2*B*k1*k3/(k2 + k3), -A**2*B*k1*k3/(k2 + k3)]
+    with pytest.warns(UserWarning, match='Solve time-scale separation failed'):
+        reduced_system, collapsed_system = reducible_system.solve_timescale_separation([A, B])
+        assert reduced_system.f == answer_AB
+        assert collapsed_system.x == [C, D]
+    
+    # Test AD reduction
+    with pytest.warns(UserWarning, match='Solve time-scale separation failed'):
+        reduced_system, collapsed_system = reducible_system.solve_timescale_separation([A, D])
+        assert reduced_system.f == [0, 0]
+        assert collapsed_system.x == [B, C]
+    
+    # Test AC reduction
+    with pytest.warns(UserWarning, match='Solve time-scale separation failed'):
+        reduced_system, collapsed_system = reducible_system.solve_timescale_separation([A, C])
+        assert reduced_system.f == [0, -C*k3]
+        assert collapsed_system.x == [B, D]
+    
+    # Test BCD reduction (success case)
+    reduced_system, collapsed_system = reducible_system.solve_timescale_separation([B, C, D])
+    assert reduced_system.f == [0, -k3 * C, k3 * C]
+    assert reduced_system.x == [B, C, D]
+    assert collapsed_system.x == [A]
+    
+    # Test ACD reduction (success case)
+    reduced_system, collapsed_system = reducible_system.solve_timescale_separation([A, C, D])
+    assert reduced_system.f == [0, -k3 * C, k3 * C]
+    assert reduced_system.x == [A, C, D]
+    assert collapsed_system.x == [B]
+    
+    # Test CD reduction (success case)
+    reduced_system, collapsed_system = reducible_system.solve_timescale_separation([C, D])
+    assert reduced_system.f == [-k3 * C, k3 * C]
+    assert reduced_system.x == [C, D]
+    assert collapsed_system.x == [A, B]
+    
+    # Test ABD reduction (success case)
+    answer_ABD = [-A**2*B*k1*k3/(k2 + k3),
+                  -A**2*B*k1*k3/(k2 + k3),
+                  A**2*B*k1*k3/(k2 + k3)]
+    reduced_system, collapsed_system = reducible_system.solve_timescale_separation([A, B, D])
+    assert reduced_system.f == answer_ABD
+    assert reduced_system.x == [A, B, D]
+    assert collapsed_system.x == [C]

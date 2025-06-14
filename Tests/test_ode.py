@@ -1,62 +1,92 @@
-
 #  Copyright (c) 2020, Build-A-Cell. All rights reserved.
 #  See LICENSE file in the project root directory for details.
 
-from unittest import TestCase
-from unittest.mock import mock_open, patch
-import libsbml
-import warnings
+import pytest
 import numpy as np
 from scipy.integrate import odeint
-
-from test_auto_reduce import TestAutoReduce
-from test_system import TestSystem
+from sympy import Symbol
 
 from autoreduce.ode import ODE
 from autoreduce.system import System 
 from autoreduce.utils import get_ODE
 
 
-class TestODE(TestAutoReduce):
-    def test_ode_objects(self):
-        import numpy as np
-        timepoints = np.linspace(0,10,100)
-        ode_object = ODE(self.x, self.f, self.params, self.C,
-                        self.g, self.h, self.u,
-                        params_values = [2, 4, 6], x_init = np.ones(4), 
-                        input_values = self.input_values, timepoints = timepoints)
-        ode_object_same = get_ODE(self.system, timepoints = timepoints)
-        self.assertIsInstance(ode_object, ODE)
-        self.assertIsInstance(ode_object, System)
-        self.assertEqual(ode_object.f, ode_object_same.f)
-        self.assertIsInstance(ode_object.get_system(), System)
-        test_sys = TestSystem()
-        test_sys.test_system_equality(ode_object.get_system(), self.system)
-        test_sys.test_system_equality(ode_object.get_system(), self.system)
-        
-    def test_ode_solutions(self):
-        """
-        Solve the ODE manually and solve using 
-        ODE class to compare the two solutions
-        """
-        timepoints = np.linspace(0,10,100)
-        params_values = [2, 4, 6]
-        ode_object = ODE(self.x, self.f, self.params, self.C, 
-                        self.g, self.h, self.u,
-                        params_values = params_values , x_init = np.ones(4), 
-                        input_values = self.input_values, timepoints = timepoints)
-        solutions = ode_object.solve_system()
+@pytest.fixture
+def test_ode_system():
+    """
+    Create a test system for ODE testing
+    """
+    A = Symbol("A")
+    B = Symbol("B")
+    C = Symbol("C")
+    D = Symbol("D")
+    k1 = Symbol("k1")
+    k2 = Symbol("k2")
+    k3 = Symbol("k3")
+    
+    params = [k1, k2, k3]
+    x = [A, B, C, D]
+    f = [-k1 * A**2 * B + k2 * C,
+         -k1 * A**2 * B + k2 * C,
+         k1 * A**2 * B - k2 * C - k3 * C,
+         k3 * C]
+    
+    init_cond = np.ones(4)
+    params_values = [2, 4, 6]
+    timepoints = np.linspace(0, 10, 100)
+    
+    system = System(x, f, params=params, x_init=init_cond, params_values=params_values)
+    ode_object = ODE(x, f, params, None, None, None, None,
+                    params_values=params_values, x_init=init_cond,
+                    input_values=None, timepoints=timepoints)
+    
+    return system, ode_object, timepoints, params_values
 
-        self.assertIsInstance(solutions, np.ndarray)
 
-        # Solve manually:
-        def scipy_odeint_func(x, t):            
-            k1, k2, k3 = params_values
-            A, B, C, D = x
-            return np.array([-k1 * A**2 * B + k2 * C,
-                            -k1 * A**2 * B + k2 * C,
-                            k1 * A**2 * B - k2 * C - k3 * C,
-                            k3 * C])
+def test_ode_objects(test_ode_system):
+    """
+    Test ODE object creation and properties
+    """
+    system, ode_object, timepoints, _ = test_ode_system
+    
+    # Test ODE creation
+    assert isinstance(ode_object, ODE)
+    assert isinstance(ode_object, System)
+    
+    # Test ODE creation from system
+    ode_object_same = get_ODE(system, timepoints=timepoints)
+    assert ode_object.f == ode_object_same.f
+    
+    # Test system extraction
+    extracted_system = ode_object.get_system()
+    assert isinstance(extracted_system, System)
+    
+    # Test system equality
+    assert extracted_system.x == system.x
+    assert extracted_system.f == system.f
+    assert extracted_system.params == system.params
+    assert np.array_equal(extracted_system.x_init, system.x_init)
+    assert extracted_system.params_values == system.params_values
 
-        solutions_manual = odeint(scipy_odeint_func, y0 = np.ones(4), t = timepoints)
-        self.assertTrue((solutions == solutions_manual).all())
+
+def test_ode_solutions(test_ode_system):
+    """
+    Test ODE solutions by comparing with manual scipy solution
+    """
+    _, ode_object, timepoints, params_values = test_ode_system
+    
+    # Get solution from ODE class
+    solutions = ode_object.solve_system()
+    assert isinstance(solutions, np.ndarray)
+    
+    # Solve manually using scipy
+    def scipy_odeint_func(x, t):            
+        k1, k2, k3 = params_values
+        A, B, C, D = x
+        return np.array([-k1 * A**2 * B + k2 * C,
+                        -k1 * A**2 * B + k2 * C,
+                        k1 * A**2 * B - k2 * C - k3 * C,
+                        k3 * C])
+    
+    solutions_manual = odeint(scipy_odeint_func, y0=np.ones(4), t=timepoints)
+    assert np.array_equal(solutions, solutions_manual)

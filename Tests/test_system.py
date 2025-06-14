@@ -1,73 +1,90 @@
-
 #  Copyright (c) 2020, Ayush Pandey. All rights reserved.
 #  See LICENSE file in the project root directory for details.
 
-from unittest import TestCase
-from unittest.mock import mock_open, patch
-from test_auto_reduce import TestAutoReduce
-
-import libsbml
+import pytest
+import numpy as np
+from autoreduce.system import System
+from sympy import Symbol
 import warnings
 
 
-class TestSystem(TestCase):
-    def setUp(self):
-        self.system1 = None
-        self.system2 = None
-
-    def test_system_equality(self, system1 = None, system2 = None):
-        """
-        Test all properties of two systems for equality
-        """
-        self.system1 = system1
-        self.system2 = system2
-
-        if system1 is None and system2 is None:
-            return 
-        elif system1 is None or system2 is None:
-            warnings.warn('One of the System objects is None.')
-        else:
-            self.test_states()
-            self.test_f()
-            self.test_g()
-            self.test_h()
-            self.test_params()
-            self.test_initial_conditions()
-            self.test_params_values()
-            self.test_C()
-
-    def test_states(self):
-        if self.system1 is not None and self.system2 is not None:
-            self.assertEqual(self.system1.x, self.system2.x)
-
-    def test_f(self):
-        if self.system1 is not None and self.system2 is not None:
-            self.assertEqual(self.system1.f, self.system2.f)
+@pytest.fixture
+def test_systems():
+    """
+    Create two identical test systems for equality testing
+    """
+    # Create a simple test system
+    A = Symbol("A")
+    B = Symbol("B")
+    k = Symbol("k")
     
-    def test_g(self):
-        if self.system1 is not None and self.system2 is not None:
-            self.assertEqual(self.system1.g, self.system2.g)
-
-    def test_h(self):
-        if self.system1 is not None and self.system2 is not None:
-            self.assertEqual(self.system1.h, self.system2.h)
-
-    def test_params(self):
-        if self.system1 is not None and self.system2 is not None:
-            self.assertEqual(self.system1.params, self.system2.params)
+    x = [A, B]
+    f = [-k * A, k * A]
+    params = [k]
+    x_init = np.array([1.0, 0.0])
+    params_values = [2.0]
     
-    def test_params_values(self):
-        if self.system1 is not None and self.system2 is not None:
-            self.assertEqual(self.system1.params_values, 
-                            self.system2.params_values)
+    system1 = System(x, f, params=params, x_init=x_init, params_values=params_values)
+    system2 = System(x, f, params=params, x_init=x_init, params_values=params_values)
+    return system1, system2
 
-    def test_initial_conditions(self):
-        if self.system1 is not None and self.system2 is not None:
-            if self.system1.x_init is not None and self.system2.x_init is not None:
-                self.assertTrue((self.system1.x_init == self.system2.x_init).all())
 
-    def test_C(self):
-        if self.system1 is not None and self.system2 is not None:
-            if self.system1.C is not None and self.system2.C is not None:
-                self.assertTrue((self.system1.C == self.system2.C).all())
+def test_system_equality(test_systems):
+    """
+    Test all properties of two systems for equality
+    """
+    system1, system2 = test_systems
+    
+    # Test states
+    assert system1.x == system2.x
+    
+    # Test ODEs
+    assert system1.f == system2.f
+    
+    # Test output functions
+    assert system1.g == system2.g
+    assert system1.h == system2.h
+    
+    # Test parameters
+    assert system1.params == system2.params
+    assert system1.params_values == system2.params_values
+    
+    # Test initial conditions
+    if system1.x_init is not None and system2.x_init is not None:
+        assert np.array_equal(system1.x_init, system2.x_init)
+    
+    # Test C matrix
+    if system1.C is not None and system2.C is not None:
+        assert np.array_equal(system1.C, system2.C)
+
+
+def test_system_inequality():
+    """
+    Test that different systems are not equal
+    """
+    # Create two different systems
+    A = Symbol("A")
+    B = Symbol("B")
+    k1 = Symbol("k1")
+    k2 = Symbol("k2")
+    
+    # System 1
+    x1 = [A, B]
+    f1 = [-k1 * A, k1 * A]
+    params1 = [k1]
+    x_init1 = np.array([1.0, 0.0])
+    params_values1 = [2.0]
+    system1 = System(x1, f1, params=params1, x_init=x_init1, params_values=params_values1)
+    
+    # System 2 (different parameter value)
+    x2 = [A, B]
+    f2 = [-k2 * A, k2 * A]
+    params2 = [k2]
+    x_init2 = np.array([1.0, 0.0])
+    params_values2 = [3.0]  # Different parameter value
+    system2 = System(x2, f2, params=params2, x_init=x_init2, params_values=params_values2)
+    
+    # Test that they are not equal
+    assert system1.params_values != system2.params_values
+    assert system1.f != system2.f  # Different parameter symbol
     
