@@ -9,35 +9,46 @@ from warnings import warn
 
 class System(object):
     """
-    Class that stores the system model in this form: 
+    Class that stores the system model in this form:
     x_dot = f(x, theta), y = Cx.
     """
-    def __init__(self, x, f, params=None,
-                 C=None, g=None, h=None, u=None,
-                 params_values=None,
-                 x_init=None, input_values=None, **kwargs):
+
+    def __init__(
+        self,
+        x,
+        f,
+        params=None,
+        C=None,
+        g=None,
+        h=None,
+        u=None,
+        params_values=None,
+        x_init=None,
+        input_values=None,
+        **kwargs,
+    ):
         """
-        The general system dynamics : 
+        The general system dynamics :
         x_dot = f(x, P) + g(x, P)u, y = h(x,P)
         Use the utility function ode_to_sympy to write these.
 
         x : (Symbolic) state variable vector
 
-        f : The system model dynamics. 
+        f : The system model dynamics.
             Written symbolically with symbols x = [x_0, x_1, ...]
             for states and P = [P_0, P_1, ...] for parameters.
 
-        params : (Symbolic) parameters used to 
+        params : (Symbolic) parameters used to
                 define f, g, h. None if no symbolic parameters.
 
-        g : The actuator / input dynamics. 
+        g : The actuator / input dynamics.
             None by default if the system is autonomous.
 
-        C : The output matrix for y = Cx, 
+        C : The output matrix for y = Cx,
             size of C must be #outputs times #states. If None,
             the argument h is expected. Cannot set C and h both.
 
-        h : The output description y = h(x, P) 
+        h : The output description y = h(x, P)
             where x are states and P are parameters.
 
         params_values : Values for model parameters
@@ -67,17 +78,19 @@ class System(object):
             self.x_init = x_init
         else:
             self.x_init = []
-        if 'parameter_dependent_ic' in kwargs:
-            self.parameter_dependent_ic = kwargs.get('parameter_dependent_ic')
+        if "parameter_dependent_ic" in kwargs:
+            self.parameter_dependent_ic = kwargs.get("parameter_dependent_ic")
         else:
             self.parameter_dependent_ic = False
-        if 'ic_parameters' in kwargs and kwargs.get('ic_parameters'):
-            self.ic_parameters = kwargs.get('ic_parameters')
+        if "ic_parameters" in kwargs and kwargs.get("ic_parameters"):
+            self.ic_parameters = kwargs.get("ic_parameters")
             if self.parameter_dependent_ic is False:
-                raise ValueError('Make sure to set parameter_dependent_ic \
-                    argument to True to use parameters as initial conditions')
+                raise ValueError(
+                    "Make sure to set parameter_dependent_ic \
+                    argument to True to use parameters as initial conditions"
+                )
             if self.x_init == []:
-                self.x_init = []*len(self.ic_parameters)
+                self.x_init = [] * len(self.ic_parameters)
             elif isinstance(self.x_init, np.ndarray):
                 self.x_init = list(self.x_init)
             for ic_p, ic_i in zip(self.ic_parameters, range(len(self.x_init))):
@@ -86,9 +99,9 @@ class System(object):
             self.ic_parameters = None
         return
 
-    def set_dynamics(self, f=None, g=None,
-                     h=None, C=None, u=None,
-                     params=None):
+    def set_dynamics(
+        self, f=None, g=None, h=None, C=None, u=None, params=None
+    ):
         """
         Set either f, g, h, or C to the
         System object or parameter values using P.
@@ -112,13 +125,13 @@ class System(object):
     # Change this variable name P to params_values or something
     def evaluate(self, f, x, P, u=None, **kwargs):
         """
-        Evaluate the given symbolic 
+        Evaluate the given symbolic
         function (f) that is part of the System
         at the values given by x for self.x
         and P for self.params
         """
-        if 'set_params_as' in kwargs:
-            set_params_as = kwargs['set_params_as']
+        if "set_params_as" in kwargs:
+            set_params_as = kwargs["set_params_as"]
         else:
             set_params_as = None
         fs = []
@@ -141,8 +154,9 @@ class System(object):
             self.params_values = [pi for pi in params_values]
             if self.params:
                 for fi in self.f:
-                    f_new.append(fi.subs(list(zip(self.params,
-                                 self.params_values))))
+                    f_new.append(
+                        fi.subs(list(zip(self.params, self.params_values)))
+                    )
         else:
             self.params_values = []
         if x_init is not None:
@@ -165,8 +179,10 @@ class System(object):
             x_init[ic_index] = ic_param
             return ic_param
         else:
-            raise ValueError('Sympy Symbol or float expected in ic_parameters\
-                             argument.')
+            raise ValueError(
+                "Sympy Symbol or float expected in ic_parameters\
+                             argument."
+            )
 
     def generate_sbml_model(self, show_warnings=True, **kwargs):
         """Creates an new SBML model and populates with the species and
@@ -180,21 +196,28 @@ class System(object):
         states_ic = [float(i) for i in self.x_init]
         all_rxn_ids = [f"r{i}" for i in range(len(self.f))]
         params = [str(i) for i in self.params]
-        for species, ic, ode_i, r_id in zip(states, states_ic,
-                                            self.f, all_rxn_ids):
+        for species, ic, ode_i, r_id in zip(
+            states, states_ic, self.f, all_rxn_ids
+        ):
             # Create species and initial conditions
             model = add_species(model, species, ic)
             # Reactions, for all species, s_i, --> s_i with
             # rate equal to the ODE term
-            model = add_reaction(model, species=species,
-                                 kinetic_law=ode_i,
-                                 reaction_id=r_id,
-                                 all_species=states)
-        model = add_parameters(model, all_parameters=params,
-                               all_values=self.params_values)
+            model = add_reaction(
+                model,
+                species=species,
+                kinetic_law=ode_i,
+                reaction_id=r_id,
+                all_species=states,
+            )
+        model = add_parameters(
+            model, all_parameters=params, all_values=self.params_values
+        )
         if document.getNumErrors() and show_warnings:
-            warn("SBML model generated has errors."
-                 "Use document.getErrorLog() to print all errors.")
+            warn(
+                "SBML model generated has errors."
+                "Use document.getErrorLog() to print all errors."
+            )
         return document, model
 
     def write_sbml(self, filename: str, **kwargs):
@@ -205,14 +228,15 @@ class System(object):
         :return SBMLDocument: libSBML SBMLDocument object
         """
         document, model = create_sbml_model(**kwargs)
-        if 'show_warnings' in kwargs:
-            show_warnings = kwargs.get('show_warnings')
+        if "show_warnings" in kwargs:
+            show_warnings = kwargs.get("show_warnings")
         else:
             show_warnings = True
-        document, _ = self.generate_sbml_model(show_warnings=show_warnings,
-                                               **kwargs)
+        document, _ = self.generate_sbml_model(
+            show_warnings=show_warnings, **kwargs
+        )
         sbml_string = libsbml.writeSBMLToString(document)
-        with open(filename, 'w') as f:
+        with open(filename, "w") as f:
             f.write(sbml_string)
         return document
 
@@ -233,18 +257,20 @@ class System(object):
         """
         if not isinstance(other, System):
             return False
-        
+
         # Compare basic attributes
-        if (self.x != other.x or 
-            self.f != other.f or 
-            self.params != other.params or
-            self.params_values != other.params_values or
-            self.x_init != other.x_init or
-            self.C != other.C or
-            self.g != other.g or
-            self.h != other.h or
-            self.u != other.u or
-            self.input_values != other.input_values):
+        if (
+            self.x != other.x
+            or self.f != other.f
+            or self.params != other.params
+            or self.params_values != other.params_values
+            or self.x_init != other.x_init
+            or self.C != other.C
+            or self.g != other.g
+            or self.h != other.h
+            or self.u != other.u
+            or self.input_values != other.input_values
+        ):
             return False
-            
+
         return True

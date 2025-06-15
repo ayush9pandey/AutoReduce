@@ -2,5 +2,39 @@
     "python.pythonPath": "C:\\Users\\apand\\Anaconda3\\python.exe",
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": false,
-    "python.linting.pycodestyleEnabled": true
+    "python.linting.pycodestyleEnabled": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "files.eol": "\n",
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "files.insertFinalNewline": true,
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length=79"
+    ],
+    "python.linting.flake8Enabled": true,
+    "python.linting.mypyEnabled": true,
+    "python.linting.flake8Args": [
+        "--show-source"
+    ],
+    "python.linting.pylintArgs": [
+        "--max-line-length=79"
+    ],
+    "editor.rulers": [
+        79
+    ],
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.rulers": [
+            79
+        ]
+    },
+    "black-formatter.args": [
+        "--line-length",
+        "79"
+    ]
 }
