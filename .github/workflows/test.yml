@@ -18,17 +18,15 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
-    
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -e ".[all]"
-        pip install pytest pytest-cov pytest-xdist
-    
-    - name: Run tests
-      run: |
-        pytest --cov=autoreduce --cov-report=xml
-    
+        pip install -r requirements.txt
+    - name: Install autoreduce
+      run: pip install ".[all, test]"    
+    - name: Test autoreduce
+      run: pytest --cov autoreduce
+    - uses: codecov/codecov-action@v4
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:

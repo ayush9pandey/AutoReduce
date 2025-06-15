@@ -17,7 +17,7 @@ dependencies = [
     "python-libsbml",
     "sympy",
     "scipy",
-    "numpy",
+    "numpy"
 ]
 
 [project.optional-dependencies]
@@ -25,6 +25,12 @@ all = [
     "matplotlib",
     "seaborn",
 ]
+test = [
+  "pytest",
+  "pytest-cov",
+  "pytest-xdist"
+]
+
 
 [project.urls]
 Documentation = "https://autoreduce.readthedocs.io"
@@ -32,7 +38,7 @@ Source = "https://github.com/ayush9pandey/AutoReduce"
 Tracker = "https://github.com/ayush9pandey/AutoReduce/issues"
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "examples"]
 python_files = ["test_*.py"]
 addopts = "--cov=autoreduce --cov-report=xml"
 
