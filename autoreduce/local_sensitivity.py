@@ -62,9 +62,9 @@ class SSM(System):
                 F[3] = f[i]
                 #Store approx. dfi/dpj into Z
                 Z[i] = (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
-                if Z[i] == np.Inf:
+                if Z[i] == np.inf:
                     Z[i] = 1
-                elif Z[i] == np.NaN:
+                elif Z[i] == np.nan:
                     Z[i] = 0
 
         return Z
@@ -132,9 +132,9 @@ class SSM(System):
                     #Store approvar. dfi/dvarj into J
                     J[i][j]= (-F[0] + 8*F[1] - 8*F[2] + F[3])/(12*h)   
                     # print(J[i,j])
-                    # if J[i,j] == np.Inf:
+                    # if J[i,j] == np.inf:
                     #     J[i,j] = 1
-                    # elif J[i,j] == np.NaN:
+                    # elif J[i,j] == np.nan:
                     #     J[i,j] = 0
         if set_params_as is None:
             J = np.array(J, dtype = float)
