@@ -1,0 +1,9 @@
+sympy
+python-libsbml
+scipy
+numpy
+pytest
+pytest-cov
+pytest-xdist
+matplotlib
+seaborn

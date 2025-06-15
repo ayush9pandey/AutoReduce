@@ -11,22 +11,21 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'BioCRNPyler'
-copyright = '2020, William Poole, Ayush Pandey, Andrey Shur, Zoltan Tuza, Richard M. Murray'
-author = 'William Poole, Ayush Pandey, Andrey Shur, Zoltan Tuza, Richard M. Murray'
+project = 'AutoReduce'
+copyright = '2025, Ayush Pandey'
+author = 'Ayush Pandey'
 
 # The short X.Y version
-version = '1.0'
+version = '0.3'
 # The full version, including alpha/beta/rc tags
-release = '1.0.0'
+release = '0.3.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -39,6 +38,12 @@ release = '1.0.0'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.intersphinx',
+    'nbsphinx',
+    'myst_parser',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -74,7 +79,7 @@ pygments_style = None
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -101,7 +106,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'BioCRNPylerdoc'
+htmlhelp_basename = 'AutoReduce'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -127,10 +132,6 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, 'BioCRNPyler.tex', 'BioCRNPyler Documentation',
-     'William Poole, Ayush Pandey, Andrey Shur, Zoltan Tuza, Richard M. Murray', 'manual'),
-]
 
 
 # -- Options for manual page output ------------------------------------------
@@ -138,7 +139,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'biocrnpyler', 'BioCRNPyler Documentation',
+    (master_doc, 'autoreduce', 'AutoReduce Documentation',
      [author], 1)
 ]
 
@@ -149,8 +150,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'BioCRNPyler', 'BioCRNPyler Documentation',
-     author, 'BioCRNPyler', 'One line description of project.',
+    (master_doc, 'AutoReduce', 'AutoReduce Documentation',
+     author, 'AutoReduce', 'One line description of project.',
      'Miscellaneous'),
 ]
 
@@ -171,3 +172,24 @@ epub_title = project
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
+
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'numpy': ('https://numpy.org/doc/stable/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/', None),
+    'sympy': ('https://docs.sympy.org/latest/', None),
+}
+
+# Napoleon settings
+napoleon_google_docstring = True
+napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = True
+napoleon_include_private_with_doc = True
+napoleon_include_special_with_doc = True
+napoleon_use_admonition_for_examples = True
+napoleon_use_admonition_for_notes = True
+napoleon_use_admonition_for_references = True
+napoleon_use_ivar = True
+napoleon_use_param = True
+napoleon_use_rtype = True
+napoleon_type_aliases = None
