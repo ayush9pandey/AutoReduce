@@ -215,3 +215,36 @@ class System(object):
         with open(filename, 'w') as f:
             f.write(sbml_string)
         return document
+
+    def __eq__(self, other):
+        """
+        Compare two System objects for equality.
+        Two systems are equal if they have the same:
+        - states (x)
+        - dynamics (f)
+        - parameters (params)
+        - parameter values (params_values)
+        - initial conditions (x_init)
+        - output matrix (C)
+        - input dynamics (g)
+        - output description (h)
+        - inputs (u)
+        - input values (input_values)
+        """
+        if not isinstance(other, System):
+            return False
+        
+        # Compare basic attributes
+        if (self.x != other.x or 
+            self.f != other.f or 
+            self.params != other.params or
+            self.params_values != other.params_values or
+            self.x_init != other.x_init or
+            self.C != other.C or
+            self.g != other.g or
+            self.h != other.h or
+            self.u != other.u or
+            self.input_values != other.input_values):
+            return False
+            
+        return True
