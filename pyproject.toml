@@ -21,7 +21,15 @@ dependencies = ["python-libsbml", "sympy", "scipy", "numpy"]
 
 [project.optional-dependencies]
 all = ["matplotlib", "seaborn"]
-test = ["pytest", "pytest-cov", "pytest-xdist", "nbformat", "nbconvert"]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-xdist",
+    "jupyter",
+    "ipykernel",
+    "nbformat",
+    "nbconvert",
+]
 
 
 [project.urls]

@@ -22,9 +22,9 @@ except ModuleNotFoundError:
 
 # Helper function to load and run notebooks with a given name at a given path
 def run_notebook(filename, path):
-    with open(filename) as f:
+    with open(filename) as nb_file:
         ep = ExecutePreprocessor()
-        nb = nbformat.read(filename, nbformat.NO_CONVERT)
+        nb = nbformat.read(nb_file, nbformat.NO_CONVERT)
         try:
             ep.preprocess(nb, {"metadata": {"path": path}})
         except CellExecutionError:

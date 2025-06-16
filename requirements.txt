@@ -4,6 +4,8 @@ scipy
 numpy
 pytest
 pytest-cov
+jupyter
+ipykernel
 nbformat
 nbconvert
 pytest-xdist

@@ -1,13 +1,7 @@
 #  Copyright (c) 2020, Ayush Pandey. All rights reserved.
 #  See LICENSE file in the project root directory for details.
 
-from sympy import Symbol  # type: ignore
-import numpy as np  # type: ignore
-import pytest  # type: ignore
-from pathlib import Path
-
 from autoreduce.system import System
-from autoreduce.converters import load_sbml
 
 
 def test_get_reduced_model(reducible_system_1):
