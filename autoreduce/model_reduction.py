@@ -419,7 +419,7 @@ class Reduce(System):
                 f_c[x_c_index] = f[state_index]
                 if self.parameter_dependent_ic:
                     param_as_ic = self.ic_parameters[state_index]
-                    value_ic = self.set_ic_from_params(
+                    value_ic = self.set_ic_from_params(  # noqa: F841
                         x_c_init, param_as_ic, x_c_index
                     )
                 else:
@@ -429,9 +429,9 @@ class Reduce(System):
                 f_hat[x_hat_index] = f[state_index]
                 if self.parameter_dependent_ic:
                     param_as_ic = self.ic_parameters[state_index]
-                    value_ic = self.set_ic_from_params(
+                    value_ic = self.set_ic_from_params(  # noqa: F841
                         x_hat_init, param_as_ic, x_hat_index
-                    )  # noqa: F841
+                    )
                 else:
                     x_hat_init[x_hat_index] = x_init[state_index]
         self.f_hat = f_hat
@@ -482,7 +482,7 @@ class Reduce(System):
 
         # Get the collapsed (fast system) dynamics to create collapsed_system
         for i, _ in enumerate(x_hat):
-            for j in range(len(self.f_c)):
+            for j, _ in enumerate(self.f_c):
                 # The slow variables stay at steady state in the fast subsystem
                 self.f_c[j] = self.f_c[j].subs(x_hat[i], x_hat_init[i])
 
