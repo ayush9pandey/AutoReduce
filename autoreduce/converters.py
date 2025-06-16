@@ -1,30 +1,41 @@
-from libsbml import *
-import sys
-import numpy as np
-from sympy import Symbol, Integer
+"""All model import/export functions"""
+
+import numpy as np  # type: ignore
+from sympy import Symbol, Integer  # type: ignore
+from libsbml import (
+    readSBMLFromFile,
+    LIBSBML_SEV_FATAL,
+    ConversionProperties,
+    LIBSBML_OPERATION_SUCCESS,
+)
+
 from .model_reduction import Reduce
 
-def load_ODE_model(n_states, n_params = 0):
+
+def load_ODE_model(n_states, n_params=0):
+    """Directly load ODE with sympy"""
     return ode_to_sympy(n_states, n_params)
 
-def ode_to_sympy(odesize, n_params = 0):
-    '''
+
+def ode_to_sympy(odesize, n_params=0):
+    """
     Returns Sympy object for the given ODE function
-    '''
-    from sympy import symbols 
+    """
+    from sympy import symbols  # type: ignore
+
     f = []
     x = []
     P = []
     for i in range(odesize):
-        str_var = 'x' + str(i)
-        str_f = 'f' + str(i)
-        vars()[str_f] = symbols('f%d'%i)
-        vars()[str_var] = symbols('x%d'%i)
+        str_var = "x" + str(i)
+        str_f = "f" + str(i)
+        vars()[str_f] = symbols("f%d" % i)
+        vars()[str_var] = symbols("x%d" % i)
         f.append(vars()[str_f])
         x.append(vars()[str_var])
     for k in range(n_params):
-        str_P = 'P' + str(k)
-        vars()[str_P] = symbols('P' + '%d'%k)
+        str_P = "P" + str(k)
+        vars()[str_P] = symbols("P" + "%d" % k)
         P.append(vars()[str_P])
     return x, f, P
 
@@ -34,9 +45,8 @@ def sympy_to_sbml(model):
     return sbml_doc
 
 
-#### SBML to ODE #####
-
-# This file reads an SBML file using libSBML, 
+# SBML to ODE #
+# This file reads an SBML file using libSBML,
 #
 # - expands all function definitions
 # - expands all initial assignments
@@ -46,15 +56,13 @@ def sympy_to_sbml(model):
 # - it emits a function called simulateModel
 #   that takes three parameters: t0, tend and numpoints
 #   with that the model can be simulated as needed
-# - finally the emitted function is called and the result plotted 
-# - it is also written out into a file called generated.py 
+# - finally the emitted function is called and the result plotted
+# - it is also written out into a file called generated.py
 #
- 
- 
 
 
 def load_sbml(filename, **kwargs):
-    '''A function that takes in an SBML file and returns x,f,P,params_values.
+    """A function that takes in an SBML file and returns x,f,P,params_values.
     x is a list of species written as Sympy objects
     f is a list of functions written as Sympy objects
     P is a list of parameters written as Sympy objects
@@ -62,32 +70,32 @@ def load_sbml(filename, **kwargs):
     x_init is a list of initial conditions, in the same order as x
 
     Returns: A reducible Reduce(System) object
-    '''
+    """
 
     # Get the sbml file, check for errors, and perform conversions
     doc = readSBMLFromFile(filename)
     if doc.getNumErrors(LIBSBML_SEV_FATAL):
-        print('Encountered serious errors while reading file')
+        print("Encountered serious errors while reading file")
         print(doc.getErrorLog().toString())
         return
     doc.getErrorLog().clearLog()
     # Convert local params to global params
     props = ConversionProperties()
     props.addOption("promoteLocalParameters", True)
-    if doc.convert(props) != LIBSBML_OPERATION_SUCCESS: 
-        print('The document could not be converted')
+    if doc.convert(props) != LIBSBML_OPERATION_SUCCESS:
+        print("The document could not be converted")
         print(doc.getErrorLog().toString())
     # Expand initial assignments
     props = ConversionProperties()
     props.addOption("expandInitialAssignments", True)
-    if doc.convert(props) != LIBSBML_OPERATION_SUCCESS: 
-        print('The document could not be converted')
+    if doc.convert(props) != LIBSBML_OPERATION_SUCCESS:
+        print("The document could not be converted")
         print(doc.getErrorLog().toString())
     # Expand functions definitions
     props = ConversionProperties()
     props.addOption("expandFunctionDefinitions", True)
-    if doc.convert(props) != LIBSBML_OPERATION_SUCCESS: 
-        print('The document could not be converted')
+    if doc.convert(props) != LIBSBML_OPERATION_SUCCESS:
+        print("The document could not be converted")
         print(doc.getErrorLog().toString())
     # Get model and define important lists, dictionaries
     mod = doc.getModel()
@@ -96,7 +104,8 @@ def load_sbml(filename, **kwargs):
     P = []
     params_values = []
     reactions = {}
-    # Append species symbol to 'x' and append initial amount/concentration to x_init
+    # Append species symbol to 'x' and append initial
+    # amount/concentration to x_init
     # x[i] corresponds to x_init[i]
     for i in range(mod.getNumSpecies()):
         species = mod.getSpecies(i)
@@ -119,9 +128,13 @@ def load_sbml(filename, **kwargs):
         # Convert species and parameter names to Symbols before sympify
         formula = kinetics.getFormula()
         for species in mod.getListOfSpecies():
-            formula = formula.replace(species.getId(), f"Symbol('{species.getId()}')")
+            formula = formula.replace(
+                species.getId(), f"Symbol('{species.getId()}')"
+            )
         for param in mod.getListOfParameters():
-            formula = formula.replace(param.getId(), f"Symbol('{param.getId()}')")
+            formula = formula.replace(
+                param.getId(), f"Symbol('{param.getId()}')"
+            )
         reactions[reaction.getId()] = eval(formula)
     # Define f
     f = [Integer(0)] * len(x)
@@ -133,10 +146,12 @@ def load_sbml(filename, **kwargs):
             ref = reaction.getReactant(j)
             species = Symbol(ref.getSpecies())
             curr_index = x.index(species)
-            if ref.getStoichiometry() == 1.0: 
+            if ref.getStoichiometry() == 1.0:
                 f[curr_index] += -reactions[reaction.getId()]
             else:
-                f[curr_index] += -reactions[reaction.getId()]*ref.getStoichiometry()
+                f[curr_index] += (
+                    -reactions[reaction.getId()] * ref.getStoichiometry()
+                )
         # add product kinetic formula
         for j in range(reaction.getNumProducts()):
             ref = reaction.getProduct(j)
@@ -145,12 +160,14 @@ def load_sbml(filename, **kwargs):
             if ref.getStoichiometry() == 1.0:
                 f[curr_index] += +reactions[reaction.getId()]
             else:
-                f[curr_index] += +reactions[reaction.getId()]*ref.getStoichiometry()
-    if 'outputs' in kwargs:
-        outputs = kwargs['outputs']
-        if type(outputs) is not list:
+                f[curr_index] += (
+                    +reactions[reaction.getId()] * ref.getStoichiometry()
+                )
+    if "outputs" in kwargs:
+        outputs = kwargs["outputs"]
+        if not isinstance(outputs, list):
             outputs = [outputs]
-        C = np.zeros( (len(outputs), len(x)))
+        C = np.zeros((len(outputs), len(x)))
         output_count = 0
         for output in outputs:
             index_output = x.index(Symbol(output))
@@ -158,6 +175,13 @@ def load_sbml(filename, **kwargs):
             output_count += 1
     else:
         C = None
-    sys = Reduce(x, f, params = P, params_values = params_values,
-                 x_init = x_init, C = C, **kwargs)
+    sys = Reduce(
+        x,
+        f,
+        params=P,
+        params_values=params_values,
+        x_init=x_init,
+        C=C,
+        **kwargs,
+    )
     return sys

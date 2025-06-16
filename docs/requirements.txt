@@ -1,0 +1,8 @@
+sphinx
+sphinx_rtd_theme
+sphinx-copybutton
+sphinx-toggleprompt
+sphinx-autodoc-typehints
+nbsphinx
+nbsphinx-link
+recommonmark

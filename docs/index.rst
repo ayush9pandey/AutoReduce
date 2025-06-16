@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to AutoReduce's documentation!
-====================================
+=====================================
 
 AutoReduce is a Python package for automated model reduction of SBML models. It provides tools for:
 
@@ -59,10 +59,12 @@ Contents
 
 .. toctree::
    :maxdepth: 2
+   :caption: Contents:
 
    installation
-   examples
+   usage
    api
+   examples
    contributing
 
 Indices and tables

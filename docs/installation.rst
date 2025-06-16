@@ -2,7 +2,7 @@ Installation
 ============
 
 Requirements
------------
+------------
 
 AutoReduce requires Python 3.9 or higher and the following dependencies:
 
@@ -17,7 +17,7 @@ Optional dependencies (for visualization and advanced features):
 * seaborn
 
 Basic Installation
-----------------
+-----------------
 
 You can install AutoReduce using pip:
 
@@ -25,8 +25,16 @@ You can install AutoReduce using pip:
 
     pip install autoreduce
 
+Or install from source:
+
+.. code-block:: bash
+
+    git clone https://github.com/yourusername/autoreduce.git
+    cd autoreduce
+    pip install .
+
 Development Installation
-----------------------
+-----------------------
 
 For development, you can install the package in editable mode with all optional dependencies:
 
@@ -39,7 +47,7 @@ For development, you can install the package in editable mode with all optional 
 This will install the package in development mode, allowing you to modify the code and see changes immediately.
 
 Verifying Installation
---------------------
+---------------------
 
 To verify your installation, you can run Python and import the package:
 
@@ -60,4 +68,4 @@ If you encounter any issues during installation:
 3. Check that all dependencies are properly installed
 4. If using conda, you might need to install some packages through conda instead of pip
 
-For more help, please open an issue on the `GitHub repository <https://github.com/ayush9pandey/AutoReduce/issues>`_. 
+For more help, please open an issue on the `GitHub repository <https://github.com/ayush9pandey/AutoReduce/issues>`_.

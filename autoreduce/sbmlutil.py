@@ -2,11 +2,18 @@ import libsbml
 import numpy as np
 
 
-def create_sbml_model(compartment_id="default", time_units='second',
-                      extent_units='mole', substance_units='mole',
-                      length_units='metre', area_units='square_metre',
-                      volume_units='litre', volume=1e-6,
-                      model_id=None, **kwargs):
+def create_sbml_model(
+    compartment_id="default",
+    time_units="second",
+    extent_units="mole",
+    substance_units="mole",
+    length_units="metre",
+    area_units="square_metre",
+    volume_units="litre",
+    volume=1e-6,
+    model_id=None,
+    **kwargs,
+):
     """Creates an SBML Level 3 Version 2 model
     with some fixed standard settings.
     Refer to python-libsbml for more information on SBML API.
@@ -24,12 +31,12 @@ def create_sbml_model(compartment_id="default", time_units='second',
     document = libsbml.SBMLDocument(3, 2)
     model = document.createModel()
     if model_id is None:
-        model_id = 'autoreduce_'+str(np.random.randint(1, 1e6))
+        model_id = "autoreduce_" + str(np.random.randint(1, 1e6))
     model.setId(model_id)
     model.setName(model_id)
     # Define units for area
     unitdef = model.createUnitDefinition()
-    unitdef.setId('square_metre')
+    unitdef.setId("square_metre")
     unit = unitdef.createUnit()
     unit.setKind(libsbml.UNIT_KIND_METRE)
     unit.setExponent(2)
@@ -45,7 +52,7 @@ def create_sbml_model(compartment_id="default", time_units='second',
     model.setVolumeUnits(volume_units)  # default volume unit
     compartment = model.createCompartment()
     compartment.setId(compartment_id)
-    compartment.setVolume(1)
+    compartment.setVolume(volume)
     compartment.setConstant(True)
     return document, model
 
@@ -56,7 +63,7 @@ def add_species(model, species, initial_condition=0):
     Args:
         model (libsbml.Model): SBML model to add the species to
         species (str): Species string to add to model
-        initial_condition (float, optional):Initial 
+        initial_condition (float, optional):Initial
         condition of species. Defaults to 0.
     Returns:
         libsbml.Model: SBML Model object
@@ -69,13 +76,18 @@ def add_species(model, species, initial_condition=0):
     sbml_species.setConstant(False)
     sbml_species.setBoundaryCondition(False)
     sbml_species.setHasOnlySubstanceUnits(False)
-    sbml_species.setSubstanceUnits('mole')
+    sbml_species.setSubstanceUnits("mole")
     sbml_species.setInitialConcentration(initial_condition)
     return model
 
 
-def add_reaction(model: libsbml.Model, species: str,
-                 kinetic_law: str, reaction_id: str, all_species: list):
+def add_reaction(
+    model: libsbml.Model,
+    species: str,
+    kinetic_law: str,
+    reaction_id: str,
+    all_species: list,
+):
     """Add reaction to given model
 
     Args:
@@ -112,14 +124,16 @@ def add_reaction(model: libsbml.Model, species: str,
     math_ast = libsbml.parseL3Formula(str_kinetic_law)
     flag = ratelaw.setMath(math_ast)
     if not flag == libsbml.LIBSBML_OPERATION_SUCCESS or math_ast is None:
-        raise ValueError("Could not write the rate law for"
-                         "reaction to SBML. Check the ODE"
-                         "functions of species {0}.".format(species))
+        raise ValueError(
+            f"Could not write the rate law for reaction to SBML."
+            f"Check the ODE functions of species {species}."
+        )
     return model
 
 
-def add_parameters(model: libsbml.Model, all_parameters: list,
-                   all_values: list):
+def add_parameters(
+    model: libsbml.Model, all_parameters: list, all_values: list
+):
     """Adds global parameters to the SBML Model
 
     Args:
@@ -130,7 +144,10 @@ def add_parameters(model: libsbml.Model, all_parameters: list,
     Returns:
         libsbml.Model: Updated SBML model object
     """
-    for name, value in zip(all_parameters, all_values,):
+    for name, value in zip(
+        all_parameters,
+        all_values,
+    ):
         if model.getParameter(name) is None:
             param = model.createParameter()
             param.setId(name)

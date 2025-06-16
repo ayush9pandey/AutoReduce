@@ -8,28 +8,20 @@ version = "0.3.0"
 description = "Python based automated model reduction tools for SBML models"
 readme = "README.md"
 requires-python = ">=3.9"
-license = {text = "BSD-3-Clause"}
-authors = [
-    {name = "Ayush Pandey", email = "ayushpandey@ucmerced.edu"}
+license = { file = "LICENSE" }
+authors = [{ name = "Ayush Pandey", email = "ayushpandey@ucmerced.edu" }]
+keywords = [
+    "SBML",
+    "Automated Model Reduction",
+    "Modeling",
+    "QSSA",
+    "Hill functions",
 ]
-keywords = ["SBML", "Automated Model Reduction", "Modeling", "QSSA", "Hill functions"]
-dependencies = [
-    "python-libsbml",
-    "sympy",
-    "scipy",
-    "numpy"
-]
+dependencies = ["python-libsbml", "sympy", "scipy", "numpy"]
 
 [project.optional-dependencies]
-all = [
-    "matplotlib",
-    "seaborn",
-]
-test = [
-  "pytest",
-  "pytest-cov",
-  "pytest-xdist"
-]
+all = ["matplotlib", "seaborn"]
+test = ["pytest", "pytest-cov", "pytest-xdist"]
 
 
 [project.urls]
@@ -48,5 +40,4 @@ omit = ["tests/*", "setup.py"]
 
 [tool.flake8]
 max-line-length = 100
-exclude = ["build", "dist", ".git", "__pycache__"]
-ignore = ["E203", "W503", "E501", "F401"] 
+exclude = ["build", "dist", ".git", "__pycache__", "tests", "examples"]

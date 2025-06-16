@@ -4,7 +4,7 @@ Python toolbox to automatically obtain reduced model expressions using time-scal
 
 [![Build](https://github.com/ayush9pandey/autoreduce/actions/workflows/build.yml/badge.svg)](https://github.com/ayush9pandey/autoreduce/actions/workflows/build.yml)
 [![Lint](https://github.com/ayush9pandey/autoreduce/actions/workflows/lint.yml/badge.svg)](https://github.com/ayush9pandey/autoreduce/actions/workflows/lint.yml)
-[![codecov](https://codecov.io/gh/ayush9pandey/AutoReduce/branch/main/graph/badge.svg)](https://codecov.io/gh/ayush9pandey/AutoReduce)
+[![codecov](https://codecov.io/gh/ayush9pandey/AutoReduce/graph/badge.svg?token=h9diSMrJbj)](https://codecov.io/gh/ayush9pandey/AutoReduce)
 [![PyPI version](https://badge.fury.io/py/autoreduce.svg)](https://badge.fury.io/py/autoreduce)
 [![Documentation Status](https://readthedocs.org/projects/autoreduce/badge/?version=latest)](https://autoreduce.readthedocs.io/en/latest/?badge=latest)
 
@@ -91,4 +91,3 @@ For questions, feedback, or suggestions, please contact:
 Released under the BSD 3-Clause License (see `LICENSE`)
 
 Copyright (c) 2025, Ayush Pandey. All rights reserved.
-
