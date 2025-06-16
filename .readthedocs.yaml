@@ -5,16 +5,29 @@
 # Required
 version: 2
 
-# Set the version of Python and other tools you might need
 build:
   os: ubuntu-24.04
   tools:
-    python: "3.12"
+    python: "3.13"
+  jobs:
+    post_install: |
+      echo "=== DEBUG START ==="
+      ls -R
+      python -c "import autoreduce; print('autoreduce imported')"
+      make -C docs html
+      echo "=== DEBUG END ==="
 
-# Build documentation in the docs/ directory with Sphinx
-sphinx:
-  configuration: docs/conf.py
 
-python:
-   install:
-   - requirements: docs/requirements.txt
+# # Set the version of Python and other tools you might need
+# build:
+#   os: ubuntu-24.04
+#   tools:
+#     python: "3.12"
+
+# # Build documentation in the docs/ directory with Sphinx
+# sphinx:
+#   configuration: docs/conf.py
+
+# python:
+#    install:
+#    - requirements: docs/requirements.txt
