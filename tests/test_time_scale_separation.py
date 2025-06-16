@@ -10,7 +10,6 @@ def test_reduced_models(system, reducible_system):
     k1, k2, k3 = system.params
     possible_reductions = reducible_system.get_all_combinations()
     for attempt in possible_reductions:
-        attempt_states = [system.x[i] for i in attempt]
         answer_AB = [
             A**2 * B * k1 * k2 / (k2 + k3) - A**2 * B * k1,
             A**2 * B * k1 * k2 / (k2 + k3) - A**2 * B * k1,
@@ -135,7 +134,7 @@ def solve_timescale_test(
         ]
 
 
-def get_reduced_model_helper(system, reducible_system, x_hat=None):
+def get_reduced_model_helper(reducible_system, x_hat=None):
     if x_hat is None:
         x_hat = []
     assert isinstance(reducible_system, System)

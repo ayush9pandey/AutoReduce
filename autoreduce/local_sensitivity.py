@@ -201,7 +201,7 @@ class SSM(System):
         xs = np.reshape(xs, (len(self.timepoints), self.n))
         self.xs = xs
         # Solve for SSM at each time point
-        for k in range(len(self.timepoints)):
+        for k, _ in enumerate(self.timepoints):
             # print('for timepoint',self.timepoints[k])
             timepoints = self.timepoints[0 : k + 1]
             if len(timepoints) == 1:
@@ -267,7 +267,7 @@ class SSM(System):
             self.x_init,
         )
 
-    ############## Sam Clamons ###########
+    """ Code contributed by Sam Clamons below """
 
     def sensitivity_to_parameter(self, x, j, **kwargs):
         """

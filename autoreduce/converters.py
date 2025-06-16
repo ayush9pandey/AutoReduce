@@ -45,8 +45,7 @@ def sympy_to_sbml(model):
     return sbml_doc
 
 
-#### SBML to ODE #####
-
+# SBML to ODE #
 # This file reads an SBML file using libSBML,
 #
 # - expands all function definitions
@@ -105,7 +104,8 @@ def load_sbml(filename, **kwargs):
     P = []
     params_values = []
     reactions = {}
-    # Append species symbol to 'x' and append initial amount/concentration to x_init
+    # Append species symbol to 'x' and append initial
+    # amount/concentration to x_init
     # x[i] corresponds to x_init[i]
     for i in range(mod.getNumSpecies()):
         species = mod.getSpecies(i)

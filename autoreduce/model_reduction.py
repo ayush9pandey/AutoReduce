@@ -263,11 +263,14 @@ class Reduce(System):
                     # print(J_bar)
                     # if np.isnan(J).any() or np.isnan(J_hat).any()
                     # or np.isfinite(J).all() or np.isfinite(J_hat).all():
-                    #     warnings.warn('NaN or inf found in Jacobians, continuing')
+                    #     warnings.warn('NaN or
+                    #                   inf found in Jacobians, continuing')
                     #     continue
                     P = solve_lyapunov(J_bar, -1 * C_bar.T @ C_bar)
                     eig_P = max(eigvals(P))
-                    # if k == 0: # used when proof I thought said that lambda_max_P was at time 0 for IC term.
+                    # if k == 0: # used when proof I thought s
+                    #              aid that lambda_max_P
+                    #              was at time 0 for IC term.
                     if max_eig_P < eig_P:
                         max_eig_P = eig_P
                     if k != 0:
@@ -333,7 +336,8 @@ class Reduce(System):
                     if subs_result == fast_states[j]:
                         continue
                     elif isinstance(subs_result, sympy.Expr):
-                        # continue substituting other variables, until you get a float
+                        # continue substituting other variables,
+                        # until you get a float
                         fast_states[j] = subs_result
                     else:
                         x_sol_c[k][j] = fast_states[j].subs(
@@ -396,12 +400,14 @@ class Reduce(System):
         # Consistency check for slow and fast states:
         if len(slow_states) + len(fast_states) != len(self.x):
             raise RuntimeError(
-                "Number of slow states plus number of fast states must equal the number of total states."
+                "Number of slow states plus number of fast"
+                "states must equal the number of total states."
             )
         for state in slow_states:
             if state in fast_states:
                 raise RuntimeError(
-                    "Found a state that is both fast and slow! Unfortunately, that is not yet possible in this reality."
+                    "Found a state that is both fast and slow!"
+                    "Unfortunately, that is not yet possible in this reality."
                 )
         # Now populate the default corresponding
         # f_c and f_hat dynamics from self.f
@@ -448,10 +454,11 @@ class Reduce(System):
             )[0]
             and loop_sanity
         ):
-            # print(sympy_solve_and_substitute(ode_function = self.f_hat, collapsed_states = x_c,
-            #                                 collapsed_dynamics = self.f_c,
-            #                                 solution_dict = solution_dict,
-            #                                 debug = debug))
+            # print(sympy_solve_and_substitute(ode_function = self.f_hat,
+            #                                  collapsed_states = x_c,
+            #                                  collapsed_dynamics = self.f_c,
+            #                                  solution_dict = solution_dict,
+            #                                  debug = debug))
             self.f_hat, solution_dict, self.f_c = sympy_solve_and_substitute(
                 ode_function=self.f_hat,
                 collapsed_states=x_c,
@@ -462,7 +469,8 @@ class Reduce(System):
             if count > 2:
                 loop_sanity = False
                 warnings.warn(
-                    "Solve time-scale separation failed. Check model consistency."
+                    "Solve time-scale separation failed."
+                    "Check model consistency."
                 )
                 print(
                     f"Did not work to retain: {slow_states}"
@@ -542,7 +550,8 @@ class Reduce(System):
                 fast_states.append([])
                 continue
             elif len(x_c_sub) > 1:
-                # print('Multiple solutions obtained. Chooosing non-zero solution,
+                # print('Multiple solutions obtained.
+                # Chooosing non-zero solution,
                 # check consistency. The solutions are ', x_c_sub)
                 for sub in x_c_sub:
                     if sub == 0:
@@ -573,7 +582,8 @@ class Reduce(System):
                         lookup_collapsed[x_c[i]] = x_c_sub
                     else:
                         solved_states.append(x_c[i])
-                # print('Solved for {0} to get {1}'.format(x_c[i], x_c_sub[0]))
+                # print('Solved for
+                # {0} to get {1}'.format(x_c[i], x_c_sub[0]))
                 # This x_c_sub should not contain previously eliminated
                 # variables otherwise circles continue
                 fast_states.append(x_c_sub[0])
@@ -582,11 +592,14 @@ class Reduce(System):
             if fast_states[i] == []:
                 continue
             for j in range(len(f_hat)):
-                # print('Substituting {0} for variable {1} into f_hat{2}'.format(fast_states[i], x_c[i], j))
+                # print('Substituting {0} for
+                # variable {1}
+                # into f_hat{2}'.format(fast_states[i], x_c[i], j))
                 f_hat[j] = f_hat[j].subs(x_c[i], fast_states[i])
                 # print('f_hat = ',f_hat[j])
             for j in range(len(f_c)):
-                # print('Substituting {0} for variable {1} into f_c{2}'.format(fast_states[i], x_c[i], j))
+                # print('Substituting {0} for
+                # variable {1} into f_c{2}'.format(fast_states[i], x_c[i], j))
                 f_c[j] = f_c[j].subs(x_c[i], fast_states[i])
                 # print('f_c = ',f_c[j])
 
@@ -1215,17 +1228,21 @@ def sympy_get_steady_state_solutions(
             )
             if debug:
                 warnings.warn(f"Zero solution(s) for: {x_c[i]} from {f_c[i]}.")
-        # Search for variables existing in x_c_sub that might have been solved for before:
-        # flag, solved_variables = sympy_variables_exist(ode_function = x_c_sub,
-        #                                               variables_to_check = list(solution_dict.keys()),
-        #                                               debug = debug)
+        # Search for variables existing in x_c_sub
+        # that might have been solved for before:
+        # flag, solved_vars = sympy_variables_exist(ode_function = x_c_sub,
+        #                                           variables_to_check =
+        #                                           list(solution_dict.keys()),
+        #                                           debug = debug)
         # if debug and flag:
-        #     print('Found variables while solving that have already been solved:', solved_variables)
+        #     print('Found variables while solving
+        # that have already been solved:', solved_variables)
         # if flag:
-        #     for solved_variable in solved_variables:
+        #     for solved_variable in solved_Vars:
         #         for sub_func in x_c_sub:
         #             i = x_c_sub.index(sub_func)
-        #             sub_func = sub_func.subs(solved_variable, solution_dict[solved_variable][0])
+        #             sub_func = sub_func.subs(solved_variable,
+        # solution_dict[solved_variable][0])
         #             x_c_sub[i] = sub_func
         # Store solution in a lookup dictionary:
         solution_dict[x_c[i]] = x_c_sub
