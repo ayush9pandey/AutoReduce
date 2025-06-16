@@ -1,14 +1,14 @@
-""" Model reduction """
+"""Model reduction"""
 
 import warnings
 from itertools import combinations
 
-from sympy import Symbol, solve, Eq # type: ignore
-import sympy # type: ignore
-import numpy as np # type: ignore
+from sympy import Symbol, solve, Eq  # type: ignore
+import sympy  # type: ignore
+import numpy as np  # type: ignore
 
-from scipy.linalg import solve_lyapunov, block_diag # type: ignore
-from scipy.linalg import eigvals, norm # type: ignore
+from scipy.linalg import solve_lyapunov, block_diag  # type: ignore
+from scipy.linalg import eigvals, norm  # type: ignore
 
 from .system import System
 from autoreduce import utils
@@ -40,7 +40,9 @@ class Reduce(System):
         nstates_tol_min=None,
         **kwargs,
     ):
-        super().__init__(x, f, params, C, g, h, u, params_values, x_init, **kwargs)
+        super().__init__(
+            x, f, params, C, g, h, u, params_values, x_init, **kwargs
+        )
         self.f_hat = []  # Should be a list of Sympy objects
         if nstates_tol is None:
             self.nstates_tol = self.n - 1
@@ -78,7 +80,9 @@ class Reduce(System):
         else:
             outputs = outputs.tolist()
         output_symbols = [list(i.free_symbols) for i in outputs]
-        output_states = [item for sublist in output_symbols for item in sublist]
+        output_states = [
+            item for sublist in output_symbols for item in sublist
+        ]
         return output_states
 
     def get_all_combinations(self):
@@ -118,7 +122,7 @@ class Reduce(System):
 
         # Remove state(s) that consist of input(s)
         if self.u is not None:
-            for i in range(len(self.g)):
+            for i, _ in enumerate(self.g):
                 if self.g[i] != 0:
                     if i in possible_reductions:
                         # This index state variable should
@@ -218,24 +222,34 @@ class Reduce(System):
         S = full_ssm.compute_SSM()
         self.S = S
         reduced_ssm = utils.get_SSM(reduced_sys, timepoints_ssm)
-        x_sols_hat = utils.get_ODE(reduced_sys, timepoints_ssm).solve_system().T
+        x_sols_hat = (
+            utils.get_ODE(reduced_sys, timepoints_ssm).solve_system().T
+        )
         x_sols = np.reshape(x_sols, (len(timepoints_ssm), self.n))
-        x_sols_hat = np.reshape(x_sols_hat, (len(timepoints_ssm), reduced_sys.n))
+        x_sols_hat = np.reshape(
+            x_sols_hat, (len(timepoints_ssm), reduced_sys.n)
+        )
         Se = np.zeros(len(self.params_values))
         S_hat = reduced_ssm.compute_SSM()
         reduced_sys.S = S_hat
         S_bar = np.concatenate((S, S_hat), axis=2)
         S_bar = np.reshape(
             S_bar,
-            (len(timepoints_ssm), self.n + reduced_sys.n, len(self.params_values)),
+            (
+                len(timepoints_ssm),
+                self.n + reduced_sys.n,
+                len(self.params_values),
+            ),
         )
         C_bar = np.concatenate((self.C, -1 * reduced_sys.C), axis=1)
-        C_bar = np.reshape(C_bar, (np.shape(self.C)[0], (self.n + reduced_sys.n)))
+        C_bar = np.reshape(
+            C_bar, (np.shape(self.C)[0], (self.n + reduced_sys.n))
+        )
         weighted_Se_sum = 0
         P_prev = None
         prev_time = None
         if method == "bound":
-            for j in range(len(self.params_values)):
+            for j, _ in enumerate(self.params_values):
                 S_metric_max = 0
                 sens_max = 0
                 max_eig_P = 0
@@ -280,7 +294,9 @@ class Reduce(System):
                         suffix="Complete",
                         length=50,
                     )
-                dot_P_term = max_eig_dot_P * len(reduced_ssm.timepoints) * sens_max
+                dot_P_term = (
+                    max_eig_dot_P * len(reduced_ssm.timepoints) * sens_max
+                )
                 Se[j] = (
                     max_eig_P
                     + 2 * len(reduced_ssm.timepoints) * S_metric_max
@@ -311,7 +327,9 @@ class Reduce(System):
             # functions of reduced variables, algebraically)
             for k in range(len(x_sols_hat[:, i])):
                 for j in range(len(x_c)):
-                    subs_result = fast_states[j].subs(x_hat[i], x_sols_hat[:, i][k])
+                    subs_result = fast_states[j].subs(
+                        x_hat[i], x_sols_hat[:, i][k]
+                    )
                     if subs_result == fast_states[j]:
                         continue
                     elif isinstance(subs_result, sympy.Expr):
@@ -323,7 +341,9 @@ class Reduce(System):
                         )
         return x_sol_c
 
-    def solve_timescale_separation(self, slow_states, fast_states=None, **kwargs):
+    def solve_timescale_separation(
+        self, slow_states, fast_states=None, **kwargs
+    ):
         """
         This function solves the time-scale separation
         problem for the System object passed through.
@@ -393,7 +413,9 @@ class Reduce(System):
                 f_c[x_c_index] = f[state_index]
                 if self.parameter_dependent_ic:
                     param_as_ic = self.ic_parameters[state_index]
-                    value_ic = self.set_ic_from_params(x_c_init, param_as_ic, x_c_index)
+                    value_ic = self.set_ic_from_params(
+                        x_c_init, param_as_ic, x_c_index
+                    )
                 else:
                     x_c_init[x_c_index] = x_init[state_index]
             if i in x_hat:
@@ -421,7 +443,9 @@ class Reduce(System):
         count = 0
         solution_dict = {}
         while (
-            sympy_variables_exist(ode_function=self.f_hat, variables_to_check=x_c)[0]
+            sympy_variables_exist(
+                ode_function=self.f_hat, variables_to_check=x_c
+            )[0]
             and loop_sanity
         ):
             # print(sympy_solve_and_substitute(ode_function = self.f_hat, collapsed_states = x_c,
@@ -441,26 +465,24 @@ class Reduce(System):
                     "Solve time-scale separation failed. Check model consistency."
                 )
                 print(
-                    "The time-scale separation that retains states {0} does not work".format(
-                        slow_states
-                    )
-                    + " because either a collapsed state-variables appears"
+                    f"Did not work to retain: {slow_states}"
+                    " because either a collapsed state-variables appears"
                 )
                 print(" in the reduced model or a solution is not possible.")
                 return None, None
             count += 1
 
         # Get the collapsed (fast system) dynamics to create collapsed_system
-        for i in range(len(x_hat)):
+        for i, _ in enumerate(x_hat):
             for j in range(len(self.f_c)):
                 # The slow variables stay at steady state in the fast subsystem
                 self.f_c[j] = self.f_c[j].subs(x_hat[i], x_hat_init[i])
 
         # Create C_hat
         C_hat = self.create_C_hat(x_hat)
-        for index in range(len(f_hat)):
+        for index, _ in enumerate(f_hat):
             f_hat[index] = sympy.simplify(f_hat[index])
-        for index in range(len(f_c)):
+        for index, _ in enumerate(f_c):
             f_c[index] = sympy.simplify(f_c[index])
         reduced_sys = create_system(
             x_hat,
@@ -479,11 +501,7 @@ class Reduce(System):
         )
         reduced_sys.fast_states = fast_states
         # If you got to here,
-        print(
-            "Successful time-scale separation solution obtained with states: {0}!".format(
-                reduced_sys.x
-            )
-        )
+        print(f"Successful solution obtained with states: {reduced_sys.x}!")
         return reduced_sys, fast_subsystem
 
     def solve_timescale_separation_with_input(self, attempt_states):
@@ -515,7 +533,7 @@ class Reduce(System):
 
         solved_states = []
         lookup_collapsed = {}
-        for i in range(len(x_c)):
+        for i, _ in enumerate(x_c):
             x_c_sub = solve(Eq(f_c[i], 0), x_c[i])
             lookup_collapsed[x_c[i]] = x_c_sub
             if len(x_c_sub) == 0:
@@ -543,8 +561,10 @@ class Reduce(System):
                         x_c_sub = solve(Eq(f_c[i], 0), x_c[i])
                         if len(x_c_sub) > 1:
                             print("Multiple solutions obtained.")
-                            print("Chooosing non-zero solution,"
-                                  "check consistency.")
+                            print(
+                                "Chooosing non-zero solution,"
+                                "check consistency."
+                            )
                             print(" The solutions are ", x_c_sub)
                             for sub in x_c_sub:
                                 if sub == 0:
@@ -601,10 +621,14 @@ class Reduce(System):
                 flag = True
         if flag:
             warnings.warn("Check model consistency")
-            print(f"The time-scale separation that retains states {attempt},\
-                  does not work")
-            print(f"because the state-variables {bugged_states} \
-                  appear in the reduced model")
+            print(
+                f"The time-scale separation that retains states {attempt},\
+                  does not work"
+            )
+            print(
+                f"because the state-variables {bugged_states} \
+                  appear in the reduced model"
+            )
             # return None, None
 
         reduced_sys = create_system(
@@ -684,8 +708,9 @@ class Reduce(System):
             )
         return all_conserved_sets
 
-    def setup_conservation_laws(self, total_quantities: dict,
-                                conserved_sets: list):
+    def setup_conservation_laws(
+        self, total_quantities: dict, conserved_sets: list
+    ):
         """Setup conservation laws and return a
         list of conservation laws where
         each conservation law is each sublist of
@@ -731,37 +756,66 @@ class Reduce(System):
         conservation laws for a given Reduce System object
 
         Args:
-            conservation_laws (list, optional): A list consisting of conservation laws
+            conservation_laws (list, optional): A list consisting of
+                                                conservation laws
                                                 in the form: LHS - RHS.
                                                 The RHS is assumed to be zero.
-                                                If None is provided, then attempts to find
-                                                conservation laws, if num_conservation_laws is set.
-            total_quantities (dict, optional): A dictionary of total quantities with keys
-                                               consisting of strings of total quantities
-                                               (RHS of conservation law) and a float value.
-                                               If None provided, then a dict with parameter name
-                                               is created from the state name appended by keyword
+                                                If None is provided,
+                                                then attempts to find
+                                                conservation laws,
+                                                if num_conservation_laws set.
+            total_quantities (dict, optional): A dictionary of total
+                                               quantities with keys
+                                               consisting of strings of
+                                               total quantities
+                                               (RHS of conservation law)
+                                               and a float value.
+                                               If None provided, then a
+                                               dict with parameter name
+                                               is created from the state
+                                               name appended by keyword
                                                "_total" and with zero value.
-            conserved_sets (list of list, optional): A list of list where each sublist consists
-                                                     of species in System.x, for which,
-                                                     if corresponding elements in System.f
-                                                     are added would be equal to zero.
-                                                     If None is provided, then attempts to find the
-                                                     conserved_sets, if num_conservation_laws is set.
-            states_to_eliminate (list, optional): A list of states to eliminate from the set
-                                                  of conserved species. Each element in this
+            conserved_sets (list of list, optional): A list of list where each
+                                                     sublist consists
+                                                     of species in System.x,
+                                                     for which,
+                                                     if corresponding elements
+                                                     in System.f
+                                                     are added would be equal
+                                                     to zero.
+                                                     If None is provided,
+                                                     then attempts to find the
+                                                     conserved_sets,
+                                                     if num_conservation_laws
+                                                     is set.
+            states_to_eliminate (list, optional): A list of states to eliminate
+                                                  from the set
+                                                  of conserved species.
+                                                  Each element in this
                                                   list must correspond to each
-                                                  sublist in conserved_sets and/or conservation_laws,
-                                                  depending on which is passed in.
-                                                  If None is provided, then creates a default list of
-                                                  states to eliminate from variables in each law in
+                                                  sublist in conserved_sets
+                                                  and/or conservation_laws,
+                                                  depending on
+                                                  which is passed in.
+                                                  If None is provided,
+                                                  then creates a default
+                                                  list of
+                                                  states to eliminate from
+                                                  variables in each law in
                                                   conservation_laws list.
-            num_conservation_laws (int, optional): The dimension of the nullspace of the stoichiometry
-                                                 matrix. In other words, the number of expected
-                                                 conservation laws. Defaults to 0 but then expects
-                                                 that either conservation_laws or conserved_sets is given.
+            num_conservation_laws (int, optional): The dimension of the
+                                                   nullspace of the
+                                                   stoichiometry
+                                                   matrix. In other words,
+                                                   the number of expected
+                                                   conservation laws.
+                                                   Defaults to 0 but then
+                                                   expects that either
+                                                   conservation_laws or
+                                                   conserved_sets is given.
         Returns:
-            conserved_system (Reduce): The reduced system with conservation laws applied.
+            conserved_system (Reduce): The reduced system with
+                                       conservation laws applied.
 
         """
         debug = kwargs.get("debug", False)
@@ -792,7 +846,9 @@ class Reduce(System):
             and conserved_sets is None
         ):
             self.num_conservation_laws = num_conservation_laws
-            self.conserved_sets = self.get_conservation_laws(self.num_conservation_laws)
+            self.conserved_sets = self.get_conservation_laws(
+                self.num_conservation_laws
+            )
         else:
             self.conserved_sets = conserved_sets
 
@@ -899,23 +955,25 @@ class Reduce(System):
 
     def get_solutions(self):
         if self.x_sol is None:
-            x_sol = utils.get_ode_solutions(self.get_system(),
-                                            self.timepoints_ode)
+            x_sol = utils.get_ode_solutions(
+                self.get_system(), self.timepoints_ode
+            )
             self.x_sol = x_sol
         if self.x_sol2 is None:
-            x_sol2 = utils.get_ode_solutions(self.get_system(),
-                                             self.timepoints_ssm)
+            x_sol2 = utils.get_ode_solutions(
+                self.get_system(), self.timepoints_ssm
+            )
             self.x_sol2 = x_sol2
         if self.full_ssm is None:
-            full_ssm = utils.get_SSM(self.get_system(),
-                                     self.timepoints_ssm)
+            full_ssm = utils.get_SSM(self.get_system(), self.timepoints_ssm)
             self.full_ssm = full_ssm
         return self.x_sol, self.x_sol2, self.full_ssm
 
     def reduce_simple(self, **kwargs):
         if "skip_numerical_computations" in kwargs:
-            skip_numerical_computations = kwargs.\
-                get("skip_numerical_computations")
+            skip_numerical_computations = kwargs.get(
+                "skip_numerical_computations"
+            )
         else:
             skip_numerical_computations = False
         if "skip_error_computation" in kwargs:
@@ -923,8 +981,9 @@ class Reduce(System):
         else:
             skip_error_computation = False
         if "skip_robustness_computation" in kwargs:
-            skip_robustness_computation = kwargs.\
-                get("skip_robustness_computation")
+            skip_robustness_computation = kwargs.get(
+                "skip_robustness_computation"
+            )
         else:
             skip_robustness_computation = False
         if self.u is not None:
@@ -1052,8 +1111,10 @@ def sympy_variables_exist(ode_function, variables_to_check, **kwargs):
     else:
         debug = False
     if debug:
-        print("In sympy_variables_exist. Checking for presence of ",
-              variables_to_check)
+        print(
+            "In sympy_variables_exist. Checking for presence of ",
+            variables_to_check,
+        )
     for fi in ode_function:
         fi = sympy.sympify(fi)
         for sym in fi.free_symbols:
@@ -1071,11 +1132,13 @@ def sympy_variables_exist(ode_function, variables_to_check, **kwargs):
 
 
 def sympy_solve_and_substitute(
-    ode_function, collapsed_states, collapsed_dynamics,
-    solution_dict, debug=False
+    ode_function,
+    collapsed_states,
+    collapsed_dynamics,
+    solution_dict,
+    debug=False,
 ):
-    """A function to solve using sympy and substitute into the equation
-    """
+    """A function to solve using sympy and substitute into the equation"""
     for s in collapsed_states:
         index = collapsed_states.index(s)
         f = collapsed_dynamics[index]
@@ -1120,8 +1183,10 @@ def sympy_get_steady_state_solutions(
     collapsed_variables, collapsed_dynamics, solution_dict=None, debug=False
 ):
     """
-    Solve for each collapsed_variable from corresponding collapsed_dynamics one by one.
-    Return the solutions as a lookup dictionary as a map for variables and their solutions.
+    Solve for each collapsed_variable from
+    corresponding collapsed_dynamics one by one.
+    Return the solutions as a lookup dictionary
+    as a map for variables and their solutions.
     """
     if solution_dict is None:
         solution_dict = {}
@@ -1149,9 +1214,7 @@ def sympy_get_steady_state_solutions(
                 "Solve time-scale separation failed. Check model consistency."
             )
             if debug:
-                warnings.warn(
-                    f"Zero solution(s) for: {x_c[i]} from {f_c[i]}.")
-                )
+                warnings.warn(f"Zero solution(s) for: {x_c[i]} from {f_c[i]}.")
         # Search for variables existing in x_c_sub that might have been solved for before:
         # flag, solved_variables = sympy_variables_exist(ode_function = x_c_sub,
         #                                               variables_to_check = list(solution_dict.keys()),
@@ -1274,8 +1337,15 @@ class ReduceUtils(Reduce):
 
 
 def create_system(
-    x, f, params=None, C=None, g=None, h=None, u=None,
-    params_values=None, x_init=None
+    x,
+    f,
+    params=None,
+    C=None,
+    g=None,
+    h=None,
+    u=None,
+    params_values=None,
+    x_init=None,
 ):
     return System(
         x,

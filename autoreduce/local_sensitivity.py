@@ -112,7 +112,7 @@ class SSM(System):
                 del kwargs["mode"]
                 try:
                     import numdifftools as nd
-                except:
+                except ImportError:
                     raise ValueError(
                         "The package numdifftools is not"
                         + "installed for this method to work."
@@ -221,8 +221,11 @@ class SSM(System):
                 # print('for parameter',P[j])
                 # get the pmatrix
                 Zj = self.compute_Zj(xs[k, :], j, **kwargs)
+
                 # solve for S
-                sens_func_ode = lambda t, x: sens_func(t, x, J, Zj)
+                def sens_func_ode(t, x):
+                    return sens_func(t, x, J, Zj)
+
                 sol = odeint(sens_func_ode, S0, timepoints, tfirst=True)
                 S = sol
                 S = np.reshape(S, (len(timepoints), self.n))
@@ -349,7 +352,9 @@ class SSM(System):
         n_params = len(params)
 
         # Solve ODE.
-        ode_func = lambda t, xs: ode(t, xs, params)
+        def ode_func(t, xs):
+            return ode(t, xs, params)
+
         ode_jac = nd.Jacobian(lambda x: ode_func(0, x))
         sol = solve_ivp(
             ode_func,

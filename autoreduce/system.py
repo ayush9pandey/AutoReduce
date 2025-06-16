@@ -1,5 +1,5 @@
 # Import required libraries and dependencies
-from sympy import *
+from sympy import Symbol
 import libsbml
 import numpy as np
 from .sbmlutil import create_sbml_model, add_species, add_reaction

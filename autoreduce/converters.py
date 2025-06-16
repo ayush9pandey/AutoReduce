@@ -2,7 +2,12 @@
 
 import numpy as np  # type: ignore
 from sympy import Symbol, Integer  # type: ignore
-from libsbml import *  # type: ignore
+from libsbml import (
+    readSBMLFromFile,
+    LIBSBML_SEV_FATAL,
+    ConversionProperties,
+    LIBSBML_OPERATION_SUCCESS,
+)
 
 from .model_reduction import Reduce
 

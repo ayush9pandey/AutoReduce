@@ -40,7 +40,8 @@ class ODE(System):
 
     def solve_system(self, **kwargs):
         """
-        Solve the System ODE for the given timepoints and initial conditions set for System.
+        Solve the System ODE for the given timepoints
+        and initial conditions set for System.
         Other options passed to scipy.integrate.odeint.
         """
         if self.u is not None:

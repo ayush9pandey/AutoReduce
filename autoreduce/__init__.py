@@ -3,4 +3,4 @@
 __version__ = "0.3.0"
 
 from .system import System
-from .converters import *
+from .converters import load_ODE_model, load_sbml
