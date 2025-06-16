@@ -24,12 +24,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Install autoreduce
-      run: pip install ".[all, test]"    
+      run: pip install ".[all, test]"
     - name: Test autoreduce
-      run: pytest --cov autoreduce
-    - uses: codecov/codecov-action@v4
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
+      run: pytest --cov --junitxml=junit.xml -o junit_family=legacy
+    - name: Upload test results to Codecov
+      if: ${{ !cancelled() }}
+      uses: codecov/test-results-action@v1
       with:
-        file: ./coverage.xml
-        fail_ci_if_error: true 
+        token: ${{ secrets.CODECOV_TOKEN }}
