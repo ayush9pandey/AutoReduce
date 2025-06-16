@@ -203,7 +203,7 @@ class SSM(System):
         # Solve for SSM at each time point
         for k, _ in enumerate(self.timepoints):
             # print('for timepoint',self.timepoints[k])
-            timepoints = self.timepoints[0 : k + 1]
+            timepoints = self.timepoints[0 : k + 1]  # noqa: E203
             if len(timepoints) == 1:
                 continue
             # get the jacobian matrix
@@ -306,7 +306,6 @@ class SSM(System):
         # sol = odeint(dS_dt, np.zeros(n_vars), self.timepoints, **kwargs)
         # return sol
 
-    ############## Sam Clamons ###########
     def solve_extended_ode(
         self,
         ode=None,

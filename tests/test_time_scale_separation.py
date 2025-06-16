@@ -134,7 +134,8 @@ def solve_timescale_test(
         ]
 
 
-def get_reduced_model_helper(reducible_system, x_hat=None):
+def get_reduced_model_helper(system, reducible_system, x_hat=None):
+    _ = system
     if x_hat is None:
         x_hat = []
     assert isinstance(reducible_system, System)

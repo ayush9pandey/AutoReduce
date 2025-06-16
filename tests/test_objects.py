@@ -1,6 +1,9 @@
+import numpy as np  # type: ignore
+
 from autoreduce import load_ODE_model
 from autoreduce import System
-import numpy as np  # type: ignore
+from autoreduce.ode import ODE
+from autoreduce.local_sensitivity import SSM
 
 
 # ## System object attributes
@@ -24,7 +27,6 @@ sys = System(x, f, params=P, C=C)
 
 
 # Solve ODE from System
-from autoreduce.ode import ODE
 
 timepoints = np.linspace(0, 20, 100)
 sys.params_values = [2, 4]
@@ -45,7 +47,6 @@ solution = sys_ode.solve_system()
 
 
 # Solve for sensitivity analysis from System
-from autoreduce.local_sensitivity import SSM
 
 timepoints = np.linspace(0, 20, 10)
 sys.params_values = [2, 4]

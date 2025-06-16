@@ -79,7 +79,7 @@ class ODE(System):
         """
         if self.u is None:
             raise ValueError(
-                "Use solve_system() if there are no inputs in the System model."
+                "Use solve_system() if there are no inputs in the System."
             )
         f_g = [fi + gi * self.u for fi, gi in zip(self.f, self.g)]
         fun = lambdify((self.x, self.u, self.params), f_g)

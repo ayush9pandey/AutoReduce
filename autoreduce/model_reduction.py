@@ -155,7 +155,7 @@ class Reduce(System):
                     non_attempt.remove(i)
                     set_T = True
         T1 = T[0:n, 0:n_hat]
-        T2 = T[0:n, n_hat : n + 1]
+        T2 = T[0:n, n_hat : n + 1]  # noqa: E203
         return T, T1, T2
 
     def get_error_metric_with_input(self, reduced_sys):
@@ -431,7 +431,7 @@ class Reduce(System):
                     param_as_ic = self.ic_parameters[state_index]
                     value_ic = self.set_ic_from_params(
                         x_hat_init, param_as_ic, x_hat_index
-                    )
+                    )  # noqa: F841
                 else:
                     x_hat_init[x_hat_index] = x_init[state_index]
         self.f_hat = f_hat
@@ -467,7 +467,6 @@ class Reduce(System):
                 debug=debug,
             )
             if count > 2:
-                loop_sanity = False
                 warnings.warn(
                     "Solve time-scale separation failed."
                     "Check model consistency."
@@ -477,6 +476,7 @@ class Reduce(System):
                     " because either a collapsed state-variables appears"
                 )
                 print(" in the reduced model or a solution is not possible.")
+                loop_sanity = False
                 return None, None
             count += 1
 
@@ -690,7 +690,8 @@ class Reduce(System):
         Args:
             num_conservation_laws (int): The null space of the
                                        stoichiometry matrix. In other words,
-                                       the number of expected conservation laws.
+                                       the number of expected
+                                       conservation laws.
         Returns:
             List of conserved species (list)
         """
@@ -839,7 +840,8 @@ class Reduce(System):
         ):
             raise ValueError(
                 "Must pass in something to set conservation laws! "
-                "Either the list of conservation_laws, or number of conservation "
+                "Either the list of conservation_laws, or"
+                "number of conservation "
                 "laws through num_conservation_laws "
                 "argument or the conserved_sets list"
             )
