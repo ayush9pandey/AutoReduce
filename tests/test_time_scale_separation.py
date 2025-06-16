@@ -1,8 +1,6 @@
-#  Copyright (c) 2020, Ayush Pandey. All rights reserved.
+#  Copyright (c) 2025, Ayush Pandey. All rights reserved.
 #  See LICENSE file in the project root directory for details.
 
-import warnings
-import sympy  # type: ignore
 import pytest  # type: ignore
 from autoreduce import System
 
@@ -30,7 +28,7 @@ def test_reduced_models(system, reducible_system):
                 mode="fail",
                 answer=answer_AB,
             )
-        except:
+        except Exception:
             solve_timescale_test(
                 system,
                 reducible_system,
@@ -98,7 +96,7 @@ def test_reduced_models(system, reducible_system):
                 mode="success",
                 answer=answer_ABD,
             )
-        except:
+        except Exception:
             solve_timescale_test(
                 system,
                 reducible_system,

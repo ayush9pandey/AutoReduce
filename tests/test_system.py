@@ -1,7 +1,6 @@
 #  Copyright (c) 2020, Ayush Pandey. All rights reserved.
 #  See LICENSE file in the project root directory for details.
 
-import libsbml  # type: ignore
 import warnings
 import pytest  # type: ignore
 
@@ -64,7 +63,7 @@ def test_params(system1=None, system2=None):
 
 def test_params_values(system1=None, system2=None):
     if system1 is not None and system2 is not None:
-        assert (system1.params_values, system2.params_values)
+        assert system1.params_values == system2.params_values
 
 
 def test_initial_conditions(system1=None, system2=None):

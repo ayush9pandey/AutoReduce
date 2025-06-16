@@ -7,9 +7,6 @@ import pytest  # type: ignore
 
 from autoreduce.system import System
 from autoreduce.utils import get_reducible
-from autoreduce.model_reduction import Reduce
-import libsbml  # type: ignore
-import warnings
 
 
 @pytest.fixture

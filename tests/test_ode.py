@@ -1,8 +1,6 @@
 #  Copyright (c) 2020, Build-A-Cell. All rights reserved.
 #  See LICENSE file in the project root directory for details.
 
-import pytest  # type: ignore
-import libsbml  # type: ignore
 import numpy as np  # type: ignore
 from scipy.integrate import odeint  # type: ignore
 
