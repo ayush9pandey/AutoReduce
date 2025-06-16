@@ -4,7 +4,7 @@ Examples
 This section contains examples of using AutoReduce for different types of model reduction tasks.
 
 Michaelis-Menten Model Reduction
-------------------------------
+-------------------------------
 
 This example demonstrates how to reduce a simple Michaelis-Menten model using QSSA.
 
@@ -15,7 +15,7 @@ This example demonstrates how to reduce a simple Michaelis-Menten model using QS
    ../examples/michaelis-menten example.ipynb
 
 Gene Expression Analysis
-----------------------
+-----------------------
 
 This example shows how to analyze and reduce gene expression models.
 
@@ -26,7 +26,7 @@ This example shows how to analyze and reduce gene expression models.
    ../examples/gene expression analysis.ipynb
 
 BioCRNPyler Integration
----------------------
+----------------------
 
 This example demonstrates how to use AutoReduce with BioCRNPyler for synthetic biology models.
 
@@ -36,4 +36,4 @@ This example demonstrates how to use AutoReduce with BioCRNPyler for synthetic b
 
    ../examples/AutoReduce-BioCRNpyler interface.ipynb
 
-Each example notebook contains detailed explanations and can be downloaded from the `GitHub repository <https://github.com/ayush9pandey/AutoReduce/tree/main/examples>`_. 
+Each example notebook contains detailed explanations and can be downloaded from the `GitHub repository <https://github.com/ayush9pandey/AutoReduce/tree/main/examples>`_.
