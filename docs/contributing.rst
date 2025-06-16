@@ -4,7 +4,7 @@ Contributing
 We welcome contributions to AutoReduce! This document provides guidelines and instructions for contributing.
 
 Development Setup
----------------
+----------------
 
 1. Fork the repository
 2. Clone your fork:
@@ -28,7 +28,7 @@ Development Setup
        pip install pytest pytest-cov nbval
 
 Code Style
----------
+----------
 
 We use flake8 for code style checking. The configuration is in ``pyproject.toml``. Key points:
 
@@ -36,7 +36,7 @@ We use flake8 for code style checking. The configuration is in ``pyproject.toml`
 * Follow PEP 8 guidelines
 
 Running Tests
-------------
+-------------
 
 Run the test suite with:
 
@@ -51,7 +51,7 @@ For coverage report:
     pytest --cov=autoreduce
 
 Documentation
-------------
+-------------
 
 The documentation is built using Sphinx. To build it locally:
 
@@ -71,7 +71,7 @@ The documentation is built using Sphinx. To build it locally:
 3. View the documentation by opening ``docs/_build/html/index.html``
 
 Pull Request Process
-------------------
+-------------------
 
 1. Update the documentation if needed
 2. Add tests for new features
@@ -84,4 +84,4 @@ For major changes, please open an issue first to discuss the proposed changes.
 License
 -------
 
-By contributing to AutoReduce, you agree that your contributions will be licensed under the project's BSD License. 
+By contributing to AutoReduce, you agree that your contributions will be licensed under the project's BSD License.

@@ -1,5 +1,5 @@
 API Reference
-============
+=============
 
 System
 ------
@@ -26,7 +26,7 @@ Utils
    :show-inheritance:
 
 Converters
----------
+----------
 
 .. automodule:: autoreduce.converters
    :members:
