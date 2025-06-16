@@ -59,10 +59,12 @@ Contents
 
 .. toctree::
    :maxdepth: 2
+   :caption: Contents:
 
    installation
-   examples
+   usage
    api
+   examples
    contributing
 
 Indices and tables

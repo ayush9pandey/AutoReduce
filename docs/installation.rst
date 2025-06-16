@@ -25,6 +25,14 @@ You can install AutoReduce using pip:
 
     pip install autoreduce
 
+Or install from source:
+
+.. code-block:: bash
+
+    git clone https://github.com/yourusername/autoreduce.git
+    cd autoreduce
+    pip install .
+
 Development Installation
 ----------------------
 
@@ -60,4 +68,4 @@ If you encounter any issues during installation:
 3. Check that all dependencies are properly installed
 4. If using conda, you might need to install some packages through conda instead of pip
 
-For more help, please open an issue on the `GitHub repository <https://github.com/ayush9pandey/AutoReduce/issues>`_. 
+For more help, please open an issue on the `GitHub repository <https://github.com/ayush9pandey/AutoReduce/issues>`_.
