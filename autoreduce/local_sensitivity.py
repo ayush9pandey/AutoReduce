@@ -75,7 +75,12 @@ class SSM(System):
                 f = self.evaluate(self.f, x, P)
                 F[3] = f[i]
                 # Store approx. dfi/dpj into Z
-                Z[i] = (-F[0] + 8 * F[1] - 8 * F[2] + F[3]) / (12 * h)
+                Z[i] = (
+                    -F[0].item()
+                    + 8 * F[1].item()
+                    - 8 * F[2].item()
+                    + F[3].item()
+                ) / (12 * h)
                 if Z[i] == np.inf:
                     Z[i] = 1
                 elif Z[i] == np.nan:
@@ -112,11 +117,12 @@ class SSM(System):
                 del kwargs["mode"]
                 try:
                     import numdifftools as nd
-                except ImportError:
-                    raise ValueError(
-                        "The package numdifftools is not"
-                        + "installed for this method to work."
-                    )
+                except ImportError as exc:
+                    raise ImportError(
+                        "numdifftools not installed."
+                        "Please install it to use accurate mode."
+                    ) from exc
+
                 fun_l = lambdify((self.x, self.params), fun)
 
                 def fun_ode(t, x, params):

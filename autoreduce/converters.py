@@ -1,7 +1,7 @@
 """All model import/export functions"""
 
 import numpy as np  # type: ignore
-from sympy import Symbol, Integer  # type: ignore
+from sympy import Symbol, Integer, parse_expr  # type: ignore
 from libsbml import (
     readSBMLFromFile,
     LIBSBML_SEV_FATAL,
@@ -125,17 +125,17 @@ def load_sbml(filename, **kwargs):
     for i in range(mod.getNumReactions()):
         reaction = mod.getReaction(i)
         kinetics = reaction.getKineticLaw()
-        # Convert species and parameter names to Symbols before sympify
         formula = kinetics.getFormula()
+        # Create a mapping of species/parameter IDs to their symbols
+        symbol_map = {}
         for species in mod.getListOfSpecies():
-            formula = formula.replace(
-                species.getId(), f"Symbol('{species.getId()}')"
-            )
+            symbol_map[species.getId()] = Symbol(species.getId())
         for param in mod.getListOfParameters():
-            formula = formula.replace(
-                param.getId(), f"Symbol('{param.getId()}')"
-            )
-        reactions[reaction.getId()] = eval(formula)
+            symbol_map[param.getId()] = Symbol(param.getId())
+        # Parse the formula using sympy's parse_expr with local_dict
+        reactions[reaction.getId()] = parse_expr(
+            formula, local_dict=symbol_map
+        )
     # Define f
     f = [Integer(0)] * len(x)
     # Loop to define functions in 'f'

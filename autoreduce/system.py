@@ -135,7 +135,7 @@ class System(object):
         else:
             set_params_as = None
         fs = []
-        for i in range(len(f)):
+        for i, _ in enumerate(f):
             fi = f[i]
             fi = fi.subs(list(zip(self.x, x)))
             if self.u is not None:
@@ -274,3 +274,11 @@ class System(object):
             return False
 
         return True
+
+    def __hash__(self):
+        """Hash for System to use as dict key
+
+        Returns:
+            Object id: System object ID.
+        """
+        return id(self)

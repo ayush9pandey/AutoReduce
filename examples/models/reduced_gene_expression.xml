@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
+  <model id="autoreduce_857902" name="autoreduce_857902" substanceUnits="mole" timeUnits="second" volumeUnits="litre" areaUnits="square_metre" lengthUnits="metre" extentUnits="mole">
+    <listOfUnitDefinitions>
+      <unitDefinition id="square_metre">
+        <listOfUnits>
+          <unit kind="metre" exponent="2" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="default" size="1e-06" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="dna_X" name="dna_X" compartment="default" initialConcentration="0.5" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="rna_X" name="rna_X" compartment="default" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="protein_X" name="protein_X" compartment="default" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="kb__" value="100" constant="true"/>
+      <parameter id="ku_strong_" value="0.5" constant="true"/>
+      <parameter id="ktx_strong_" value="3.926187672" constant="true"/>
+      <parameter id="ku_weak_" value="5" constant="true"/>
+      <parameter id="ktl__" value="0.05" constant="true"/>
+      <parameter id="kdil__" value="0.01" constant="true"/>
+      <parameter id="protein_RNAP_machinery_total" value="10" constant="true"/>
+      <parameter id="protein_Ribo_machinery_total" value="50" constant="true"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="r0" name="r0" reversible="false">
+        <listOfProducts>
+          <speciesReference species="dna_X" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 0 </cn>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r1" name="r1" reversible="false">
+        <listOfProducts>
+          <speciesReference species="rna_X" constant="false"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="dna_X"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> dna_X </ci>
+                  <ci> kb__ </ci>
+                  <ci> ktx_strong_ </ci>
+                  <ci> protein_RNAP_machinery_total </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> kdil__ </ci>
+                  <ci> rna_X </ci>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> dna_X </ci>
+                      <ci> kb__ </ci>
+                    </apply>
+                    <ci> ktx_strong_ </ci>
+                    <ci> ku_strong_ </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> dna_X </ci>
+                  <ci> kb__ </ci>
+                </apply>
+                <ci> ktx_strong_ </ci>
+                <ci> ku_strong_ </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r2" name="r2" reversible="false">
+        <listOfProducts>
+          <speciesReference species="protein_X" constant="false"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="rna_X"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> kb__ </ci>
+                  <ci> ktl__ </ci>
+                  <ci> protein_Ribo_machinery_total </ci>
+                  <ci> rna_X </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> kdil__ </ci>
+                  <ci> protein_X </ci>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> kb__ </ci>
+                      <ci> rna_X </ci>
+                    </apply>
+                    <ci> ktl__ </ci>
+                    <ci> ku_weak_ </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> kb__ </ci>
+                  <ci> rna_X </ci>
+                </apply>
+                <ci> ktl__ </ci>
+                <ci> ku_weak_ </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
