@@ -1,13 +1,15 @@
 from sympy import Symbol  # type: ignore
 import numpy as np  # type: ignore
 import pytest  # type: ignore
+from pathlib import Path
 
 from autoreduce.system import System
 from autoreduce.utils import get_reducible
+from autoreduce.converters import load_sbml
 
 
 @pytest.fixture
-def system():
+def system_1():
     """
     This method gets executed before every test. It sets up a test CRN:
     2A + B (k1)<->(k2) C, C (k3)--> D
@@ -38,7 +40,7 @@ def system():
     u = None
     input_values = None
     params_values = [2, 4, 6]
-    system = System(
+    system_1 = System(
         x,
         f,
         params=params,
@@ -50,13 +52,25 @@ def system():
         u=u,
         input_values=input_values,
     )
-    return system
+    return system_1
 
 
 @pytest.fixture
-def reducible_system(system):
+def reducible_system_1(system_1):
     """
     Pytest fixture that returns a reducible system
     """
-    reducible_system = get_reducible(system)
-    return reducible_system
+    reducible_system_1 = get_reducible(system_1)
+    return reducible_system_1
+
+
+@pytest.fixture
+def system_2():
+    """
+    This method gets executed before every test. It sets up a test CRN
+    using BioCRNpyler.
+    """
+    test_dir = Path(__file__).parent
+    sbml_file = test_dir / "models" / "example_1.xml"
+    system_2 = load_sbml(str(sbml_file))
+    return system_2

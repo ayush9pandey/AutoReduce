@@ -4,6 +4,8 @@ scipy
 numpy
 pytest
 pytest-cov
+nbformat
+nbconvert
 pytest-xdist
 matplotlib
 seaborn
