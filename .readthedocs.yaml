@@ -15,9 +15,10 @@ build:
 sphinx:
   configuration: docs/conf.py
 
-# Optionally set the version of sphinx and other tools
+# Python configuration
 python:
   install:
-    - requirements: docs/requirements.txt
-    - method: pip
     - path: .
+      method: pip
+    - requirements: docs/requirements.txt
+      method: pip
