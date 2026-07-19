@@ -9,15 +9,17 @@ AutoReduce implements reduction algorithms in `autoreduce.reductions`.
 Time-Scale Separation
 =====================
 
-`reductions.timescale.Reduce` is the main reduction object for QSSA-style
-time-scale separation workflows.
+Use `solve_timescale_separation` for QSSA-style reductions from a plain
+`System`. `reductions.timescale.Reduce` remains available for advanced
+search workflows.
 
 Conservation Laws
 =================
 
-Conservation-law reduction can be applied with
-`reductions.conservation.solve_conservation_laws` or with
-`reductions.timescale.Reduce.solve_conservation_laws`.
+Use `solve_conservation_laws` to apply conservation-law reductions from a
+plain `System`. When conserved sets are detected automatically, the
+`conservation_search_depth` argument controls how many ODE terms are summed
+while looking for cancellations.
 
 Projection Methods
 ==================

@@ -1,12 +1,10 @@
 # Copyright (c) 2020, Ayush Pandey. All rights reserved.
 # See LICENSE file in the project root directory for details.
 
-import importlib
-
 import numpy as np
-import pytest
 
 import autoreduce
+from autoreduce import solve_conservation_laws, solve_timescale_separation
 from autoreduce.system.system import System
 
 
@@ -40,15 +38,24 @@ def test_system_attributes(system_1):
     assert system_1.u is None
 
 
-def test_old_import_paths_are_not_exported():
-    """Confirm the refactor does not preserve removed convenience imports."""
-    assert not hasattr(autoreduce, "System")
-    assert not hasattr(autoreduce, "load_ODE_model")
-    assert not hasattr(importlib.import_module("autoreduce.system"), "System")
-    assert not hasattr(importlib.import_module("autoreduce.utils"), "get_ODE")
+def test_public_imports_are_exported():
+    """Confirm common system and reduction APIs are importable."""
+    import autoreduce.system
+    import autoreduce.utils
 
-    with pytest.raises(ModuleNotFoundError):
-        importlib.import_module("autoreduce.ode")
+    assert autoreduce.System is System
+    assert autoreduce.system.System is System
+    assert autoreduce.utils.get_ODE.__name__ == "get_ODE"
+    assert solve_conservation_laws.__name__ == "solve_conservation_laws"
+    assert solve_timescale_separation.__name__ == "solve_timescale_separation"
 
-    with pytest.raises(ModuleNotFoundError):
-        importlib.import_module("autoreduce.model_reduction")
+
+def test_system_string_and_pretty_print(system_1, capsys):
+    """Check concise and rich text display for System objects."""
+    assert str(system_1) == str(system_1.f)
+
+    system_1.pretty_print()
+    captured = capsys.readouterr()
+    assert "AutoReduce System object with 4 state variables" in captured.out
+    assert "system equations:" in captured.out
+    assert r"\left[" in captured.out

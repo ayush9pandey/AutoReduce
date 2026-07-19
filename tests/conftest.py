@@ -4,9 +4,7 @@ import numpy as np  # type: ignore
 import pytest  # type: ignore
 from sympy import Symbol  # type: ignore
 
-from autoreduce.system.system import System
-from autoreduce.utils.converters import load_sbml
-from autoreduce.utils.reduction import get_reducible
+from autoreduce import System, get_reducible, load_sbml
 
 
 @pytest.fixture

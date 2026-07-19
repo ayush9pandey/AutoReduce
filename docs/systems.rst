@@ -17,7 +17,7 @@ Use `System` when model equations are already available as SymPy expressions.
 
    from sympy import Symbol
 
-   from autoreduce.system.system import System
+   from autoreduce import System
 
    x = Symbol("x")
    k = Symbol("k")

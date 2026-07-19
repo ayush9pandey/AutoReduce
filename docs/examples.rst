@@ -56,4 +56,26 @@ ODE model.
 
    notebooks/parameter_sensitivity
 
+QSS Control Input
+-----------------
+
+This canonical example derives a one-state quasi-steady-state reduction for a
+singularly perturbed control-input model.
+
+.. toctree::
+   :maxdepth: 1
+
+   notebooks/qss_control_input
+
+Derivation of Hill Functions
+----------------------------
+
+This biological example derives a Hill-function expression from fast dimer and
+promoter-binding reactions.
+
+.. toctree::
+   :maxdepth: 1
+
+   notebooks/hill_function_derivation
+
 Each example notebook contains detailed explanations and can be downloaded from the `GitHub repository <https://github.com/ayush9pandey/AutoReduce/tree/main/examples>`_.

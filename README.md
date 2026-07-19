@@ -32,8 +32,7 @@ for the model-reduction background.
 import numpy as np
 from sympy import Symbol
 
-from autoreduce.system.system import System
-from autoreduce.utils.reduction import get_reducible
+from autoreduce import System, solve_timescale_separation
 
 S = Symbol("S")
 C = Symbol("C")
@@ -60,8 +59,8 @@ system = System(
     C=np.array([[1, 0, 0], [0, 0, 1]]),
 )
 
-reducible_system = get_reducible(system)
-reduced_system, collapsed_system = reducible_system.solve_timescale_separation(
+reduced_system, collapsed_system = solve_timescale_separation(
+    system,
     [S, P],
     fast_states=[C],
 )

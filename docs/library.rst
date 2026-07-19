@@ -54,6 +54,7 @@ Reductions
 
    Reduce
    ReduceUtils
+   solve_timescale_separation
    sympy_variables_exist
    sympy_solve_and_substitute
    sympy_get_steady_state_solutions
@@ -65,6 +66,9 @@ Reductions
    :toctree: generated/
    :nosignatures:
 
+   find_conserved_sets
+   setup_conservation_laws
+   apply_conservation_laws
    solve_conservation_laws
 
 .. automodule:: autoreduce.reductions.abundance
@@ -109,6 +113,9 @@ Utilities
    solve_ODE_SSM
    get_SSM
    get_reducible
+   solve_ode
+   solve_ssm
+   solve_sensitivity
    reduce_utils
    get_ode_solutions
 

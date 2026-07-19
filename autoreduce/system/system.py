@@ -5,6 +5,7 @@ from warnings import warn
 import libsbml
 import numpy as np
 from sympy import Symbol
+from sympy.printing import latex
 
 from autoreduce.utils.sbml import (
     add_parameters,
@@ -124,6 +125,60 @@ class System(object):
         else:
             self.ic_parameters = None
         return
+
+    def _count_inputs(self):
+        """Return the number of declared inputs, if any."""
+        if self.u is None:
+            return 0
+        if isinstance(self.u, (list, tuple, np.ndarray)):
+            return len(self.u)
+        return 1
+
+    def _count_outputs(self):
+        """Return the number of declared outputs, if any."""
+        if self.C is not None:
+            shape = np.shape(self.C)
+            if len(shape) == 0:
+                return 1
+            if len(shape) == 1:
+                return 1
+            return shape[0]
+        if self.h is not None:
+            if isinstance(self.h, (list, tuple, np.ndarray)):
+                return len(self.h)
+            return 1
+        return 0
+
+    @staticmethod
+    def _pluralize(count, singular, plural=None):
+        """Return a count-aware label."""
+        if plural is None:
+            plural = singular + "s"
+        label = singular if count == 1 else plural
+        return f"{count} {label}"
+
+    def _pretty_print_text(self):
+        """Build the human-readable system summary used by pretty_print."""
+        parts = [
+            "AutoReduce System object with "
+            + self._pluralize(self.n, "state variable")
+        ]
+        input_count = self._count_inputs()
+        if input_count:
+            parts.append(self._pluralize(input_count, "input"))
+        output_count = self._count_outputs()
+        if output_count:
+            parts.append(self._pluralize(output_count, "output"))
+        summary = ", ".join(parts) + "."
+        return f"{summary}\nsystem equations:\n{latex(self.f)}"
+
+    def pretty_print(self):
+        """Print a concise model summary with LaTeX system equations."""
+        print(self._pretty_print_text())
+
+    def __str__(self):
+        """Return the symbolic dynamics for concise string display."""
+        return str(self.f)
 
     def set_dynamics(
         self, f=None, g=None, h=None, C=None, u=None, params=None

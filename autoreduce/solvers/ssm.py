@@ -269,13 +269,14 @@ class SSM(System):
         return System(
             self.x,
             self.f,
-            self.params,
-            self.C,
-            self.g,
-            self.h,
-            self.u,
-            self.params_values,
-            self.x_init,
+            params=self.params,
+            C=self.C,
+            g=self.g,
+            h=self.h,
+            u=self.u,
+            params_values=self.params_values,
+            x_init=self.x_init,
+            input_values=self.input_values,
         )
 
     """ Code contributed by Sam Clamons below """
