@@ -3,7 +3,6 @@
 
 import numpy as np
 
-import autoreduce
 from autoreduce import solve_conservation_laws, solve_timescale_separation
 from autoreduce.system.system import System
 

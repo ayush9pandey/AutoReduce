@@ -30,12 +30,12 @@ from autoreduce.utils.converters import (
 )
 from autoreduce.utils.reduction import (
     get_ODE,
-    get_SSM,
     get_ode_solutions,
     get_reducible,
+    get_SSM,
     reduce_utils,
-    solve_ODE_SSM,
     solve_ode,
+    solve_ODE_SSM,
     solve_sensitivity,
     solve_ssm,
 )

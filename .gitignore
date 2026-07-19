@@ -109,3 +109,5 @@ dmypy.json
 # Package specific
 examples/reduced_gene_expression.xml
 autoreduce/_version.py
+examples/biological/models/*.xml
+*.xml
