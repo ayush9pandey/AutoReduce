@@ -2,9 +2,9 @@ import numpy as np  # type: ignore
 
 from autoreduce.solvers.ode import ODE
 from autoreduce.solvers.ssm import SSM
+from autoreduce.solvers.utils import solve_sensitivity
 from autoreduce.system.system import System
 from autoreduce.utils.converters import load_ODE_model
-from autoreduce.utils.reduction import solve_sensitivity
 
 
 def test_solver_objects_from_symbolic_model():

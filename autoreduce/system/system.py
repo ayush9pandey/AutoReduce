@@ -40,6 +40,8 @@ class System(object):
         params_values=None,
         x_init=None,
         input_values=None,
+        timepoints_ode=None,
+        timepoints_ssm=None,
         **kwargs,
     ):
         """
@@ -101,6 +103,8 @@ class System(object):
             self.input_values = input_values
         else:
             self.input_values = []
+        self.timepoints_ode = timepoints_ode
+        self.timepoints_ssm = timepoints_ssm
         if x_init is not None:
             self.x_init = x_init
         else:

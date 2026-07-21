@@ -40,3 +40,21 @@ def test_dmd_projection_when_dependency_is_installed():
 
     assert reduction.snapshots.shape == snapshots.shape
     assert reduction.reduced_dimension == 1
+
+
+def test_pydmd_linear_operator_adapter():
+    """Convert a DMD-style linear operator into a symbolic System."""
+    from autoreduce.system.pydmd import from_linear_operator
+    from autoreduce.system.system import System
+
+    x0 = Symbol("x0")
+    x1 = Symbol("x1")
+    system = from_linear_operator(
+        np.array([[0, 1], [-2, -3]]),
+        [x0, x1],
+        discrete_time=False,
+    )
+
+    assert isinstance(system, System)
+    assert system.x == [x0, x1]
+    assert system.f == [x1, -2 * x0 - 3 * x1]

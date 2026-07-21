@@ -24,6 +24,15 @@ Systems
 
    from_nonlinear_io_system
 
+.. automodule:: autoreduce.system.pydmd
+
+.. autosummary::
+   :toctree: generated/
+   :nosignatures:
+
+   from_linear_operator
+   from_dmd_model
+
 Solvers
 =======
 
@@ -46,7 +55,7 @@ Solvers
 Reductions
 ==========
 
-.. automodule:: autoreduce.reductions.timescale
+.. automodule:: autoreduce.reductions.core
 
 .. autosummary::
    :toctree: generated/
@@ -54,11 +63,29 @@ Reductions
 
    Reduce
    ReduceUtils
+   get_error_metric
+   get_robustness_metric
+   create_system
+
+.. automodule:: autoreduce.reductions.timescale
+
+.. autosummary::
+   :toctree: generated/
+   :nosignatures:
+
    solve_timescale_separation
+   explore_all_QSS_models
+   reduce_with_input
+
+.. automodule:: autoreduce.reductions.utils
+
+.. autosummary::
+   :toctree: generated/
+   :nosignatures:
+
    sympy_variables_exist
    sympy_solve_and_substitute
    sympy_get_steady_state_solutions
-   create_system
 
 .. automodule:: autoreduce.reductions.conservation
 
@@ -103,7 +130,7 @@ Utilities
    sympy_to_sbml
    load_sbml
 
-.. automodule:: autoreduce.utils.reduction
+.. automodule:: autoreduce.solvers.utils
 
 .. autosummary::
    :toctree: generated/
@@ -112,11 +139,9 @@ Utilities
    get_ODE
    solve_ODE_SSM
    get_SSM
-   get_reducible
    solve_ode
    solve_ssm
    solve_sensitivity
-   reduce_utils
    get_ode_solutions
 
 .. automodule:: autoreduce.utils.sbml

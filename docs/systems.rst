@@ -36,3 +36,10 @@ requires the `control` extra.
 The adapter converts a `control.NonlinearIOSystem` into an AutoReduce
 `System` by evaluating the python-control update and output functions with
 symbolic states, inputs, and parameters.
+
+PyDMD Adapter
+=============
+
+The PyDMD adapter is implemented in `autoreduce.system.pydmd`. It converts a
+DMD operator matrix, or a fitted PyDMD model when PyDMD is installed, into a
+linear symbolic `System`.

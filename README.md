@@ -1,5 +1,7 @@
 # AutoReduce: An Automated Model Reduction Toolbox
 
+![AutoReduce banner](graphics/autoreduce_banner.png)
+
 Python toolbox to obtain reduced model expressions using time-scale
 separation, conservation laws, sensitivity analysis, and projection-based
 interfaces to established reduction libraries.
@@ -34,13 +36,7 @@ from sympy import Symbol
 
 from autoreduce import System, solve_timescale_separation
 
-S = Symbol("S")
-C = Symbol("C")
-P = Symbol("P")
-k1 = Symbol("k1")
-k2 = Symbol("k2")
-k3 = Symbol("k3")
-E_total = Symbol("E_total")
+S, C, P, k1, k2, k3, E_total = symbols("S C P k1 k2 k3 E_total")
 
 E = E_total - C
 x = [S, C, P]
@@ -119,5 +115,3 @@ For questions, feedback, or suggestions, please contact:
 ## License
 
 Released under the BSD 3-Clause License (see `LICENSE`)
-
-Copyright (c) 2025, Ayush Pandey. All rights reserved.

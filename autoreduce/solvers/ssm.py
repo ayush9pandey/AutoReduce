@@ -202,7 +202,7 @@ class SSM(System):
         S0 = np.zeros(self.n)  # Initial value for S_i
         SSM = np.zeros((len(self.timepoints), len(P), self.n))
         # solve for all x's in timeframe set by timepoints
-        from autoreduce.utils.reduction import get_ODE, printProgressBar
+        from autoreduce.solvers.utils import get_ODE, printProgressBar
 
         system_obj = self.get_system()
         sol = get_ODE(system_obj, self.timepoints).solve_system().T

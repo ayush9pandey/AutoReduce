@@ -5,8 +5,8 @@ import numpy as np  # type: ignore
 from scipy.integrate import odeint  # type: ignore
 
 from autoreduce.solvers.ode import ODE
+from autoreduce.solvers.utils import get_ODE
 from autoreduce.system.system import System
-from autoreduce.utils.reduction import get_ODE
 
 
 def test_ode_objects(system_1):

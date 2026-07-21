@@ -2,6 +2,7 @@
 # See LICENSE file in the project root directory for details.
 
 import numpy as np
+import pytest
 
 from autoreduce import solve_conservation_laws, solve_timescale_separation
 from autoreduce.system.system import System
@@ -39,12 +40,18 @@ def test_system_attributes(system_1):
 
 def test_public_imports_are_exported():
     """Confirm common system and reduction APIs are importable."""
+    import autoreduce.solvers
     import autoreduce.system
     import autoreduce.utils
 
     assert autoreduce.System is System
     assert autoreduce.system.System is System
-    assert autoreduce.utils.get_ODE.__name__ == "get_ODE"
+    assert autoreduce.solvers.get_ODE.__name__ == "get_ODE"
+    assert not hasattr(autoreduce, "get_reducible")
+    with pytest.raises(AttributeError):
+        getattr(autoreduce.utils, "get_reducible")
+    with pytest.raises(AttributeError):
+        getattr(autoreduce.utils, "get_ODE")
     assert solve_conservation_laws.__name__ == "solve_conservation_laws"
     assert solve_timescale_separation.__name__ == "solve_timescale_separation"
 

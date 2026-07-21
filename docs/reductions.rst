@@ -10,16 +10,17 @@ Time-Scale Separation
 =====================
 
 Use `solve_timescale_separation` for QSSA-style reductions from a plain
-`System`. `reductions.timescale.Reduce` remains available for advanced
-search workflows.
+`System`. Use `explore_all_QSS_models` to search across candidate QSSA
+reductions directly from a `System`. `reductions.core.Reduce` remains
+available for advanced search workflows.
 
 Conservation Laws
 =================
 
 Use `solve_conservation_laws` to apply conservation-law reductions from a
 plain `System`. When conserved sets are detected automatically, the
-`conservation_search_depth` argument controls how many ODE terms are summed
-while looking for cancellations.
+`search_depth` argument controls how many ODE terms are summed while looking
+for cancellations.
 
 Projection Methods
 ==================

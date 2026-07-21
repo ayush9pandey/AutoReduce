@@ -7,65 +7,39 @@ from sympy import Eq, Symbol, simplify, solve
 
 from autoreduce.system.system import System
 
+__all__ = [
+    "apply_conservation_laws",
+    "find_conserved_sets",
+    "setup_conservation_laws",
+    "solve_conservation_laws",
+]
 
-def _as_reducible(system_obj):
-    """Return a `Reduce` object, creating one for plain `System` inputs."""
-    from autoreduce.reductions.timescale import Reduce
 
-    if isinstance(system_obj, Reduce):
+def _as_reducible(system_obj, in_place=False):
+    """Return a working system for conservation-law reduction."""
+    from autoreduce.reductions.core import get_reducible
+
+    if in_place:
+        if not isinstance(system_obj, System):
+            raise TypeError("system_obj must be an AutoReduce System object.")
         return system_obj
     if not isinstance(system_obj, System):
         raise TypeError("system_obj must be an AutoReduce System object.")
-    return Reduce(
-        system_obj.x,
-        system_obj.f,
-        params=system_obj.params,
-        C=system_obj.C,
-        g=system_obj.g,
-        h=system_obj.h,
-        u=system_obj.u,
-        params_values=system_obj.params_values,
-        x_init=system_obj.x_init,
-        input_values=getattr(system_obj, "input_values", None),
-        parameter_dependent_ic=getattr(
-            system_obj, "parameter_dependent_ic", False
-        ),
-        ic_parameters=getattr(system_obj, "ic_parameters", None),
-    )
+    return get_reducible(system_obj)
 
 
-def _coalesce_search_depth(
-    conservation_search_depth=None, num_conservation_laws=None
-):
-    """Resolve the new search-depth name and the legacy alias."""
-    if conservation_search_depth is not None:
-        return conservation_search_depth
-    return num_conservation_laws
-
-
-def find_conserved_sets(
-    system_obj,
-    conservation_search_depth=None,
-    num_conservation_laws=None,
-    **kwargs,
-):
+def find_conserved_sets(system_obj, search_depth, **kwargs):
     """Find conserved species sets by summing ODE terms.
 
     Only linear combinations with coefficient 1 are currently supported.
-    `conservation_search_depth` is the maximum number of ODE terms to add
-    while searching for sums that cancel to zero.
-
-    `num_conservation_laws` is retained as a legacy alias for
-    `conservation_search_depth`; it was never strictly the number of laws.
+    `search_depth` is the maximum number of ODE terms to add while searching
+    for sums that cancel to zero.
     """
     _ = kwargs
-    search_depth = _coalesce_search_depth(
-        conservation_search_depth, num_conservation_laws
-    )
     if search_depth is None or search_depth <= 0:
         raise ValueError(
-            "Pass conservation_search_depth when conserved_sets or "
-            "conservation_laws are not provided."
+            "Pass search_depth when conserved_sets or conservation_laws are "
+            "not provided."
         )
 
     all_conserved_sets = []
@@ -92,24 +66,20 @@ def find_conserved_sets(
 
     if not all_conserved_sets:
         raise ValueError(
-            "No conserved sets found up to "
-            f"conservation_search_depth={search_depth}. This value is a "
-            "search depth, not the number of conservation laws. Increase it "
-            "when a conserved quantity requires summing more ODE terms, or "
-            "pass conserved_sets/conservation_laws explicitly."
+            f"No conserved sets found up to search_depth={search_depth}. "
+            "Increase search_depth when a conserved quantity requires "
+            "summing more ODE terms, or pass conserved_sets/conservation_laws "
+            "explicitly."
         )
     return all_conserved_sets
-
-
-def get_conservation_laws(*args, **kwargs):
-    """Backward-compatible alias for `find_conserved_sets`."""
-    return find_conserved_sets(*args, **kwargs)
 
 
 def setup_conservation_laws(system_obj, total_quantities, conserved_sets):
     """Create conservation-law expressions from conserved species sets."""
     if total_quantities is None:
         raise ValueError("total_quantities must be provided.")
+    if not isinstance(total_quantities, dict):
+        raise TypeError("total_quantities must be a dictionary.")
     if conserved_sets is None or len(conserved_sets) == 0:
         raise ValueError("conserved_sets must not be empty.")
     if len(total_quantities) != len(conserved_sets):
@@ -117,22 +87,34 @@ def setup_conservation_laws(system_obj, total_quantities, conserved_sets):
             "total_quantities must have one entry for each conserved set."
         )
 
+    _add_total_quantities(system_obj, total_quantities)
+    conservation_laws = []
+    for conserved_set, total_name in zip(conserved_sets, total_quantities):
+        total_symbol = Symbol(str(total_name))
+        law = sum(conserved_set) - total_symbol
+        conservation_laws.append(law)
+
+    return conservation_laws
+
+
+def _add_total_quantities(system_obj, total_quantities):
+    """Add conservation total parameters to a system if they are absent."""
+    if total_quantities is None:
+        return
+    if not isinstance(total_quantities, dict):
+        raise TypeError("total_quantities must be a dictionary.")
     params = [] if system_obj.params is None else list(system_obj.params)
     params_values = (
         [] if system_obj.params_values is None else list(system_obj.params_values)
     )
-    conservation_laws = []
-    for conserved_set, total_name in zip(conserved_sets, total_quantities):
-        total_symbol = Symbol(total_name)
-        if total_symbol not in params:
-            params.append(total_symbol)
-            params_values.append(total_quantities[total_name])
-        law = sum(conserved_set) - total_symbol
-        conservation_laws.append(law)
-
+    for total_name, total_value in total_quantities.items():
+        total_symbol = Symbol(str(total_name))
+        if total_symbol in params:
+            continue
+        params.append(total_symbol)
+        params_values.append(total_value)
     system_obj.params = params
     system_obj.params_values = params_values
-    return conservation_laws
 
 
 def _unique_laws(conservation_laws, debug=False):
@@ -210,6 +192,16 @@ def apply_conservation_laws(
         )
 
     state_indices = [system_obj.x.index(state) for state in states_to_eliminate]
+    if system_obj.C is not None:
+        c_array = np.asarray(system_obj.C)
+        if c_array.ndim == 1:
+            eliminated_output_columns = c_array[state_indices]
+        else:
+            eliminated_output_columns = c_array[:, state_indices]
+        if np.any(eliminated_output_columns != 0):
+            raise ValueError(
+                "Cannot eliminate states that appear in the linear output C@x."
+            )
     substitutions = []
     for law, state in zip(conservation_laws, states_to_eliminate):
         state_solutions = solve(Eq(law, 0), state)
@@ -248,24 +240,21 @@ def solve_conservation_laws(
     total_quantities=None,
     conserved_sets=None,
     states_to_eliminate=None,
-    conservation_search_depth=None,
-    num_conservation_laws=None,
+    search_depth=None,
+    in_place=False,
     **kwargs,
 ):
     """Find and apply conservation laws to a `System`.
 
     Plain `System` inputs are converted to a `Reduce` working object
-    internally, so callers do not need to create `get_reducible(system)` first.
-    `num_conservation_laws` remains available as a compatibility alias for
-    `conservation_search_depth`.
+    internally, so callers can pass a plain `System`.
     """
     debug = kwargs.get("debug", False)
-    reducible_system = _as_reducible(system_obj)
-    search_depth = _coalesce_search_depth(
-        conservation_search_depth, num_conservation_laws
-    )
-    reducible_system.conservation_search_depth = search_depth
-    reducible_system.num_conservation_laws = search_depth
+    if not isinstance(system_obj, System):
+        raise TypeError("system_obj must be an AutoReduce System object.")
+    _add_total_quantities(system_obj, total_quantities)
+    reducible_system = _as_reducible(system_obj, in_place=in_place)
+    reducible_system.search_depth = search_depth
 
     if (
         search_depth is None
@@ -273,33 +262,49 @@ def solve_conservation_laws(
         and conservation_laws is None
     ):
         raise ValueError(
-            "Pass conservation_laws, conserved_sets, or "
-            "conservation_search_depth."
+            "Pass conservation_laws, conserved_sets, or search_depth."
         )
 
     if conservation_laws is None:
+        if total_quantities is None:
+            raise ValueError(
+                "Pass total_quantities when deriving conservation_laws from "
+                "conserved_sets or search_depth."
+            )
         if conserved_sets is None:
             conserved_sets = find_conserved_sets(
                 reducible_system,
-                conservation_search_depth=search_depth,
+                search_depth=search_depth,
                 debug=debug,
             )
         elif not conserved_sets:
             raise ValueError("conserved_sets must not be empty.")
         reducible_system.conserved_sets = conserved_sets
 
-        if total_quantities is None:
-            total_quantities = {
-                str(conserved_set[0]) + "_total": 0
-                for conserved_set in conserved_sets
-            }
-        reducible_system.total_quantities = total_quantities
         conservation_laws = setup_conservation_laws(
             reducible_system, total_quantities, conserved_sets
         )
         if debug:
             print("Found conservation laws:", conservation_laws)
+    else:
+        params = set([] if reducible_system.params is None else reducible_system.params)
+        states = set(reducible_system.x)
+        missing = sorted(
+            {
+                symbol
+                for law in conservation_laws
+                for symbol in law.free_symbols
+                if symbol not in states and symbol not in params
+            },
+            key=str,
+        )
+        if missing:
+            raise ValueError(
+                "Conservation laws contain undeclared parameter symbols "
+                f"{missing}. Pass total_quantities or add them to system.params."
+            )
 
+    reducible_system.total_quantities = total_quantities
     reducible_system.conservation_laws = _unique_laws(
         conservation_laws, debug=debug
     )
@@ -315,4 +320,20 @@ def solve_conservation_laws(
         conservation_laws=reducible_system.conservation_laws,
         states_to_eliminate=reducible_system.states_to_eliminate,
     )
-    return reducible_system
+    if in_place:
+        return reducible_system
+
+    if hasattr(reducible_system, "get_system"):
+        conserved_system = reducible_system.get_system()
+    else:
+        conserved_system = reducible_system
+    for attr in (
+        "search_depth",
+        "conserved_sets",
+        "total_quantities",
+        "conservation_laws",
+        "states_to_eliminate",
+    ):
+        if hasattr(reducible_system, attr):
+            setattr(conserved_system, attr, getattr(reducible_system, attr))
+    return conserved_system
