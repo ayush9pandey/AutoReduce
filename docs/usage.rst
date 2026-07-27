@@ -31,8 +31,7 @@ slow dynamics for ``S`` and ``P``.
     import numpy as np
     from sympy import Symbol, simplify
 
-    from autoreduce.system.system import System
-    from autoreduce.utils.reduction import get_reducible
+    from autoreduce import System, solve_timescale_separation
 
     S = Symbol("S")
     C = Symbol("C")
@@ -59,9 +58,9 @@ slow dynamics for ``S`` and ``P``.
         C=np.array([[1, 0, 0], [0, 0, 1]]),
     )
 
-    reducible_system = get_reducible(system)
     reduced_system, collapsed_system = (
-        reducible_system.solve_timescale_separation(
+        solve_timescale_separation(
+            system,
             [S, P],
             fast_states=[C],
         )
@@ -95,8 +94,7 @@ AutoReduce can eliminate ``E`` before applying other reductions.
     import numpy as np
     from sympy import Symbol, simplify
 
-    from autoreduce.system.system import System
-    from autoreduce.utils.reduction import get_reducible
+    from autoreduce import System, solve_conservation_laws
 
     S = Symbol("S")
     E = Symbol("E")
@@ -123,8 +121,8 @@ AutoReduce can eliminate ``E`` before applying other reductions.
         C=np.eye(4),
     )
 
-    reducible_system = get_reducible(system)
-    conserved_system = reducible_system.solve_conservation_laws(
+    conserved_system = solve_conservation_laws(
+        system,
         total_quantities={"E_total": 1.0},
         conserved_sets=[[E, C]],
         states_to_eliminate=[E],

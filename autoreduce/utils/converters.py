@@ -9,7 +9,7 @@ from libsbml import (
 )
 from sympy import Integer, Symbol, parse_expr  # type: ignore
 
-from autoreduce.reductions.timescale import Reduce
+from autoreduce.system.system import System
 
 
 def load_ODE_model(n_states, n_params=0):
@@ -72,7 +72,7 @@ def load_sbml(filename, **kwargs):
     params_values is a list of parameter values, in the same order as P
     x_init is a list of initial conditions, in the same order as x
 
-    Returns: A reducible Reduce(System) object
+    Returns: A System object
     """
 
     # Get the sbml file, check for errors, and perform conversions
@@ -178,7 +178,7 @@ def load_sbml(filename, **kwargs):
             output_count += 1
     else:
         C = None
-    sys = Reduce(
+    sys = System(
         x,
         f,
         params=P,

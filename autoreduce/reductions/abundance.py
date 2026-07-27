@@ -2,5 +2,5 @@
 
 
 def solve_approximations(*args, **kwargs):
-    """Raise until abundance-based reduction is implemented."""
+    """Not implemented."""
     raise NotImplementedError("Abundance-based reduction is not implemented.")

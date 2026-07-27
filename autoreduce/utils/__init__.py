@@ -1,1 +1,1 @@
-"""Utility modules for conversion, SBML export, and reduction setup."""
+"""Utility modules for model conversion and SBML export."""

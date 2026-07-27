@@ -6,17 +6,17 @@ mechanism_id	part_id	param_name	param_val	comments
 	e coli extract	protein_Ribo	24	1/5 th the Ribosome concentration of E. Coli
 	e coli extract	protein_RNAP	3	1/5 th the rnap concentration of E. Coli
 	e coli extract	protein_RNAase	6	1/5 th the rnaase concentration of E. Coli
-	e coli extract 2	protein_Ribo	12	
-	e coli extract 2	protein_RNAP	6	
-	e coli extract 2	protein_RNAase	3	
+	e coli extract 2	protein_Ribo	12
+	e coli extract 2	protein_RNAP	6
+	e coli extract 2	protein_RNAase	3
 		ktx	0.05	transcripts / second per polymerase assuming 50nt/s and transcript length of 1000
 		ktl	0.05	proteins / second per ribosome assuming 15aa/s and protein length of 300
 		cooperativity	2	Seems like a good default
 		kb	100	assuming 10ms to diffuse across 1um (characteristic cell size)
 		ku	10	"""90% binding"""
 		kdil	0.001	assuming half life of ~20 minutes for everything (e coli doubling time)
-rna_degredation_mm		kdeg	0.001	assuming a half life of ~10 minutes for mRNA
-rna_degredation		kdil	0.001	assuming a half life of ~10 minutes for mRNA
+rna_degradation_mm		kdeg	0.01	assuming a half life of ~10 minutes for mRNA
+rna_degradation		kdil	0.01	assuming a half life of ~10 minutes for mRNA
 simple_transcription		ktx	0.1	Assuming ~10% of e coli rnap working at ktx above
 simple_translation		ktl	0.25	Assuming ~5% of e coli ribosomes working at ktx above
 gene_expression		kexpress	0.28125	The product of the above two rates
