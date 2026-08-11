@@ -6,7 +6,6 @@ from sympy import Symbol
 
 from autoreduce import load_ode_model, load_sbml
 
-
 MODEL_FILE = Path(__file__).parent / "models" / "example_1.xml"
 
 
