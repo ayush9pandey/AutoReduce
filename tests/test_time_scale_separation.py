@@ -2,7 +2,8 @@
 #  See LICENSE file in the project root directory for details.
 
 import pytest  # type: ignore
-from autoreduce import System
+
+from autoreduce.system.system import System
 
 
 def test_reduced_models(system_1, reducible_system_1):

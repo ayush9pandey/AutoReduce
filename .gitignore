@@ -61,6 +61,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/generated/
 
 # PyBuilder
 target/
@@ -107,3 +108,12 @@ dmypy.json
 
 # Package specific
 examples/reduced_gene_expression.xml
+autoreduce/_version.py
+examples/biological/models/design1_regulated_promoter.xml
+examples/biological/models/example_1.xml
+examples/biological/models/example1.xml
+examples/biological/models/reduced_gene_expression.xml
+examples/biological/models/reduced_gfp_expression.xml
+*.xml
+*.pptx
+*.png

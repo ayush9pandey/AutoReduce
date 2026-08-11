@@ -1,70 +1,100 @@
-.. BioCRNPyler documentation master file, created by
-   sphinx-quickstart on Thu Jan 31 19:56:36 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+########################################################
+AutoReduce: An Automated Model Reduction Toolbox
+########################################################
 
-Welcome to AutoReduce's documentation!
-=====================================
+AutoReduce is a tool for obtaining reduced-order models of
+nonlinear dynamical systems using symbolic computation in Python.
+It is designed for workflows where the reduced model should remain
+interpretable. That is, users provide symbolic system
+equations, select states or constraints that define the reduction problem,
+and obtain reduced dynamics that can be inspected, simulated, and exported.
 
-AutoReduce is a Python package for automated model reduction of SBML models. It provides tools for:
+More specifically, the package supports model reduction by
+time-scale separation, conservation laws, abundance assumptions,
+local sensitivity analysis, and (coming soon!) projection-based methods.
+Models can be imported in multiple formats:
+`SymPy <https://www.sympy.org/>`_,
+`SBML <http://sbml.org/>`_,
+`BioCRNpyler <https://github.com/buildacell/biocrnpyler>`_,
+`python-control's NonlinearIOSystem <https://python-control.readthedocs.io/>`_,
+and PyDMD. The reduced models are returned as symbolic dynamics that
+can be exported through supported compatibility routes.
 
-* Automated model reduction using QSSA (Quasi-Steady State Approximation)
-* Hill function approximation
-* Integration with BioCRNPyler for synthetic biology models
-* Analysis of gene expression models
+.. rubric:: Main features
 
-Installation
------------
+- Quasi-steady-state approximation (QSSA) through time-scale separation.
+- Numerical simulation of full and reduced systems.
+- Quantification of error between full and reduced models.
+- Conservation-law reduction for systems with invariant total quantities.
+- Local sensitivity analysis for parameter-dependent systems to
+  rank (and choose) parameter effects.
+- Robustness computation for reduced models that are closest to the full model
+  even under perturbations of the parameters.
 
-You can install AutoReduce using pip:
+.. rubric:: Background
 
-.. code-block:: bash
+AutoReduce was originally developed for automated construction of
+phenomenological models from more detailed biological circuit descriptions.
+The original workflow combines time-scale separation, conservation laws, and
+species abundance assumptions to produce smaller models that retain
+the input-output relationships needed for design analysis [PandeyMurray2020]_.
 
-    pip install autoreduce
+The robustness tools in AutoReduce are connected to structured model
+reduction guarantees for dynamical systems, with biomolecular examples
+developed in [PandeyMurray2023]_.
 
-For development installation with all optional dependencies:
+Compatibility notes:
 
-.. code-block:: bash
+- SymPy is used for symbolic ODE definitions.
+- SciPy is used for numerical ODE simulation.
+- python-libsbml supports SBML import and export.
+- BioCRNpyler models can be used through SBML-based workflows.
+- python-control `NonlinearIOSystem` models are supported for model imports.
+- PyDMD-based DMD and DMDc reductions are supported by the ``dmd`` extra.
 
-    pip install -e ".[all]"
+.. rubric:: Related research
 
-Quick Start
-----------
+The optional PyDMD and python-control integrations build on [Demo2018]_ and
+[Fuller2021]_, respectively.
 
-Here's a simple example of using AutoReduce to reduce a model using conservation laws and timescale separation:
+.. [PandeyMurray2020] Ayush Pandey and Richard M. Murray. "Model Reduction
+   Tools For Phenomenological Modeling of Input-Controlled Biological
+   Circuits." bioRxiv, 2020. https://doi.org/10.1101/2020.02.15.950840
 
-.. code-block:: python
+.. [PandeyMurray2023] Ayush Pandey and Richard M. Murray. "Robustness
+   guarantees for structured model reduction of dynamical systems with
+   applications to biomolecular models." *International Journal of Robust and
+   Nonlinear Control*, 33(9):5058-5086, 2023.
+   https://doi.org/10.1002/rnc.6013
 
-    from autoreduce.converters import load_sbml
+.. [Demo2018] Nicola Demo, Marco Tezzele, and Gianluigi Rozza. "PyDMD:
+   Python Dynamic Mode Decomposition." *Journal of Open Source Software*,
+   3(22):530, 2018. https://doi.org/10.21105/joss.00530
 
-    # Load your SBML model
-    sys = load_sbml('your_sbml_file.xml', outputs=['your_output'])
-
-    # Solve conservation laws
-    conservation_laws = sys.solve_conservation_laws(
-        conserved_sets=[
-            ['species1', 'species2', 'species3'],  # First conserved set
-            ['species4', 'species5']               # Second conserved set
-        ],
-        states_to_eliminate=['species_to_eliminate1', 'species_to_eliminate2']
-    )
-
-    # Solve timescale separation using QSSA
-    reduced_qssa_model = sys.solve_timescale_separation(['fast_species1', 'fast_species2'])
-
-For more detailed examples, see the :doc:`examples` section.
-
-Contents
---------
+.. [Fuller2021] Sawyer Fuller, Ben Greiner, Jason Moore, Richard Murray,
+   Rene van Paassen, and Rory Yorke. "The Python Control Systems Library
+   (python-control)." In *2021 60th IEEE Conference on Decision and Control
+   (CDC)*, 4875-4881, 2021. https://doi.org/10.1109/CDC45484.2021.9683368
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :caption: User Guide
+   :maxdepth: 1
+   :numbered: 2
 
+   introduction
    installation
    usage
-   api
+   systems
+   solvers
+   reductions
    examples
+
+.. toctree::
+   :caption: Reference Manual
+   :maxdepth: 1
+
+   library
+   develop
    contributing
 
 Indices and tables

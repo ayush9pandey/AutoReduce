@@ -1,5 +1,6 @@
 {
-    "python.pythonPath": "C:\\Users\\apand\\Anaconda3\\python.exe",
+    "python.pythonPath": "C:\\Users\\ayush\\anaconda3\\Scripts\\conda.exe",
+    "python.condaPath": "C:\\Users\\ayush\\anaconda3\\Scripts\\conda.exe",
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": false,
     "python.linting.pycodestyleEnabled": true,
@@ -36,5 +37,7 @@
     "black-formatter.args": [
         "--line-length",
         "79"
-    ]
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda"
 }

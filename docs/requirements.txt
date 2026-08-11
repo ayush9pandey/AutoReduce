@@ -2,7 +2,14 @@ sphinx
 sphinx_rtd_theme
 sphinx-copybutton
 sphinx-toggleprompt
-sphinx-autodoc-typehints
 nbsphinx
 nbsphinx-link
 recommonmark
+pandoc
+numpy>=1.23
+python-libsbml>=5.21.1
+scipy>=1.10
+setuptools-scm
+sympy>=1.11
+numpydoc
+sphinx-math-dollar

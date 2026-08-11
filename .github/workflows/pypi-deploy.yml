@@ -2,14 +2,23 @@ name: PyPI Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      ref:
+        description: "Tag, branch, or commit to build. Leave blank to use the selected ref."
+        required: false
+        default: ""
 
 jobs:
   pypi-publish:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
+    environment: Release Deploy
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.ref || github.ref }}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -18,7 +27,6 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
           pip install build
 
       - name: Build the package

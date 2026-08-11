@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = autoreduce 
+source = autoreduce
 
 [report]
 exclude_lines =

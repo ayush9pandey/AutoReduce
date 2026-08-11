@@ -1,39 +1,45 @@
 Examples
 ========
 
-This section contains examples of using AutoReduce for different types of model reduction tasks.
+This section contains the current AutoReduce example notebooks. Examples are
+organized by scientific domain.
 
-Michaelis-Menten Model Reduction
--------------------------------
+Biological examples
+-------------------
 
-This example demonstrates how to reduce a simple Michaelis-Menten model using QSSA.
+.. toctree::
+   :maxdepth: 1
 
-.. nbgallery::
-   :caption: Michaelis-Menten Example
-   :name: michaelis-menten
+   notebooks/gene_expression_analysis
+   notebooks/toggle_switch
+   notebooks/biocrnpyler_interface
+   notebooks/bacterial_population_control
+   notebooks/hill_function_derivation
 
-   ../examples/michaelis-menten example.ipynb
+Canonical examples
+------------------
 
-Gene Expression Analysis
+.. toctree::
+   :maxdepth: 1
+
+   notebooks/michaelis_menten
+   notebooks/parameter_sensitivity
+   notebooks/qss_with_python_control
+
+Cyber-physical examples
 -----------------------
 
-This example shows how to analyze and reduce gene expression models.
+.. toctree::
+   :maxdepth: 1
 
-.. nbgallery::
-   :caption: Gene Expression Analysis
-   :name: gene-expression
+   notebooks/motor_control
 
-   ../examples/gene expression analysis.ipynb
+Ecological examples
+-------------------
 
-BioCRNPyler Integration
-----------------------
+.. toctree::
+   :maxdepth: 1
 
-This example demonstrates how to use AutoReduce with BioCRNPyler for synthetic biology models.
+   notebooks/viral_spread
 
-.. nbgallery::
-   :caption: BioCRNPyler Integration
-   :name: biocrnpyler
-
-   ../examples/AutoReduce-BioCRNpyler interface.ipynb
-
-Each example notebook contains detailed explanations and can be downloaded from the `GitHub repository <https://github.com/ayush9pandey/AutoReduce/tree/main/examples>`_.
+Each example notebook can be downloaded from the `GitHub repository <https://github.com/ayush9pandey/AutoReduce/tree/main/examples>`_.

@@ -1,14 +1,15 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=77", "setuptools-scm>=8", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "autoreduce"
-version = "0.3.1"
-description = "Python based automated model reduction tools for SBML models"
+dynamic = ["version"]
+description = "Python tools for automated model reduction of nonlinear dynamical systems"
 readme = "README.md"
-requires-python = ">=3.9"
-license = { file = "LICENSE" }
+requires-python = ">=3.9,<=3.14.7"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 authors = [{ name = "Ayush Pandey", email = "ayushpandey@ucmerced.edu" }]
 keywords = [
     "SBML",
@@ -17,35 +18,128 @@ keywords = [
     "QSSA",
     "Hill functions",
 ]
-dependencies = ["python-libsbml", "sympy", "scipy", "numpy"]
+dependencies = ["numpy", "python-libsbml>=5.21.1", "scipy>=1.10", "sympy>=1.11"]
 
 [project.optional-dependencies]
-all = ["matplotlib", "seaborn"]
-test = [
+all = ["control", "matplotlib", "pydmd", "seaborn", "pandas", "biocrnpyler"]
+control = ["control"]
+dmd = ["pydmd"]
+bio = ["biocrnpyler"]
+docs = [
+    "nbsphinx",
+    "nbsphinx-link",
+    "numpydoc",
+    "pandoc",
+    "recommonmark",
+    "setuptools-scm",
+    "sphinx",
+    "sphinx-copybutton",
+    "sphinx-math-dollar",
+    "sphinx-toggleprompt",
+    "sphinx_rtd_theme",
+]
+dev = [
+    "build",
+    "ipykernel",
+    "jupyter",
+    "nbconvert",
+    "nbformat",
+    "nbsphinx",
+    "nbsphinx-link",
+    "numpydoc",
+    "pandoc",
     "pytest",
     "pytest-cov",
     "pytest-xdist",
-    "jupyter",
-    "ipykernel",
-    "nbformat",
-    "nbconvert",
+    "recommonmark",
+    "ruff",
+    "setuptools-scm",
+    "sphinx",
+    "sphinx-copybutton",
+    "sphinx-math-dollar",
+    "sphinx-toggleprompt",
+    "sphinx_rtd_theme",
 ]
-
+test = [
+    "ipykernel",
+    "jupyter",
+    "nbconvert",
+    "nbformat",
+    "pytest",
+    "pytest-cov",
+    "pytest-xdist",
+    "matplotlib",
+    "pandas",
+]
 
 [project.urls]
 Documentation = "https://autoreduce.readthedocs.io"
 Source = "https://github.com/ayush9pandey/AutoReduce"
 Tracker = "https://github.com/ayush9pandey/AutoReduce/issues"
 
-[tool.pytest.ini_options]
-testpaths = ["tests", "examples"]
-python_files = ["test_*.py"]
-addopts = "--cov=autoreduce --cov-report=xml"
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["autoreduce", "autoreduce.*"]
+
+[tool.setuptools_scm]
+version_file = "autoreduce/_version.py"
+local_scheme = "no-local-version"
 
 [tool.coverage.run]
+branch = true
 source = ["autoreduce"]
 omit = ["tests/*", "setup.py"]
 
-[tool.flake8]
-max-line-length = 100
-exclude = ["build", "dist", ".git", "__pycache__", "tests", "examples"]
+[tool.coverage.report]
+ignore_errors = true
+exclude_lines = [
+    "if self.debug:",
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+
+[tool.ruff]
+line-length = 78
+
+[tool.ruff.lint]
+select = ["E", "F", "D", "I", "W"]
+ignore = [
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D106",
+    "D107",
+    "D200",
+    "D202",
+    "D205",
+    "D400",
+    "D404",
+    "D406",
+    "D407",
+    "D411",
+    "D401",
+    "D417",
+    "E501",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**.py" = ["D", "E", "F841"]
+"examples/**.py" = ["D", "E"]
+"docs/**.py" = ["D", "E"]
+"__init__.py" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "preserve"
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.isort]
+profile = "black"
+line_length = 78

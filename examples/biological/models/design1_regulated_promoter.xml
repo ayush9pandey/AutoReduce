@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
+  <model id="biocrnpyler_166768" name="biocrnpyler_166768" substanceUnits="mole" timeUnits="sec" volumeUnits="litre" areaUnits="square_metre" lengthUnits="metre" extentUnits="mole">
+    <listOfUnitDefinitions>
+      <unitDefinition id="square_metre">
+        <listOfUnits>
+          <unit kind="metre" exponent="2" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="sec">
+        <listOfUnits>
+          <unit kind="second" exponent="1" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="umol">
+        <listOfUnits>
+          <unit kind="mole" exponent="1" scale="-6" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="per_hour">
+        <listOfUnits>
+          <unit kind="second" exponent="-1" scale="0" multiplier="0.000277777777777778"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="default" name="default" spatialDimensions="3" size="1e-06" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="dna_D1" name="dna_D1" compartment="default" initialConcentration="1" substanceUnits="umol" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="rna_m1" name="rna_m1" compartment="default" initialConcentration="0" substanceUnits="umol" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="protein_A1" name="protein_A1" compartment="default" initialConcentration="0" substanceUnits="umol" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="protein_R1" name="protein_R1" compartment="default" initialConcentration="0" substanceUnits="umol" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="complex_dna_D1_protein_A1_" name="complex_dna_D1_protein_A1_" compartment="default" initialConcentration="0" substanceUnits="umol" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="dna_D2" name="dna_D2" compartment="default" initialConcentration="1" substanceUnits="umol" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="rna_m2" name="rna_m2" compartment="default" initialConcentration="0" substanceUnits="umol" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="protein_A2" name="protein_A2" compartment="default" initialConcentration="0" substanceUnits="umol" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="protein_R2" name="protein_R2" compartment="default" initialConcentration="0" substanceUnits="umol" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="complex_dna_D2_protein_A2_" name="complex_dna_D2_protein_A2_" compartment="default" initialConcentration="0" substanceUnits="umol" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="complex_dna_D1_protein_R2_" name="complex_dna_D1_protein_R2_" compartment="default" initialConcentration="0" substanceUnits="umol" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="complex_dna_D2_protein_R1_" name="complex_dna_D2_protein_R1_" compartment="default" initialConcentration="0" substanceUnits="umol" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="ktx_p1_leak_transcription" value="0.25" units="per_hour" constant="true"/>
+      <parameter id="kb_p1_A1_one_step_cooperative_binding" value="1" units="per_hour" constant="true"/>
+      <parameter id="ku_p1_A1_one_step_cooperative_binding" value="1" units="per_hour" constant="true"/>
+      <parameter id="ktx_p1_A1_transcription" value="2" units="per_hour" constant="true"/>
+      <parameter id="ktl_utr1_simple_translation" value="5" units="per_hour" constant="true"/>
+      <parameter id="ktx_p2_leak_transcription" value="0.25" units="per_hour" constant="true"/>
+      <parameter id="kb_p2_A2_one_step_cooperative_binding" value="1" units="per_hour" constant="true"/>
+      <parameter id="ku_p2_A2_one_step_cooperative_binding" value="1" units="per_hour" constant="true"/>
+      <parameter id="ktx_p2_A2_transcription" value="2" units="per_hour" constant="true"/>
+      <parameter id="kb_R2_one_step_cooperative_binding" value="1" units="per_hour" constant="true"/>
+      <parameter id="ku_R2_one_step_cooperative_binding" value="1" units="per_hour" constant="true"/>
+      <parameter id="kb_R1_one_step_cooperative_binding" value="1" units="per_hour" constant="true"/>
+      <parameter id="ku_R1_one_step_cooperative_binding" value="1" units="per_hour" constant="true"/>
+      <parameter id="kdil_protein_R2_protein_degradation" value="1" units="per_hour" constant="true"/>
+      <parameter id="kdil_protein_A2_protein_degradation" value="1" units="per_hour" constant="true"/>
+      <parameter id="kdil_protein_R1_protein_degradation" value="1" units="per_hour" constant="true"/>
+      <parameter id="kdil_protein_A1_protein_degradation" value="1" units="per_hour" constant="true"/>
+      <parameter id="kdil_rna_m1_rna_degradation" value="1" units="per_hour" constant="true"/>
+      <parameter id="kdil_rna_m2_rna_degradation" value="1" units="per_hour" constant="true"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="r0" name="r0" reversible="false">
+        <listOfReactants>
+          <speciesReference species="dna_D1" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="dna_D1" stoichiometry="1" constant="false"/>
+          <speciesReference species="rna_m1" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> ktx_p1_leak_transcription </ci>
+              <ci> dna_D1 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r1" name="r1" reversible="false">
+        <listOfReactants>
+          <speciesReference species="protein_A1" stoichiometry="1" constant="false"/>
+          <speciesReference species="dna_D1" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="complex_dna_D1_protein_A1_" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> kb_p1_A1_one_step_cooperative_binding </ci>
+              <ci> protein_A1 </ci>
+              <ci> dna_D1 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r1rev" name="r1rev" reversible="false">
+        <listOfReactants>
+          <speciesReference species="complex_dna_D1_protein_A1_" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="protein_A1" stoichiometry="1" constant="false"/>
+          <speciesReference species="dna_D1" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> ku_p1_A1_one_step_cooperative_binding </ci>
+              <ci> complex_dna_D1_protein_A1_ </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r2" name="r2" reversible="false">
+        <listOfReactants>
+          <speciesReference species="complex_dna_D1_protein_A1_" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="complex_dna_D1_protein_A1_" stoichiometry="1" constant="false"/>
+          <speciesReference species="rna_m1" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> ktx_p1_A1_transcription </ci>
+              <ci> complex_dna_D1_protein_A1_ </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r3" name="r3" reversible="false">
+        <listOfReactants>
+          <speciesReference species="rna_m1" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="rna_m1" stoichiometry="1" constant="false"/>
+          <speciesReference species="protein_A1" stoichiometry="1" constant="false"/>
+          <speciesReference species="protein_R1" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> ktl_utr1_simple_translation </ci>
+              <ci> rna_m1 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r4" name="r4" reversible="false">
+        <listOfReactants>
+          <speciesReference species="dna_D2" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="dna_D2" stoichiometry="1" constant="false"/>
+          <speciesReference species="rna_m2" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> ktx_p2_leak_transcription </ci>
+              <ci> dna_D2 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r5" name="r5" reversible="false">
+        <listOfReactants>
+          <speciesReference species="protein_A2" stoichiometry="1" constant="false"/>
+          <speciesReference species="dna_D2" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="complex_dna_D2_protein_A2_" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> kb_p2_A2_one_step_cooperative_binding </ci>
+              <ci> protein_A2 </ci>
+              <ci> dna_D2 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r5rev" name="r5rev" reversible="false">
+        <listOfReactants>
+          <speciesReference species="complex_dna_D2_protein_A2_" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="protein_A2" stoichiometry="1" constant="false"/>
+          <speciesReference species="dna_D2" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> ku_p2_A2_one_step_cooperative_binding </ci>
+              <ci> complex_dna_D2_protein_A2_ </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r6" name="r6" reversible="false">
+        <listOfReactants>
+          <speciesReference species="complex_dna_D2_protein_A2_" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="complex_dna_D2_protein_A2_" stoichiometry="1" constant="false"/>
+          <speciesReference species="rna_m2" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> ktx_p2_A2_transcription </ci>
+              <ci> complex_dna_D2_protein_A2_ </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r7" name="r7" reversible="false">
+        <listOfReactants>
+          <speciesReference species="rna_m2" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="rna_m2" stoichiometry="1" constant="false"/>
+          <speciesReference species="protein_A2" stoichiometry="1" constant="false"/>
+          <speciesReference species="protein_R2" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> ktl_utr1_simple_translation </ci>
+              <ci> rna_m2 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r8" name="r8" reversible="false">
+        <listOfReactants>
+          <speciesReference species="protein_R2" stoichiometry="1" constant="false"/>
+          <speciesReference species="dna_D1" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="complex_dna_D1_protein_R2_" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> kb_R2_one_step_cooperative_binding </ci>
+              <ci> protein_R2 </ci>
+              <ci> dna_D1 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r8rev" name="r8rev" reversible="false">
+        <listOfReactants>
+          <speciesReference species="complex_dna_D1_protein_R2_" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="protein_R2" stoichiometry="1" constant="false"/>
+          <speciesReference species="dna_D1" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> ku_R2_one_step_cooperative_binding </ci>
+              <ci> complex_dna_D1_protein_R2_ </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r9" name="r9" reversible="false">
+        <listOfReactants>
+          <speciesReference species="protein_R1" stoichiometry="1" constant="false"/>
+          <speciesReference species="dna_D2" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="complex_dna_D2_protein_R1_" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> kb_R1_one_step_cooperative_binding </ci>
+              <ci> protein_R1 </ci>
+              <ci> dna_D2 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r9rev" name="r9rev" reversible="false">
+        <listOfReactants>
+          <speciesReference species="complex_dna_D2_protein_R1_" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="protein_R1" stoichiometry="1" constant="false"/>
+          <speciesReference species="dna_D2" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> ku_R1_one_step_cooperative_binding </ci>
+              <ci> complex_dna_D2_protein_R1_ </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r10" name="r10" reversible="false">
+        <listOfReactants>
+          <speciesReference species="protein_R2" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> kdil_protein_R2_protein_degradation </ci>
+              <ci> protein_R2 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r11" name="r11" reversible="false">
+        <listOfReactants>
+          <speciesReference species="protein_A2" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> kdil_protein_A2_protein_degradation </ci>
+              <ci> protein_A2 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r12" name="r12" reversible="false">
+        <listOfReactants>
+          <speciesReference species="protein_R1" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> kdil_protein_R1_protein_degradation </ci>
+              <ci> protein_R1 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r13" name="r13" reversible="false">
+        <listOfReactants>
+          <speciesReference species="protein_A1" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> kdil_protein_A1_protein_degradation </ci>
+              <ci> protein_A1 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r14" name="r14" reversible="false">
+        <listOfReactants>
+          <speciesReference species="rna_m1" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> kdil_rna_m1_rna_degradation </ci>
+              <ci> rna_m1 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r15" name="r15" reversible="false">
+        <listOfReactants>
+          <speciesReference species="rna_m2" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> kdil_rna_m2_rna_degradation </ci>
+              <ci> rna_m2 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

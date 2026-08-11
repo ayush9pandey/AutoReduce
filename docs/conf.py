@@ -5,28 +5,27 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
 import os
 import sys
+from os.path import dirname, relpath
+import inspect
+import sphinx
+from setuptools_scm import get_version
 
 sys.path.insert(0, os.path.abspath(".."))
+
+import autoreduce
 
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "autoreduce"
-copyright = "2025, Ayush Pandey"
+copyright = "2026, Ayush Pandey"
 author = "Ayush Pandey"
 
-# The short X.Y version
-version = "0.3"
-# The full version, including alpha/beta/rc tags
-release = "0.3.0"
+release = get_version(root="..", relative_to=__file__)
+version = ".".join(release.split(".", 2)[:2])
 
 
 # -- General configuration ---------------------------------------------------
@@ -41,11 +40,18 @@ release = "0.3.0"
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.doctest",
+    "sphinx.ext.linkcode",
+    "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
-    "sphinx.ext.viewcode",
-    "sphinx.ext.githubpages",
-    "sphinx_autodoc_typehints",
+    "sphinx_copybutton",
+    "sphinx_toggleprompt",
+    "sphinx_math_dollar",
     "nbsphinx",
+    "nbsphinx_link",
+    "recommonmark",
+    "numpydoc",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -55,7 +61,7 @@ templates_path = ["_templates"]
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
+source_suffix = {".rst": "restructuredtext"}
 
 # The master toctree document.
 master_doc = "index"
@@ -71,10 +77,18 @@ language = "en"
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["_build", "_autogen_*.rst", "Thumbs.db", ".DS_Store"]
+suppress_warnings = ["config.cache"]
+
+autosummary_generate = True
+autodoc_default_options = {
+    "exclude-members": "__init__, __weakref__, __repr__, __str__, __hash__",
+}
+autoclass_content = "class"
+autodoc_mock_imports = ["control", "pydmd"]
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = None
+pygments_style = "sphinx"
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -84,6 +98,7 @@ pygments_style = None
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
+default_role = "py:obj"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -95,6 +110,29 @@ html_theme = "sphinx_rtd_theme"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+html_css_files = ["css/custom.css"]
+
+sphinx_version = tuple(int(x) for x in sphinx.__version__.split(".")[:2])
+if sphinx_version >= (4, 0):
+    mathjax3_config = {
+        "tex": {
+            "inlineMath": [["\\(", "\\)"]],
+            "displayMath": [["\\[", "\\]"]],
+        }
+    }
+else:
+    mathjax_config = {
+        "tex2jax": {
+            "inlineMath": [["\\(", "\\)"]],
+            "displayMath": [["\\[", "\\]"]],
+        },
+    }
+
+copybutton_prompt_text = r">>> |\.\.\. "
+copybutton_prompt_is_regexp = True
+numpydoc_show_class_members = False
+numpydoc_class_members_toctree = False
+nbsphinx_execute = "never"
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -185,6 +223,7 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "sympy": ("https://docs.sympy.org/latest/", None),
 }
+intersphinx_disabled_reftypes = ["py:keyword"]
 
 # Napoleon settings
 napoleon_google_docstring = True
@@ -200,7 +239,58 @@ napoleon_use_param = True
 napoleon_use_rtype = True
 napoleon_type_aliases = None
 
-# -- Extension configuration -------------------------------------------------
 autodoc_member_order = "bysource"
 autodoc_typehints = "description"
 add_module_names = False
+
+
+def linkcode_resolve(domain, info):
+    """Resolve documented Python objects to GitHub source links."""
+    if domain != "py":
+        return None
+
+    module_name = info["module"]
+    full_name = info["fullname"]
+    module = sys.modules.get(module_name)
+    if module is None:
+        return None
+
+    obj = module
+    for part in full_name.split("."):
+        try:
+            obj = getattr(obj, part)
+        except AttributeError:
+            return None
+
+    obj = inspect.unwrap(obj)
+    try:
+        source_file = inspect.getsourcefile(obj)
+        source, line_number = inspect.getsourcelines(obj)
+    except (OSError, TypeError):
+        return None
+    if not source_file:
+        return None
+
+    source_module = inspect.getmodule(obj)
+    if source_module is not None and not source_module.__name__.startswith(
+        "autoreduce"
+    ):
+        return None
+
+    relative_file = relpath(source_file, start=dirname(autoreduce.__file__))
+    line_spec = f"#L{line_number}-L{line_number + len(source) - 1}"
+    if release != version:
+        return (
+            "https://github.com/ayush9pandey/AutoReduce/blob/"
+            f"main/autoreduce/{relative_file}{line_spec}"
+        )
+    return (
+        "https://github.com/ayush9pandey/AutoReduce/blob/"
+        f"v{version}/autoreduce/{relative_file}{line_spec}"
+    )
+
+
+doctest_global_setup = """
+import numpy as np
+import autoreduce
+"""

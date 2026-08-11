@@ -1,0 +1,5 @@
+.py.class,
+.py.function,
+.py.method {
+    font-weight: 600;
+}
