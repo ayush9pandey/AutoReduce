@@ -125,10 +125,20 @@ Utilities
    :toctree: generated/
    :nosignatures:
 
-   load_ODE_model
+   load_ode_model
    ode_to_sympy
    sympy_to_sbml
    load_sbml
+
+``load_sbml(filename, outputs=None, rename_species=None, **kwargs)`` accepts
+an optional ``outputs`` argument naming one species or a list of species to
+preserve as linear outputs in the returned ``System``. Output names must exactly
+match SBML species identifiers. If an output cannot be matched, ``load_sbml``
+raises a ``ValueError`` listing the available species instead of failing with an
+internal lookup error.
+
+The optional ``rename_species`` argument maps long SBML species identifiers to
+shorter SymPy symbol names for subsequent AutoReduce analysis.
 
 .. automodule:: autoreduce.solvers.utils
 

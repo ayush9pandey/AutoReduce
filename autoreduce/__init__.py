@@ -37,7 +37,7 @@ from autoreduce.solvers.utils import (
 )
 from autoreduce.system.system import System
 from autoreduce.utils.converters import (
-    load_ODE_model,
+    load_ode_model,
     load_sbml,
     ode_to_sympy,
     sympy_to_sbml,
@@ -59,7 +59,7 @@ __all__ = [
     "get_error_metric",
     "get_ode_solutions",
     "get_robustness_metric",
-    "load_ODE_model",
+    "load_ode_model",
     "load_sbml",
     "ode_to_sympy",
     "reduce_with_input",

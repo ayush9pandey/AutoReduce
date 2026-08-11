@@ -52,8 +52,7 @@ slow dynamics for ``S`` and ``P``.
     system = System(
         x,
         f,
-        params=[k1, k2, k3, E_total],
-        params_values=[1.0, 0.5, 0.25, 1.0],
+        params_dict={k1: 1.0, k2: 0.5, k3: 0.25, E_total: 1.0},
         x_init=[10.0, 0.0, 0.0],
         C=np.array([[1, 0, 0], [0, 0, 1]]),
     )
@@ -115,8 +114,7 @@ AutoReduce can eliminate ``E`` before applying other reductions.
     system = System(
         x,
         f,
-        params=[k1, k2, k3],
-        params_values=[1.0, 0.5, 0.25],
+        params_dict={k1: 1.0, k2: 0.5, k3: 0.25},
         x_init=[10.0, 1.0, 0.0, 0.0],
         C=np.eye(4),
     )

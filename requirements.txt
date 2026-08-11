@@ -1,4 +1,0 @@
-numpy>=1.23,<2
-python-libsbml>=5.21.1
-scipy>=1.10
-sympy>=1.11

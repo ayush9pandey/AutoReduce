@@ -7,7 +7,7 @@ name = "autoreduce"
 dynamic = ["version"]
 description = "Python tools for automated model reduction of nonlinear dynamical systems"
 readme = "README.md"
-requires-python = ">=3.9,<3.13"
+requires-python = ">=3.9,<=3.14.7"
 license = "BSD-3-Clause"
 license-files = ["LICENSE"]
 authors = [{ name = "Ayush Pandey", email = "ayushpandey@ucmerced.edu" }]
@@ -21,7 +21,7 @@ keywords = [
 dependencies = ["numpy", "python-libsbml>=5.21.1", "scipy>=1.10", "sympy>=1.11"]
 
 [project.optional-dependencies]
-all = ["control", "matplotlib", "pydmd", "seaborn", "biocrnpyler"]
+all = ["control", "matplotlib", "pydmd", "seaborn", "pandas", "biocrnpyler"]
 control = ["control"]
 dmd = ["pydmd"]
 bio = ["biocrnpyler"]
@@ -68,6 +68,8 @@ test = [
     "pytest",
     "pytest-cov",
     "pytest-xdist",
+    "matplotlib",
+    "pandas",
 ]
 
 [project.urls]
@@ -82,7 +84,7 @@ include-package-data = true
 include = ["autoreduce", "autoreduce.*"]
 
 [tool.setuptools_scm]
-write_to = "autoreduce/_version.py"
+version_file = "autoreduce/_version.py"
 local_scheme = "no-local-version"
 
 [tool.coverage.run]

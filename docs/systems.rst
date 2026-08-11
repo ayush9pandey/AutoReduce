@@ -21,7 +21,15 @@ Use `System` when model equations are already available as SymPy expressions.
 
    x = Symbol("x")
    k = Symbol("k")
-   system = System([x], [-k * x], params=[k], params_values=[1.0], x_init=[2.0])
+   system = System([x], [-k * x], params_dict={k: 1.0}, x_init=[2.0])
+
+Parameters can be read and updated through ``params_dict``:
+
+.. code-block:: python
+
+   system.get_param(k)
+   system.set_param(k, 0.5)
+   system.set_param_dict({k: 2.0})
 
 python-control Adapter
 ======================

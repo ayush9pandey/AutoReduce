@@ -42,6 +42,7 @@ class System(object):
         input_values=None,
         timepoints_ode=None,
         timepoints_ssm=None,
+        params_dict=None,
         **kwargs,
     ):
         """
@@ -55,8 +56,8 @@ class System(object):
             Written symbolically with symbols x = [x_0, x_1, ...]
             for states and P = [P_0, P_1, ...] for parameters.
 
-        params : (Symbolic) parameters used to
-                define f, g, h. None if no symbolic parameters.
+        params_dict : Dictionary mapping symbolic parameters to numerical
+            values. Use params_dict to set, get, and update parameters.
 
         g : The actuator / input dynamics.
             None by default if the system is autonomous.
@@ -68,17 +69,24 @@ class System(object):
         h : The output description y = h(x, P)
             where x are states and P are parameters.
 
-        params_values : Values for model parameters
-
         u : List of inputs
 
         x_init : Model initial conditions
+
+        Parameter values can be read and changed with get_param,
+        set_param, set_param_dict, and update_param_dict.
         """
 
         if C is not None and h is not None:
             raise ValueError("Set either C or h, not both.")
         if len(x) != len(f):
             raise ValueError("x and f must have the same length.")
+        if params_dict is not None and (
+            params is not None or params_values is not None
+        ):
+            raise ValueError(
+                "Use either params_dict or params/params_values, not both."
+            )
         if params is not None and params_values is not None:
             if len(params) != len(params_values):
                 raise ValueError(
@@ -90,15 +98,24 @@ class System(object):
         self.x = x
         self.n = len(x)
         self.f = f
-        self.params = params
         self.C = C
         self.g = g
         self.h = h
         self.u = u
-        if params_values is not None:
-            self.params_values = params_values
+        if params_dict is not None:
+            self.params_dict = dict(params_dict)
+            self.params = list(self.params_dict.keys())
+            self.params_values = list(self.params_dict.values())
         else:
-            self.params_values = []
+            self.params = params
+            if params_values is not None:
+                self.params_values = params_values
+            else:
+                self.params_values = []
+            if self.params is None:
+                self.params_dict = {}
+            else:
+                self.params_dict = dict(zip(self.params, self.params_values))
         if input_values is not None:
             self.input_values = input_values
         else:
@@ -129,6 +146,56 @@ class System(object):
         else:
             self.ic_parameters = None
         return
+
+    def get_param(self, param_name):
+        """Get one parameter value from params_dict."""
+        if param_name not in self.params_dict:
+            raise ValueError(
+                f"Parameter {param_name!r} was not found. "
+                f"Available parameters are: {list(self.params_dict.keys())}."
+            )
+        return self.params_dict[param_name]
+
+    def set_param(self, param_name, param_value):
+        """Set one parameter value in params_dict and params_values."""
+        if param_name not in self.params_dict:
+            raise ValueError(
+                f"Parameter {param_name!r} was not found. "
+                f"Available parameters are: {list(self.params_dict.keys())}."
+            )
+        self.params_dict[param_name] = param_value
+        param_index = self.params.index(param_name)
+        self.params_values[param_index] = param_value
+        return param_value
+
+    def set_param_dict(self, params_dict):
+        """Set parameter values from a dictionary."""
+        unknown_params = [
+            param_name
+            for param_name in params_dict
+            if param_name not in self.params_dict
+        ]
+        if unknown_params:
+            raise ValueError(
+                f"Parameters {unknown_params!r} were not found. "
+                f"Available parameters are: {list(self.params_dict.keys())}."
+            )
+        self.params_dict.update(params_dict)
+        self.update_param_dict()
+        return self.params_dict
+
+    def update_param_dict(self):
+        """Update params_values from params_dict."""
+        params_dict_keys = set(self.params_dict.keys())
+        params_keys = set([] if self.params is None else self.params)
+        if params_dict_keys != params_keys:
+            raise ValueError(
+                "params_dict keys must exactly match params. "
+                f"params_dict keys are {list(self.params_dict.keys())}; "
+                f"params are {self.params}."
+            )
+        self.params_values = [self.params_dict[param] for param in self.params]
+        return self.params_dict
 
     def _count_inputs(self):
         """Return the number of declared inputs, if any."""
@@ -244,6 +311,10 @@ class System(object):
                     )
         else:
             self.params_values = []
+        if self.params is None:
+            self.params_dict = {}
+        else:
+            self.params_dict = dict(zip(self.params, self.params_values))
         if x_init is not None:
             self.x_init = [pi for pi in x_init]
         else:

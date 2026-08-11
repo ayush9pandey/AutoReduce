@@ -32,7 +32,7 @@ for the model-reduction background.
 
 ```python
 import numpy as np
-from sympy import Symbol
+from sympy import symbols
 
 from autoreduce import System, solve_timescale_separation
 
@@ -49,8 +49,7 @@ f = [
 system = System(
     x,
     f,
-    params=[k1, k2, k3, E_total],
-    params_values=[1.0, 0.5, 0.25, 1.0],
+    params_dict={k1: 1.0, k2: 0.5, k3: 0.25, E_total: 1.0},
     x_init=[10.0, 0.0, 0.0],
     C=np.array([[1, 0, 0], [0, 0, 1]]),
 )
@@ -62,12 +61,19 @@ reduced_system, collapsed_system = solve_timescale_separation(
 )
 ```
 
+`params_dict` can be used to set, get, and update parameters:
+
+```python
+system.set_param(k1, 2.0)
+system.get_param(k1)
+system.set_param_dict({k2: 1.0, k3: 0.1})
+```
+
 For more examples, check out the [documentation](https://autoreduce.readthedocs.io/en/latest/examples.html).
 
 ## Installation
 
-Supported Python versions are 3.9 - 3.12. AutoReduce currently requires
-NumPy < 2 to keep compatibility with BioCRNpyler.
+Supported Python versions are 3.9 - 3.13.
 
 Install the latest version of AutoReduce:
 

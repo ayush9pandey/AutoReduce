@@ -4,7 +4,7 @@ Installation
 Requirements
 ------------
 
-Supported Python versions are: 3.9 - 3.12.
+Supported Python versions are: 3.9 - 3.13.
 
 Required runtime dependencies are listed below
 but will be automatically installed with pip when you install the package:
@@ -12,7 +12,7 @@ but will be automatically installed with pip when you install the package:
 * python-libsbml
 * sympy
 * scipy
-* numpy<2
+* numpy
 
 Optional compatibility and visualization dependencies:
 

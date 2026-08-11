@@ -3,6 +3,8 @@
 
 import warnings
 
+import pytest
+
 from autoreduce import explore_all_QSS_models, solve_timescale_separation
 from autoreduce.reductions.core import Reduce
 from autoreduce.system.system import System
@@ -69,6 +71,15 @@ def test_direct_explore_all_QSS_models(system_1):
     assert results
     assert all(isinstance(reduced_system, System) for reduced_system in results)
     assert all(result is None for result in results.values())
+
+
+def test_explore_all_QSS_models_requires_timepoints_for_metrics(system_1):
+    """Numerical metrics require ODE and SSM timepoints."""
+    with pytest.raises(
+        ValueError,
+        match="timepoints_ode is used for accuracy",
+    ):
+        explore_all_QSS_models(system_1)
 
 
 def test_biocrnplyer_model(system_2):

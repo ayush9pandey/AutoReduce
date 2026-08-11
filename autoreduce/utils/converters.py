@@ -1,5 +1,7 @@
 """Model import and symbolic conversion utilities."""
 
+from pathlib import Path
+
 import numpy as np  # type: ignore
 from libsbml import (
     LIBSBML_OPERATION_SUCCESS,
@@ -12,9 +14,48 @@ from sympy import Integer, Symbol, parse_expr  # type: ignore
 from autoreduce.system.system import System
 
 
-def load_ODE_model(n_states, n_params=0):
-    """Directly load ODE with sympy"""
-    return ode_to_sympy(n_states, n_params)
+def _species_symbol_map(model, rename_species=None):
+    """Map SBML species identifiers to SymPy symbols."""
+    rename_species = {} if rename_species is None else dict(rename_species)
+    species_ids = [species.getId() for species in model.getListOfSpecies()]
+    unknown_species = sorted(set(rename_species) - set(species_ids))
+    if unknown_species:
+        unknown_names = ", ".join(str(species) for species in unknown_species)
+        available_names = ", ".join(sorted(species_ids))
+        raise ValueError(
+            "Species rename keys did not match SBML species: "
+            f"{unknown_names}. Available species are: {available_names}."
+        )
+    mapping = {}
+    used_names = set()
+    for species in model.getListOfSpecies():
+        species_id = species.getId()
+        new_name = str(rename_species.get(species_id, species_id))
+        if new_name in used_names:
+            raise ValueError(
+                f"Species rename for {species_id!r} creates duplicate "
+                f"symbol {new_name!r}."
+            )
+        used_names.add(new_name)
+        mapping[species_id] = Symbol(new_name)
+    return mapping
+
+
+def load_ode_model(n_states, n_params=0, outputs=None):
+    """Directly load an ODE skeleton with SymPy symbols."""
+    x, f, P = ode_to_sympy(n_states, n_params)
+    if outputs:
+        output_names = [outputs] if isinstance(outputs, str) else list(outputs)
+        states = [str(state) for state in x]
+        missing_outputs = [
+            output for output in output_names if output not in states
+        ]
+        if missing_outputs:
+            raise ValueError(
+                "Outputs did not match any state in the ODE model: "
+                f"{missing_outputs}. Available states are: {states}."
+            )
+    return x, f, P
 
 
 def ode_to_sympy(odesize, n_params=0):
@@ -27,16 +68,10 @@ def ode_to_sympy(odesize, n_params=0):
     x = []
     P = []
     for i in range(odesize):
-        str_var = "x" + str(i)
-        str_f = "f" + str(i)
-        vars()[str_f] = symbols("f%d" % i)
-        vars()[str_var] = symbols("x%d" % i)
-        f.append(vars()[str_f])
-        x.append(vars()[str_var])
+        f.append(symbols("f%d" % i))
+        x.append(symbols("x%d" % i))
     for k in range(n_params):
-        str_P = "P" + str(k)
-        vars()[str_P] = symbols("P" + "%d" % k)
-        P.append(vars()[str_P])
+        P.append(symbols("P" + "%d" % k))
     return x, f, P
 
 
@@ -64,23 +99,38 @@ def sympy_to_sbml(model):
 #
 
 
-def load_sbml(filename, **kwargs):
-    """A function that takes in an SBML file and returns x,f,P,params_values.
-    x is a list of species written as Sympy objects
-    f is a list of functions written as Sympy objects
-    P is a list of parameters written as Sympy objects
-    params_values is a list of parameter values, in the same order as P
-    x_init is a list of initial conditions, in the same order as x
+def load_sbml(filename, outputs=None, rename_species=None, **kwargs):
+    """Load an SBML file as a System object.
+
+    Parameters
+    ----------
+    filename
+        Path to the SBML file.
+    outputs
+        Optional SBML species identifier or list of SBML species identifiers
+        to use as linear outputs. A row is added to ``C`` for each output.
+    rename_species
+        Optional mapping from SBML species identifiers to shorter symbol names
+        used in the returned ``System``.
+
+    The returned ``System`` has species in ``x``, dynamics in ``f``,
+    parameter values in ``params_dict``, and initial conditions in ``x_init``.
 
     Returns: A System object
     """
 
     # Get the sbml file, check for errors, and perform conversions
+    sbml_path = Path(filename)
+    if not sbml_path.is_file():
+        raise FileNotFoundError(f"SBML file not found: {filename}")
+    filename = str(sbml_path)
+
     doc = readSBMLFromFile(filename)
     if doc.getNumErrors(LIBSBML_SEV_FATAL):
-        print("Encountered serious errors while reading file")
-        print(doc.getErrorLog().toString())
-        return
+        raise ValueError(
+            "Encountered serious errors while reading SBML file "
+            f"{filename}:\n{doc.getErrorLog().toString()}"
+        )
     doc.getErrorLog().clearLog()
     # Convert local params to global params
     props = ConversionProperties()
@@ -102,6 +152,10 @@ def load_sbml(filename, **kwargs):
         print(doc.getErrorLog().toString())
     # Get model and define important lists, dictionaries
     mod = doc.getModel()
+    if mod is None:
+        raise ValueError(f"No SBML model found in file: {filename}")
+
+    species_symbols = _species_symbol_map(mod, rename_species=rename_species)
     x = []
     x_init = []
     P = []
@@ -112,7 +166,7 @@ def load_sbml(filename, **kwargs):
     # x[i] corresponds to x_init[i]
     for i in range(mod.getNumSpecies()):
         species = mod.getSpecies(i)
-        x.append(Symbol(species.getId()))
+        x.append(species_symbols[species.getId()])
         if species.isSetInitialConcentration():
             x_init.append(species.getInitialConcentration())
         elif species.isSetInitialAmount():
@@ -130,9 +184,7 @@ def load_sbml(filename, **kwargs):
         kinetics = reaction.getKineticLaw()
         formula = kinetics.getFormula()
         # Create a mapping of species/parameter IDs to their symbols
-        symbol_map = {}
-        for species in mod.getListOfSpecies():
-            symbol_map[species.getId()] = Symbol(species.getId())
+        symbol_map = dict(species_symbols)
         for param in mod.getListOfParameters():
             symbol_map[param.getId()] = Symbol(param.getId())
         # Parse the formula using sympy's parse_expr with local_dict
@@ -147,7 +199,7 @@ def load_sbml(filename, **kwargs):
         # subtract reactant kinetic formula
         for j in range(reaction.getNumReactants()):
             ref = reaction.getReactant(j)
-            species = Symbol(ref.getSpecies())
+            species = species_symbols[ref.getSpecies()]
             curr_index = x.index(species)
             if ref.getStoichiometry() == 1.0:
                 f[curr_index] += -reactions[reaction.getId()]
@@ -158,7 +210,7 @@ def load_sbml(filename, **kwargs):
         # add product kinetic formula
         for j in range(reaction.getNumProducts()):
             ref = reaction.getProduct(j)
-            species = Symbol(ref.getSpecies())
+            species = species_symbols[ref.getSpecies()]
             curr_index = x.index(species)
             if ref.getStoichiometry() == 1.0:
                 f[curr_index] += +reactions[reaction.getId()]
@@ -166,23 +218,28 @@ def load_sbml(filename, **kwargs):
                 f[curr_index] += (
                     +reactions[reaction.getId()] * ref.getStoichiometry()
                 )
-    if "outputs" in kwargs:
-        outputs = kwargs["outputs"]
-        if not isinstance(outputs, list):
-            outputs = [outputs]
-        C = np.zeros((len(outputs), len(x)))
-        output_count = 0
-        for output in outputs:
-            index_output = x.index(Symbol(output))
-            C[output_count, index_output] = 1
-            output_count += 1
-    else:
+    if outputs is None or outputs == []:
         C = None
+    else:
+        output_names = [outputs] if isinstance(outputs, str) else list(outputs)
+        species_ids = [species.getId() for species in mod.getListOfSpecies()]
+        missing_outputs = [
+            output for output in output_names if output not in species_ids
+        ]
+        if missing_outputs:
+            raise ValueError(
+                "Outputs did not match any species in the SBML model: "
+                f"{missing_outputs}. Available species are: {species_ids}."
+            )
+        C = np.zeros((len(output_names), len(x)))
+        for output_count, output in enumerate(output_names):
+            index_output = x.index(species_symbols[output])
+            C[output_count, index_output] = 1
+            print(f"Your output {output!r} is now set using the system.C matrix!")
     sys = System(
         x,
         f,
-        params=P,
-        params_values=params_values,
+        params_dict=dict(zip(P, params_values)),
         x_init=x_init,
         C=C,
         **kwargs,

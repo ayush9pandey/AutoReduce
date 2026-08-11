@@ -4,12 +4,12 @@ from autoreduce.solvers.ode import ODE
 from autoreduce.solvers.ssm import SSM
 from autoreduce.solvers.utils import solve_sensitivity
 from autoreduce.system.system import System
-from autoreduce.utils.converters import load_ODE_model
+from autoreduce.utils.converters import load_ode_model
 
 
 def test_solver_objects_from_symbolic_model():
     """Build ODE and SSM solver objects from a symbolic system."""
-    x, f, params = load_ODE_model(2, 2)
+    x, f, params = load_ode_model(2, 2)
     f[0] = -(x[0] ** 2) + params[0] * x[1]
     f[1] = -params[1] * x[1]
     output_matrix = np.array([[0, 1]]).tolist()
@@ -45,7 +45,7 @@ def test_solver_objects_from_symbolic_model():
 
 def test_direct_sensitivity_solver_matches_linear_analytic_solution():
     """Solve sensitivity ODEs directly for a one-state decay model."""
-    x, f, params = load_ODE_model(1, 1)
+    x, f, params = load_ode_model(1, 1)
     k = params[0]
     f[0] = -k * x[0]
     system = System(

@@ -338,7 +338,13 @@ def explore_all_QSS_models(
     in_place=False,
     **kwargs,
 ):
-    """Explore candidate QSS reductions for an autonomous system."""
+    """Explore candidate QSS reductions for an autonomous system.
+
+    When ``skip_numerical_computations`` is ``False``, both
+    ``timepoints_ode`` and ``timepoints_ssm`` must be provided because the
+    user indicated to compute all metrics. ``timepoints_ode`` is used for
+    accuracy and ``timepoints_ssm`` is used for robustness computation.
+    """
     constructor_kwargs = {}
     for option in ("error_tol", "nstates_tol", "nstates_tol_min"):
         if option in kwargs:
@@ -357,6 +363,16 @@ def explore_all_QSS_models(
     skip_robustness_computation = kwargs.get(
         "skip_robustness_computation", False
     )
+    if not skip_numerical_computations and (
+        reducible_system.timepoints_ode is None
+        or reducible_system.timepoints_ssm is None
+    ):
+        raise ValueError(
+            "timepoints_ode and timepoints_ssm are needed when "
+            "skip_numerical_computations=False because the user indicated to "
+            "compute all metrics. timepoints_ode is used for accuracy and "
+            "timepoints_ssm is used for robustness computation."
+        )
     if reducible_system.u is not None:
         raise ValueError("For models with inputs use reduce_with_input.")
     results_dict = {}

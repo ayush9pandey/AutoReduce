@@ -115,6 +115,7 @@ def _add_total_quantities(system_obj, total_quantities):
         params_values.append(total_value)
     system_obj.params = params
     system_obj.params_values = params_values
+    system_obj.params_dict = dict(zip(system_obj.params, system_obj.params_values))
 
 
 def _unique_laws(conservation_laws, debug=False):
