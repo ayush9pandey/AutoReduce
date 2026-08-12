@@ -7,8 +7,6 @@ separation, conservation laws, sensitivity analysis, and projection-based
 interfaces to established reduction libraries.
 
 [![Build](https://github.com/ayush9pandey/autoreduce/actions/workflows/build.yml/badge.svg)](https://github.com/ayush9pandey/autoreduce/actions/workflows/build.yml)
-[![Lint](https://github.com/ayush9pandey/autoreduce/actions/workflows/lint.yml/badge.svg)](https://github.com/ayush9pandey/autoreduce/actions/workflows/lint.yml)
-[![codecov](https://codecov.io/gh/ayush9pandey/AutoReduce/graph/badge.svg?token=h9diSMrJbj)](https://codecov.io/gh/ayush9pandey/AutoReduce)
 [![PyPI version](https://badge.fury.io/py/autoreduce.svg)](https://badge.fury.io/py/autoreduce)
 [![Documentation Status](https://readthedocs.org/projects/autoreduce/badge/?version=latest)](https://autoreduce.readthedocs.io/en/latest/?badge=latest)
 
